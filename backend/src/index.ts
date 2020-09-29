@@ -2,8 +2,8 @@ import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import mongoose from "mongoose";
 import { buildSchema } from "type-graphql";
-// import { PostsModel } from "./entities/Posts";
-import { PostsResolver } from "./Resolvers/PostsResolver";
+import { PostResolver } from "./Resolvers/PostsResolver";
+import { UserResolver } from "./Resolvers/UserResolver";
 
 const PORT = process.env.PORT || 4000;
 
@@ -16,16 +16,12 @@ const main = async () => {
   const app = express();
 
   const schema = await buildSchema({
-    resolvers: [PostsResolver],
+    resolvers: [PostResolver, UserResolver],
     validate: false,
   });
 
   const server = new ApolloServer({ schema });
   server.applyMiddleware({ app });
-  // const p = await PostsModel.find();
-  // app.get("/posts", (_, res) => {
-  //   res.send(p);
-  // });
   app.listen(PORT, () => console.log("Server is running"));
 };
 
