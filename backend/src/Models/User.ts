@@ -1,6 +1,5 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
+import { getModelForClass, prop, mongoose } from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import mongoose from "mongoose";
 
 @ObjectType()
 export class User {

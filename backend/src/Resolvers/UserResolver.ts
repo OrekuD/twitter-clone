@@ -11,7 +11,7 @@ import argon2 from "argon2";
 import mongoose from "mongoose";
 
 @ObjectType()
-class Error {
+class UserError {
   @Field()
   message: string;
 }
@@ -30,8 +30,8 @@ class UserResponse {
   @Field(() => User, { nullable: true })
   user?: User;
 
-  @Field(() => Error, { nullable: true })
-  error?: Error;
+  @Field(() => UserError, { nullable: true })
+  error?: UserError;
 }
 
 @Resolver()
