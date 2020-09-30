@@ -5,6 +5,7 @@ import {
   Mutation,
   ObjectType,
   Field,
+  InputType,
 } from "type-graphql";
 import { Post, PostModel } from "../Models/Post";
 import { UserModel } from "../Models/User";
@@ -13,6 +14,9 @@ import { UserModel } from "../Models/User";
 class PostError {
   @Field()
   message: string;
+
+  @Field()
+  field: string;
 }
 
 @ObjectType()
@@ -22,6 +26,18 @@ class PostResponse {
 
   @Field(() => PostError, { nullable: true })
   error?: PostError;
+}
+
+@InputType()
+class CommentInput {
+  @Field()
+  content: string;
+
+  @Field()
+  creatorId: string;
+
+  @Field()
+  postId: string;
 }
 
 @Resolver(() => Post)
@@ -36,7 +52,7 @@ export class PostResolver {
     return await PostModel.find();
   }
 
-  @Mutation(() => PostResponse, { nullable: true })
+  @Mutation(() => PostResponse)
   async createPost(
     @Arg("content") content: string,
     @Arg("creatorId") creatorId: string
@@ -46,6 +62,7 @@ export class PostResolver {
       return {
         error: {
           message: "User doesn't exist",
+          field: "username",
         },
       };
     }
@@ -53,8 +70,48 @@ export class PostResolver {
     const post = await PostModel.create({
       content,
       creator,
+      createdAt: Date.now(),
+      comments: [],
+      isComment: false
     });
     await post.save();
     return { post };
+  }
+
+  @Mutation(() => PostResponse)
+  async createComment(
+    @Arg("options") options: CommentInput
+  ): Promise<PostResponse> {
+    const post = await PostModel.findOne({ _id: options.postId });
+    if (!post) {
+      return {
+        error: {
+          message: "Post doesn't exist",
+          field: "post",
+        },
+      };
+    }
+
+    const creator = await UserModel.findOne({ _id: options.creatorId });
+    if (!creator) {
+      return {
+        error: {
+          message: "User doesn't exist",
+          field: "username",
+        },
+      };
+    }
+
+    const comment = await PostModel.create({
+      content: options.content,
+      creator,
+      createdAt: Date.now(),
+      comments: [],
+      isComment:true
+    });
+    await comment.save();
+
+    // await PostModel.updateOne({ _id: options.postId }, { comments: [comment] });
+    return { post: comment };
   }
 }

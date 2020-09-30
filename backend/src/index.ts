@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { buildSchema } from "type-graphql";
 import { PostResolver } from "./Resolvers/PostsResolver";
 import { UserResolver } from "./Resolvers/UserResolver";
+import cors from "cors";
 
 const PORT = process.env.PORT || 4000;
 
@@ -14,6 +15,7 @@ const main = async () => {
   });
 
   const app = express();
+  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
   const schema = await buildSchema({
     resolvers: [PostResolver, UserResolver],
@@ -21,8 +23,8 @@ const main = async () => {
   });
 
   const server = new ApolloServer({ schema });
-  server.applyMiddleware({ app });
-  app.listen(PORT, () => console.log("Server is running"));
+  server.applyMiddleware({ app, cors: false });
+  app.listen(PORT, () => console.log("Server is up"));
 };
 
 main();

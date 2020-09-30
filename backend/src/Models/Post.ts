@@ -13,11 +13,19 @@ export class Post {
 
   @prop()
   @Field()
+  isComment: boolean;
+
+  @prop()
+  @Field(() => Date)
+  createdAt: Date;
+
+  @prop()
+  @Field()
   creator: User;
 
   @prop()
-  @Field(() => [Post], { nullable: true })
-  comments?: Post[];
+  @Field(() => [Post])
+  comments: Post[];
 }
 
 export const PostModel = getModelForClass(Post);

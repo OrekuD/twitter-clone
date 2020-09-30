@@ -14,6 +14,9 @@ import mongoose from "mongoose";
 class UserError {
   @Field()
   message: string;
+
+  @Field()
+  field: "password" | "username";
 }
 
 @InputType()
@@ -43,6 +46,7 @@ export class UserResolver {
       return {
         error: {
           message: "Username already exists",
+          field: "username",
         },
       };
     }
@@ -50,6 +54,7 @@ export class UserResolver {
       return {
         error: {
           message: "Password too short",
+          field: "password",
         },
       };
     }
@@ -71,6 +76,7 @@ export class UserResolver {
       return {
         error: {
           message: "Username does not exist",
+          field: "username",
         },
       };
     }
@@ -80,6 +86,7 @@ export class UserResolver {
       return {
         error: {
           message: "Authentication failed",
+          field: "password",
         },
       };
     }
