@@ -5,6 +5,7 @@ import { buildSchema } from "type-graphql";
 import { PostResolver } from "./Resolvers/PostsResolver";
 import { UserResolver } from "./Resolvers/UserResolver";
 import cors from "cors";
+import { LikeResolver } from "./Resolvers/LikeResolver";
 
 const PORT = process.env.PORT || 4000;
 
@@ -18,7 +19,7 @@ const main = async () => {
   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
   const schema = await buildSchema({
-    resolvers: [PostResolver, UserResolver],
+    resolvers: [PostResolver, UserResolver, LikeResolver],
     validate: false,
   });
 

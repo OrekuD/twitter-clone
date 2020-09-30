@@ -72,7 +72,8 @@ export class PostResolver {
       creator,
       createdAt: Date.now(),
       comments: [],
-      isComment: false
+      isComment: false,
+      likes: 0,
     });
     await post.save();
     return { post };
@@ -82,7 +83,8 @@ export class PostResolver {
   async createComment(
     @Arg("options") options: CommentInput
   ): Promise<PostResponse> {
-    const post = await PostModel.findOne({ _id: options.postId });
+    const { content, creatorId, postId } = options;
+    const post = await PostModel.findOne({ _id: postId });
     if (!post) {
       return {
         error: {
@@ -92,7 +94,7 @@ export class PostResolver {
       };
     }
 
-    const creator = await UserModel.findOne({ _id: options.creatorId });
+    const creator = await UserModel.findOne({ _id: creatorId });
     if (!creator) {
       return {
         error: {
@@ -103,11 +105,12 @@ export class PostResolver {
     }
 
     const comment = await PostModel.create({
-      content: options.content,
+      content,
       creator,
       createdAt: Date.now(),
       comments: [],
-      isComment:true
+      isComment: true,
+      likes: 0,
     });
     await comment.save();
 

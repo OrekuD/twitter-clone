@@ -26,6 +26,10 @@ export class Post {
   @prop()
   @Field(() => [Post])
   comments: Post[];
+
+  @prop()
+  @Field()
+  likes: number;
 }
 
 export const PostModel = getModelForClass(Post);
