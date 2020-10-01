@@ -1,14 +1,17 @@
 import { User, UserModel } from "../Models/User";
 import {
   Arg,
+  // Ctx,
   Field,
   InputType,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
 } from "type-graphql";
 import argon2 from "argon2";
 import mongoose from "mongoose";
+// import { Context } from "src/types";
 
 @ObjectType()
 class UserError {
@@ -26,6 +29,18 @@ class UserInput {
 
   @Field()
   password: string;
+}
+
+@InputType()
+class DetailsInput {
+  @Field()
+  username: string;
+
+  @Field()
+  bio: string;
+
+  @Field()
+  location: string;
 }
 
 @ObjectType()
@@ -63,6 +78,7 @@ export class UserResolver {
       username: input.username,
       password: hashedPassword,
       _id: new mongoose.Types.ObjectId(),
+      createdAt: Date.now(),
     });
     await newUser.save();
 
@@ -87,6 +103,45 @@ export class UserResolver {
         error: {
           message: "Authentication failed",
           field: "password",
+        },
+      };
+    }
+    return { user };
+  }
+
+  @Mutation(() => UserResponse)
+  async addUserDetails(
+    @Arg("options") options: DetailsInput,
+    @Arg("userId") userId: string
+    // @Ctx() { request }: Context
+  ): Promise<UserResponse> {
+    const { bio, location, username } = options;
+    const user = await UserModel.findOne({ username });
+
+    if (user) {
+      return {
+        error: {
+          message: "Username already exists",
+          field: "username",
+        },
+      };
+    }
+
+    await UserModel.updateOne({ _id: userId }, { bio, location, username });
+    const updatedUser = await UserModel.findOne({ _id: userId });
+
+    return { user: updatedUser! };
+  }
+
+  @Query(() => UserResponse)
+  async getUserDetails(@Arg("userId") userId: string) {
+    const user = await UserModel.findOne({ _id: userId });
+
+    if (!user) {
+      return {
+        error: {
+          message: "Username does not exist",
+          field: "username",
         },
       };
     }

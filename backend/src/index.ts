@@ -23,7 +23,10 @@ const main = async () => {
     validate: false,
   });
 
-  const server = new ApolloServer({ schema });
+  const server = new ApolloServer({
+    schema,
+    context: ({ req, res }) => ({ request: req, response: res }),
+  });
   server.applyMiddleware({ app, cors: false });
   app.listen(PORT, () => console.log("Server is up"));
 };

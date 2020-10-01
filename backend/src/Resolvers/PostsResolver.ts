@@ -1,3 +1,4 @@
+import { CommentModel, Comment } from "../Models/Comment";
 import {
   Resolver,
   Arg,
@@ -23,6 +24,15 @@ class PostError {
 class PostResponse {
   @Field(() => Post, { nullable: true })
   post?: Post;
+
+  @Field(() => PostError, { nullable: true })
+  error?: PostError;
+}
+
+@ObjectType()
+class CommentResponse {
+  @Field(() => Comment, { nullable: true })
+  comment?: Comment;
 
   @Field(() => PostError, { nullable: true })
   error?: PostError;
@@ -72,17 +82,16 @@ export class PostResolver {
       creator,
       createdAt: Date.now(),
       comments: [],
-      isComment: false,
       likes: 0,
     });
     await post.save();
     return { post };
   }
 
-  @Mutation(() => PostResponse)
+  @Mutation(() => CommentResponse)
   async createComment(
     @Arg("options") options: CommentInput
-  ): Promise<PostResponse> {
+  ): Promise<CommentResponse> {
     const { content, creatorId, postId } = options;
     const post = await PostModel.findOne({ _id: postId });
     if (!post) {
@@ -104,17 +113,39 @@ export class PostResolver {
       };
     }
 
-    const comment = await PostModel.create({
+    const comment = await CommentModel.create({
       content,
       creator,
       createdAt: Date.now(),
-      comments: [],
-      isComment: true,
-      likes: 0,
+      postId,
     });
     await comment.save();
 
-    // await PostModel.updateOne({ _id: options.postId }, { comments: [comment] });
-    return { post: comment };
+    // console.log(post.comments);
+
+    post.comments = [comment.id, ...post.comments].flat(Infinity);
+    // post.comments.unshift(comment.id);
+    // post.comments.flat(Infinity);
+    await post.save();
+
+    // const comments = { comments: [comment.id, ...post.comments] };
+    // post.updateOne(comments);
+
+    // await post.replaceOne({
+    //   _id: post._id,
+    //   content: post.content,
+    //   creator: post.creator,
+    //   createdAt: post.createdAt,
+    //   likes: post.likes,
+    //   comments: ["post.comments.unshift(comment.id)"],
+    // });
+
+    console.log(post);
+
+    // await PostModel.updateOne(
+    //   { _id: options.postId },
+    //   { comments: [comment.id, ...post.comments].flat(Infinity) }
+    // );
+    return { comment };
   }
 }

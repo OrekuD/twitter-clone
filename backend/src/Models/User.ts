@@ -12,6 +12,18 @@ export class User {
 
   @prop()
   password: string;
+
+  @prop()
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field({ nullable: true })
+  @prop()
+  bio?: string;
+
+  @Field({ nullable: true })
+  @prop()
+  location?: string;
 }
 
 export const UserModel = getModelForClass(User);

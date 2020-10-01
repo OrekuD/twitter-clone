@@ -3,13 +3,17 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
 
 @ObjectType()
-export class Post {
+export class Comment {
   @Field(() => ID)
   _id: mongoose.Types.ObjectId;
 
   @prop()
   @Field()
   content: string;
+
+  @prop()
+  @Field()
+  postId: string;
 
   @prop()
   @Field(() => Date)
@@ -19,13 +23,9 @@ export class Post {
   @Field()
   creator: User;
 
-  @prop()
-  @Field(() => [String])
-  comments: string[];
-
-  @prop()
-  @Field()
-  likes: number;
+  //   @prop()
+  //   @Field()
+  //   likes: number;
 }
 
-export const PostModel = getModelForClass(Post);
+export const CommentModel = getModelForClass(Comment);
