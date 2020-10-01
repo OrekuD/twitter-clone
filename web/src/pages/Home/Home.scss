@@ -1,0 +1,37 @@
+.home {
+  display: flex;
+  padding: 40px 20px;
+
+  .profile {
+    width: 40vw;
+    background-color: aqua;
+    display: flex;
+    flex-direction: column;
+
+    .image {
+      width: 200px;
+      height: 200px;
+      background-color: cadetblue;
+      margin-top: -140px;
+      border-radius: 50%;
+      align-self: center;
+    }
+
+    .content {
+      padding: 30px;
+    }
+  }
+
+  .posts {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 20px;
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+  }
+}
