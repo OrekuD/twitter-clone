@@ -1,6 +1,7 @@
 import { User, UserModel } from "../Models/User";
 import {
   Arg,
+  Ctx,
   // Ctx,
   Field,
   InputType,
@@ -11,6 +12,7 @@ import {
 } from "type-graphql";
 import argon2 from "argon2";
 import mongoose from "mongoose";
+import { Context } from "src/types";
 // import { Context } from "src/types";
 
 @ObjectType()
@@ -55,7 +57,10 @@ class UserResponse {
 @Resolver()
 export class UserResolver {
   @Mutation(() => UserResponse)
-  async createAccount(@Arg("input") input: UserInput): Promise<UserResponse> {
+  async createAccount(
+    @Arg("input") input: UserInput,
+    @Ctx() { request }: Context
+  ): Promise<UserResponse> {
     const user = await UserModel.findOne({ username: input.username });
     if (user) {
       return {
@@ -81,12 +86,16 @@ export class UserResolver {
       createdAt: Date.now(),
     });
     await newUser.save();
+    request.session.userId = newUser.id;
 
     return { user: newUser };
   }
 
   @Mutation(() => UserResponse)
-  async login(@Arg("input") input: UserInput): Promise<UserResponse> {
+  async login(
+    @Arg("input") input: UserInput,
+    @Ctx() { request }: Context
+  ): Promise<UserResponse> {
     const user = await UserModel.findOne({ username: input.username });
     if (!user) {
       return {
@@ -106,6 +115,7 @@ export class UserResolver {
         },
       };
     }
+    request.session.userId = user.id;
     return { user };
   }
 
