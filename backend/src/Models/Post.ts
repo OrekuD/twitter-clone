@@ -19,7 +19,7 @@ export class Post {
   @Field()
   creator: User;
 
-  @prop()
+  @prop({ type: [String] })
   @Field(() => [String])
   comments: string[];
 

@@ -121,31 +121,11 @@ export class PostResolver {
     });
     await comment.save();
 
-    // console.log(post.comments);
+    await PostModel.updateOne(
+      { _id: options.postId },
+      { $push: { comments: [comment.id] as any } }
+    );
 
-    post.comments = [comment.id, ...post.comments].flat(Infinity);
-    // post.comments.unshift(comment.id);
-    // post.comments.flat(Infinity);
-    await post.save();
-
-    // const comments = { comments: [comment.id, ...post.comments] };
-    // post.updateOne(comments);
-
-    // await post.replaceOne({
-    //   _id: post._id,
-    //   content: post.content,
-    //   creator: post.creator,
-    //   createdAt: post.createdAt,
-    //   likes: post.likes,
-    //   comments: ["post.comments.unshift(comment.id)"],
-    // });
-
-    console.log(post);
-
-    // await PostModel.updateOne(
-    //   { _id: options.postId },
-    //   { comments: [comment.id, ...post.comments].flat(Infinity) }
-    // );
     return { comment };
   }
 }

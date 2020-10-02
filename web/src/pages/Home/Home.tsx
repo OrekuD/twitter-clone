@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { Button } from "rsuite";
+import { CreatePost, Header } from "../../components";
 import { useAllPostsQuery } from "../../generated/graphql";
 import "./Home.scss";
 
@@ -20,25 +22,41 @@ const Home = () => {
   }, [allPost, data]);
 
   return (
-    <div className="home">
-      <div className="profile">
-        <div className="image"></div>
-        <div className="content">
-          <p className="fullname">{fullname}</p>
-          <p className="username">@{username}</p>
-          <p className="bio">{bio}</p>
-          <p className="location">{location}</p>
+    <>
+      <Header />
+      <div className="home">
+        <div className="profile">
+          <div className="image"></div>
+          <div className="content">
+            <p className="fullname">{fullname}</p>
+            <p className="username">@{username}</p>
+            <p className="bio">{bio}</p>
+            <p className="location">{location}</p>
+            {/* <CreatePost /> */}
+          </div>
+        </div>
+        <div className="posts">
+          {data?.getAllPosts.map(
+            ({ content, creator: { username } }, index) => (
+              <div className="card" key={index}>
+                <p className="username">{username}</p>
+                <p className="content">{content}</p>
+                {index === 0 && (
+                  <p>
+                    Ea pariatur eiusmod Lorem amet enim. Amet id nisi labore
+                    qui. Tempor enim et dolor qui ad pariatur duis non ea velit.
+                    Fugiat laborum laborum sit id in laborum duis aliquip. Sunt
+                    excepteur qui sit in consectetur ex irure tempor tempor
+                    reprehenderit minim aute consectetur.
+                  </p>
+                )}
+                <Button>Okay</Button>
+              </div>
+            )
+          )}
         </div>
       </div>
-      <div className="posts">
-        {data?.getAllPosts.map(({ content, creator: { username } }, index) => (
-          <div className="card" key={index}>
-            <p className="username">{username}</p>
-            <p className="content">{content}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
 

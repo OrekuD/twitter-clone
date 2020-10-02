@@ -17,6 +17,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "rsuite": "^4.8.2",
     "typescript": "~3.7.2",
     "urql": "^1.10.1"
   },
@@ -47,6 +48,7 @@
     "@graphql-codegen/introspection": "1.18.0",
     "@graphql-codegen/typescript": "1.17.10",
     "@graphql-codegen/typescript-operations": "1.17.8",
-    "@graphql-codegen/typescript-urql": "^2.0.2"
+    "@graphql-codegen/typescript-urql": "^2.0.2",
+    "@types/react-router-dom": "^5.1.5"
   }
 }

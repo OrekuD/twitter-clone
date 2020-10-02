@@ -1,16 +1,18 @@
 import React from "react";
 import "./App.scss";
-import { Header } from "./components";
-import { Home } from "./pages";
+import { Home, Login, Register } from "./pages";
 // import "rsuite/dist/styles/rsuite-default.css";
-// import { } from "react-router-dom"
+import { BrowserRouter, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <Home />
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Route path="/" exact component={Home} />
+        <Route path="/register" exact component={Register} />
+        <Route path="/login" exact component={Login} />
+      </div>
+    </BrowserRouter>
   );
 }
 
