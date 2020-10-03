@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { PostCard, Spinner } from "../../components";
 import { useGetPostQuery } from "../../generated/graphql";
+import "./Post.scss";
 
 const Post = () => {
   const { pathname } = useLocation();
