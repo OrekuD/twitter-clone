@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Post } from "../../generated/graphql";
 import { FavouriteFilled, Favourite, ChatBubble, Share } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
-import TimeAgo from "react-timeago";
 import "./PostCard.scss";
 
 interface Props {
@@ -19,14 +18,16 @@ const PostCard = ({ post }: Props) => {
     // comments,
   } = post;
 
+  const url = "https://weconnect.netlify.app";
+
   const share = () => {
     let newVariable = window.navigator as any;
     if (newVariable.share) {
       newVariable
         .share({
-          title: "title",
-          text: "description",
-          url: "https://soch.in//",
+          title: "WeConnect",
+          text: "Check out this post",
+          url: `${url}/post/${_id}`,
         })
         .then(() => console.log("Successful share"))
         .catch((error: any) => console.log("Error sharing", error));
@@ -37,11 +38,20 @@ const PostCard = ({ post }: Props) => {
 
   return (
     <div className="card">
-      <p className="username">{username}</p>
+      <div className="card-header">
+        <div className="image"></div>
+        <div className="profile-details">
+          <p className="fullname">David Opoku</p>
+          <div className="row">
+            <p className="username">@{username}</p>
+            <div className="dot" />
+            <p className="username">{timeSince(new Date(createdAt))}</p>
+          </div>
+        </div>
+      </div>
       <Link to={`/post/${_id}`}>
         <p className="content">{content}</p>
       </Link>
-      <p>{timeSince(new Date(createdAt))}</p>
       <div className="icons">
         <button className="icon">
           {false ? (

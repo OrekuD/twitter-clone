@@ -11,7 +11,7 @@ const sampleData = {
 };
 
 const Profile = () => {
-  const { _id, fullname, location, bio, username } = sampleData;
+  const { fullname, location, bio, username } = sampleData;
   return (
     <div className="profile">
       <div className="image"></div>

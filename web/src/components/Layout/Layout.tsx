@@ -9,7 +9,7 @@ const Layout: React.FC = ({ children }) => {
       <Header />
       <div className="layout">
         <Profile />
-        <div className="content">{children}</div>
+        <div className="content-container">{children}</div>
       </div>
     </>
   );
