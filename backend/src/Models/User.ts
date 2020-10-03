@@ -10,6 +10,10 @@ export class User {
   @prop()
   username: string;
 
+  @Field()
+  @prop()
+  email: string;
+
   @prop()
   password: string;
 

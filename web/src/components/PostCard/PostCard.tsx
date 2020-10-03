@@ -15,22 +15,19 @@ const PostCard = ({ post }: Props) => {
     content,
     createdAt,
     creator: { username },
-    // comments,
+    comments,
   } = post;
 
   const url = "https://weconnect.netlify.app";
 
-  const share = () => {
+  const share = async () => {
     let newVariable = window.navigator as any;
     if (newVariable.share) {
-      newVariable
-        .share({
-          title: "WeConnect",
-          text: "Check out this post",
-          url: `${url}/post/${_id}`,
-        })
-        .then(() => console.log("Successful share"))
-        .catch((error: any) => console.log("Error sharing", error));
+      await newVariable.share({
+        title: "WeConnect",
+        text: "Check out this post",
+        url: `${url}/post/${_id}`,
+      });
     } else {
       alert("share not supported");
     }
@@ -64,6 +61,7 @@ const PostCard = ({ post }: Props) => {
           <ChatBubble size={18} color="#121212" />
         </button>
         <button className="icon" onClick={share}>
+          <p className="count">{comments.length}</p>
           <Share size={18} color="#121212" />
         </button>
       </div>

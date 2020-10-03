@@ -1,0 +1,14 @@
+mutation CreateAccount($username: String!, $password: String!) {
+  createAccount(input: { username: $username, password: $password }) {
+    user {
+      username
+      _id
+      createdAt
+      bio
+      location
+    }
+    error {
+      message
+    }
+  }
+}

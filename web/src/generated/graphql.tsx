@@ -19,6 +19,7 @@ export type Query = {
   getPost: SinglePostResponse;
   getAllPosts: Array<Post>;
   getUserDetails: UserResponse;
+  currentUser?: Maybe<User>;
 };
 
 
@@ -82,6 +83,7 @@ export type Mutation = {
   createAccount: UserResponse;
   login: UserResponse;
   addUserDetails: UserResponse;
+  logout: Scalars['Boolean'];
   like: LikeResponse;
 };
 
@@ -188,6 +190,26 @@ export type AllPostsQuery = (
   )> }
 );
 
+export type CreateAccountMutationVariables = Exact<{
+  username: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type CreateAccountMutation = (
+  { __typename?: 'Mutation' }
+  & { createAccount: (
+    { __typename?: 'UserResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'username' | '_id' | 'createdAt' | 'bio' | 'location'>
+    )>, error?: Maybe<(
+      { __typename?: 'UserError' }
+      & Pick<UserError, 'message'>
+    )> }
+  ) }
+);
+
 export type GetPostQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -231,6 +253,26 @@ export const AllPostsDocument = gql`
 
 export function useAllPostsQuery(options: Omit<Urql.UseQueryArgs<AllPostsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AllPostsQuery>({ query: AllPostsDocument, ...options });
+};
+export const CreateAccountDocument = gql`
+    mutation CreateAccount($username: String!, $password: String!) {
+  createAccount(input: {username: $username, password: $password}) {
+    user {
+      username
+      _id
+      createdAt
+      bio
+      location
+    }
+    error {
+      message
+    }
+  }
+}
+    `;
+
+export function useCreateAccountMutation() {
+  return Urql.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument);
 };
 export const GetPostDocument = gql`
     query GetPost($id: String!) {

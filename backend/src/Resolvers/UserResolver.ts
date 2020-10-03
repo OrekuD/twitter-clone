@@ -2,18 +2,18 @@ import { User, UserModel } from "../Models/User";
 import {
   Arg,
   Ctx,
-  // Ctx,
   Field,
   InputType,
   Mutation,
   ObjectType,
   Query,
   Resolver,
+  UseMiddleware,
 } from "type-graphql";
 import argon2 from "argon2";
 import mongoose from "mongoose";
-import { Context } from "src/types";
-// import { Context } from "src/types";
+import { Context } from "../types";
+import { Auth } from "../Middleware/Auth";
 
 @ObjectType()
 class UserError {
@@ -31,6 +31,9 @@ class UserInput {
 
   @Field()
   password: string;
+
+  @Field({ nullable: true })
+  email?: string;
 }
 
 @InputType()
@@ -43,6 +46,9 @@ class DetailsInput {
 
   @Field()
   location: string;
+
+  @Field()
+  email: string;
 }
 
 @ObjectType()
@@ -81,6 +87,7 @@ export class UserResolver {
     const hashedPassword = await argon2.hash(input.password);
     const newUser = await UserModel.create({
       username: input.username,
+      email: input.email!,
       password: hashedPassword,
       _id: new mongoose.Types.ObjectId(),
       createdAt: Date.now(),
@@ -110,7 +117,7 @@ export class UserResolver {
     if (!valid) {
       return {
         error: {
-          message: "Authentication failed",
+          message: "Password incorrect",
           field: "password",
         },
       };
@@ -120,15 +127,16 @@ export class UserResolver {
   }
 
   @Mutation(() => UserResponse)
+  @UseMiddleware(Auth)
   async addUserDetails(
-    @Arg("options") options: DetailsInput,
-    @Arg("userId") userId: string
-    // @Ctx() { request }: Context
+    @Arg("input") input: DetailsInput,
+    @Ctx() { request }: Context
   ): Promise<UserResponse> {
-    const { bio, location, username } = options;
+    const { bio, location, username } = input;
+    const { userId } = request.session;
     const user = await UserModel.findOne({ username });
 
-    if (user) {
+    if (user && user.id !== request.session.userId) {
       return {
         error: {
           message: "Username already exists",
@@ -138,7 +146,9 @@ export class UserResolver {
     }
 
     await UserModel.updateOne({ _id: userId }, { bio, location, username });
-    const updatedUser = await UserModel.findOne({ _id: userId });
+    const updatedUser = await UserModel.findOne({
+      _id: userId,
+    });
 
     return { user: updatedUser! };
   }
@@ -156,5 +166,27 @@ export class UserResolver {
       };
     }
     return { user };
+  }
+
+  @Query(() => User, { nullable: true })
+  async currentUser(@Ctx() { request }: Context) {
+    const user = await UserModel.findOne({ _id: request.session.userId });
+    console.log(request.session.userId);
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { request }: Context) {
+    request.session.destroy((err) => {
+      if (err) {
+        console.log(err);
+        return false;
+      }
+      return true;
+    });
   }
 }
