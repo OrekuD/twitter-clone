@@ -50,11 +50,27 @@ class CommentInput {
   postId: string;
 }
 
-@Resolver(() => Post)
+@ObjectType()
+class SinglePostResponse {
+  @Field(() => Post, { nullable: true })
+  post?: Post;
+
+  @Field(() => PostError, { nullable: true })
+  error?: PostError;
+}
+
+@Resolver(() => SinglePostResponse)
 export class PostResolver {
-  @Query(() => Post, { nullable: false })
+  @Query(() => SinglePostResponse, { nullable: false })
   async getPost(@Arg("id") id: string) {
-    return await PostModel.findById({ _id: id });
+    const post = await PostModel.findOne({ _id: id });
+    if (!post) {
+      return {
+        message: "Post is unavailable",
+        field: "post",
+      };
+    }
+    return { post };
   }
 
   @Query(() => [Post])

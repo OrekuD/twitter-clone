@@ -41,7 +41,7 @@ const Form = ({ onSubmit, signup }: Props) => {
           </div>
         </div>
         <div className="bottom-section">
-          <button className="submit">{signup ? "Submit" : "Log in"}</button>
+          <button className="ripple">{signup ? "Submit" : "Log in"}</button>
           {signup ? (
             <p>
               Already have an account? <Link to="/login">Log in</Link>

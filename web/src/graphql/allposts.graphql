@@ -1,10 +1,14 @@
 query AllPosts {
   getAllPosts {
+    _id
     content
     createdAt
+    likes
+    comments
     creator {
       username
+      _id
+      createdAt
     }
-    createdAt
   }
 }

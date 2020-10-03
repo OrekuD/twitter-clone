@@ -1,0 +1,42 @@
+.profile {
+  width: 35vw;
+  display: flex;
+  flex-direction: column;
+
+  .image {
+    width: 150px;
+    height: 150px;
+    background-color: cadetblue;
+    margin-top: -115px;
+    border-radius: 10px;
+    align-self: center;
+  }
+
+  .content {
+    padding: 30px;
+
+    p {
+      margin-bottom: 0px;
+    }
+
+    .fullname {
+      font-size: 24px;
+      margin-bottom: 0px !important;
+    }
+
+    .username {
+      font-size: 12px;
+      color: grey;
+      margin-top: -5px;
+    }
+
+    .bio {
+      font-size: 16px;
+    }
+
+    .location {
+      font-size: 12px;
+      color: grey;
+    }
+  }
+}

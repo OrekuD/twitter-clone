@@ -21,7 +21,7 @@ export class Post {
 
   @prop({ type: [String] })
   @Field(() => [String])
-  comments: string[];
+  comments: String[];
 
   @prop()
   @Field()
