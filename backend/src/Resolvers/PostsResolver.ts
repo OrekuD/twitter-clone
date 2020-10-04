@@ -75,7 +75,7 @@ export class PostResolver {
 
   @Query(() => [Post])
   async getAllPosts() {
-    return await PostModel.find();
+    return await PostModel.find().sort({ createdAt: "desc" });
   }
 
   @Mutation(() => PostResponse)

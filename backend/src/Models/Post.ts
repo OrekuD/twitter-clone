@@ -1,7 +1,16 @@
-import { prop, getModelForClass, mongoose } from "@typegoose/typegoose";
+import {
+  prop,
+  getModelForClass,
+  mongoose,
+  Ref,
+  plugin,
+} from "@typegoose/typegoose";
 import { ObjectType, Field, ID } from "type-graphql";
+import { Comment } from "./Comment";
 import { User } from "./User";
+import autopopulate from "mongoose-autopopulate";
 
+@plugin(autopopulate as any)
 @ObjectType()
 export class Post {
   @Field(() => ID)
@@ -19,9 +28,9 @@ export class Post {
   @Field()
   creator: User;
 
-  @prop({ type: [String] })
-  @Field(() => [String])
-  comments: String[];
+  @prop({ ref: () => Comment, autopopulate: true })
+  @Field(() => [Comment])
+  comments: Ref<Comment>[];
 
   @prop()
   @Field()
