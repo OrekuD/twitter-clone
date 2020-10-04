@@ -21,7 +21,7 @@ const Context = createContext<AppContext>({
 const Provider: React.FC = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isLoggedIn", false);
   const [userDetails, setUserDetails] = useLocalStorage(
-    "isLoggedIn",
+    "userDetails",
     defaultUserDetails
   );
 

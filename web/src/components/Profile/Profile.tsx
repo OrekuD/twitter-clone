@@ -1,4 +1,5 @@
 import React from "react";
+import { useAppContext } from "../../context/context";
 import "./Profile.scss";
 
 const sampleData = {
@@ -11,13 +12,17 @@ const sampleData = {
 };
 
 const Profile = () => {
-  const { fullname, location, bio, username } = sampleData;
+  // const { fullname, location, bio, username } = sampleData;
+  const {
+    userDetails: { bio, email, fullname, image, location, username },
+  } = useAppContext();
+  console.log(username);
   return (
     <div className="profile">
       <div className="image"></div>
       <div className="content">
         <p className="fullname">{fullname}</p>
-        <p className="username">{username}</p>
+        <p className="username">@{username}</p>
         <p className="bio">{bio}</p>
         <p className="location">{location}</p>
       </div>

@@ -104,7 +104,9 @@ const Register = () => {
             </div>
           </div>
           <div className="bottom-section">
-            <button className="ripple">Submit</button>
+            <button className="ripple" type="button">
+              Submit
+            </button>
             <p>
               Already have an account? <Link to="/login">Log in</Link>
             </p>

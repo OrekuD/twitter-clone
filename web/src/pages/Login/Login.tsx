@@ -12,7 +12,7 @@ const LogInSchema = Yup.object().shape({
 });
 
 const Login = () => {
-  const { setIsLoggedIn, setUserDetails } = useAppContext();
+  const { setIsLoggedIn, setUserDetails, userDetails } = useAppContext();
   const [, login] = useLoginMutation();
   const initialValues = {
     username: "",
@@ -79,7 +79,9 @@ const Login = () => {
             </div>
           </div>
           <div className="bottom-section">
-            <button className="ripple">Log in</button>
+            <button className="ripple" type="button">
+              Log in
+            </button>
             <p>
               Don't have an account? <Link to="register">Create one</Link>
             </p>
