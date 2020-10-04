@@ -44,8 +44,8 @@ export type Post = {
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   creator: User;
-  comments: Array<Scalars['String']>;
-  likes: Scalars['Float'];
+  comments: Array<Comment>;
+  likes: Array<Like>;
 };
 
 
@@ -53,9 +53,28 @@ export type User = {
   __typename?: 'User';
   _id: Scalars['ID'];
   username: Scalars['String'];
+  email: Scalars['String'];
   createdAt: Scalars['DateTime'];
   bio?: Maybe<Scalars['String']>;
   location?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
+  fullname?: Maybe<Scalars['String']>;
+};
+
+export type Comment = {
+  __typename?: 'Comment';
+  _id: Scalars['ID'];
+  content: Scalars['String'];
+  postId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  creator: User;
+};
+
+export type Like = {
+  __typename?: 'Like';
+  _id: Scalars['ID'];
+  postId: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type PostError = {
@@ -84,7 +103,7 @@ export type Mutation = {
   login: UserResponse;
   addUserDetails: UserResponse;
   logout: Scalars['Boolean'];
-  like: LikeResponse;
+  likePost: LikeResponse;
 };
 
 
@@ -110,13 +129,12 @@ export type MutationLoginArgs = {
 
 
 export type MutationAddUserDetailsArgs = {
-  userId: Scalars['String'];
-  options: DetailsInput;
+  input: DetailsInput;
 };
 
 
-export type MutationLikeArgs = {
-  options: LikeInput;
+export type MutationLikePostArgs = {
+  postId: Scalars['String'];
 };
 
 export type PostResponse = {
@@ -131,15 +149,6 @@ export type CommentResponse = {
   error?: Maybe<PostError>;
 };
 
-export type Comment = {
-  __typename?: 'Comment';
-  _id: Scalars['ID'];
-  content: Scalars['String'];
-  postId: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  creator: User;
-};
-
 export type CommentInput = {
   content: Scalars['String'];
   creatorId: Scalars['String'];
@@ -149,12 +158,16 @@ export type CommentInput = {
 export type UserInput = {
   username: Scalars['String'];
   password: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
 };
 
 export type DetailsInput = {
   username: Scalars['String'];
   bio: Scalars['String'];
   location: Scalars['String'];
+  email: Scalars['String'];
+  image: Scalars['String'];
+  fullname: Scalars['String'];
 };
 
 export type LikeResponse = {
@@ -169,12 +182,6 @@ export type LikeError = {
   field: Scalars['String'];
 };
 
-export type LikeInput = {
-  value: Scalars['Boolean'];
-  postId: Scalars['String'];
-  userId: Scalars['String'];
-};
-
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -182,10 +189,20 @@ export type AllPostsQuery = (
   { __typename?: 'Query' }
   & { getAllPosts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, '_id' | 'content' | 'createdAt' | 'likes' | 'comments'>
-    & { creator: (
+    & Pick<Post, '_id' | 'content' | 'createdAt'>
+    & { likes: Array<(
+      { __typename?: 'Like' }
+      & Pick<Like, 'userId'>
+    )>, comments: Array<(
+      { __typename?: 'Comment' }
+      & Pick<Comment, 'content'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
+    )>, creator: (
       { __typename?: 'User' }
-      & Pick<User, 'username' | '_id' | 'createdAt'>
+      & Pick<User, 'username' | '_id'>
     ) }
   )> }
 );
@@ -193,6 +210,7 @@ export type AllPostsQuery = (
 export type CreateAccountMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
+  email: Scalars['String'];
 }>;
 
 
@@ -202,10 +220,10 @@ export type CreateAccountMutation = (
     { __typename?: 'UserResponse' }
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'username' | '_id' | 'createdAt' | 'bio' | 'location'>
+      & Pick<User, 'username' | '_id' | 'createdAt' | 'bio' | 'location' | 'email' | 'image' | 'fullname'>
     )>, error?: Maybe<(
       { __typename?: 'UserError' }
-      & Pick<UserError, 'message'>
+      & Pick<UserError, 'message' | 'field'>
     )> }
   ) }
 );
@@ -221,14 +239,44 @@ export type GetPostQuery = (
     { __typename?: 'SinglePostResponse' }
     & { post?: Maybe<(
       { __typename?: 'Post' }
-      & Pick<Post, '_id' | 'content' | 'createdAt' | 'comments' | 'likes'>
-      & { creator: (
+      & Pick<Post, '_id' | 'content' | 'createdAt'>
+      & { comments: Array<(
+        { __typename?: 'Comment' }
+        & Pick<Comment, 'content'>
+        & { creator: (
+          { __typename?: 'User' }
+          & Pick<User, 'username'>
+        ) }
+      )>, likes: Array<(
+        { __typename?: 'Like' }
+        & Pick<Like, 'userId'>
+      )>, creator: (
         { __typename?: 'User' }
         & Pick<User, '_id' | 'username' | 'createdAt'>
       ) }
     )>, error?: Maybe<(
       { __typename?: 'PostError' }
       & Pick<PostError, 'message' | 'field'>
+    )> }
+  ) }
+);
+
+export type LoginMutationVariables = Exact<{
+  username: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type LoginMutation = (
+  { __typename?: 'Mutation' }
+  & { login: (
+    { __typename?: 'UserResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'username' | '_id' | 'createdAt' | 'bio' | 'location' | 'email' | 'image' | 'fullname'>
+    )>, error?: Maybe<(
+      { __typename?: 'UserError' }
+      & Pick<UserError, 'message' | 'field'>
     )> }
   ) }
 );
@@ -240,13 +288,20 @@ export const AllPostsDocument = gql`
     _id
     content
     createdAt
-    likes
-    comments
+    likes {
+      userId
+    }
+    comments {
+      content
+      creator {
+        username
+      }
+    }
     creator {
       username
       _id
-      createdAt
     }
+    createdAt
   }
 }
     `;
@@ -255,17 +310,21 @@ export function useAllPostsQuery(options: Omit<Urql.UseQueryArgs<AllPostsQueryVa
   return Urql.useQuery<AllPostsQuery>({ query: AllPostsDocument, ...options });
 };
 export const CreateAccountDocument = gql`
-    mutation CreateAccount($username: String!, $password: String!) {
-  createAccount(input: {username: $username, password: $password}) {
+    mutation CreateAccount($username: String!, $password: String!, $email: String!) {
+  createAccount(input: {username: $username, password: $password, email: $email}) {
     user {
       username
       _id
       createdAt
       bio
       location
+      email
+      image
+      fullname
     }
     error {
       message
+      field
     }
   }
 }
@@ -281,9 +340,15 @@ export const GetPostDocument = gql`
       _id
       content
       createdAt
-      comments
-      likes
-      comments
+      comments {
+        content
+        creator {
+          username
+        }
+      }
+      likes {
+        userId
+      }
       creator {
         _id
         username
@@ -300,4 +365,28 @@ export const GetPostDocument = gql`
 
 export function useGetPostQuery(options: Omit<Urql.UseQueryArgs<GetPostQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetPostQuery>({ query: GetPostDocument, ...options });
+};
+export const LoginDocument = gql`
+    mutation Login($username: String!, $password: String!) {
+  login(input: {username: $username, password: $password}) {
+    user {
+      username
+      _id
+      createdAt
+      bio
+      location
+      email
+      image
+      fullname
+    }
+    error {
+      message
+      field
+    }
+  }
+}
+    `;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };

@@ -49,6 +49,12 @@ class DetailsInput {
 
   @Field()
   email: string;
+
+  @Field()
+  image: string;
+
+  @Field()
+  fullname: string;
 }
 
 @ObjectType()
@@ -71,7 +77,7 @@ export class UserResolver {
     if (user) {
       return {
         error: {
-          message: "Username already exists",
+          message: "Username already taken",
           field: "username",
         },
       };
@@ -94,7 +100,7 @@ export class UserResolver {
     });
     await newUser.save();
     request.session.userId = newUser.id;
-
+    console.log(request.session);
     return { user: newUser };
   }
 
@@ -132,20 +138,23 @@ export class UserResolver {
     @Arg("input") input: DetailsInput,
     @Ctx() { request }: Context
   ): Promise<UserResponse> {
-    const { bio, location, username } = input;
+    const { bio, location, username, email, fullname, image } = input;
     const { userId } = request.session;
     const user = await UserModel.findOne({ username });
 
     if (user && user.id !== request.session.userId) {
       return {
         error: {
-          message: "Username already exists",
+          message: "Username already taken",
           field: "username",
         },
       };
     }
 
-    await UserModel.updateOne({ _id: userId }, { bio, location, username });
+    await UserModel.updateOne(
+      { _id: userId },
+      { bio, location, username, email, fullname, image }
+    );
     const updatedUser = await UserModel.findOne({
       _id: userId,
     });

@@ -98,7 +98,7 @@ export class PostResolver {
       creator,
       createdAt: Date.now(),
       comments: [],
-      likes: 0,
+      likes: [],
     });
     await post.save();
     return { post };

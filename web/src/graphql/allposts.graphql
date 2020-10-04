@@ -3,12 +3,19 @@ query AllPosts {
     _id
     content
     createdAt
-    likes
-    comments
+    likes {
+      userId
+    }
+    comments {
+      content
+      creator {
+        username
+      }
+    }
     creator {
       username
       _id
-      createdAt
     }
+    createdAt
   }
 }

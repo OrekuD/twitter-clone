@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { User } from "../types";
 
-const useLocalStorage = (key: string, initialValue: boolean) => {
+type InitialValue = boolean | User;
+
+const useLocalStorage = (key: string, initialValue: InitialValue) => {
   const [storedValue, setStoredValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -11,7 +14,7 @@ const useLocalStorage = (key: string, initialValue: boolean) => {
     }
   });
 
-  const setValue = (value: boolean) => {
+  const setValue = (value: InitialValue) => {
     try {
       setStoredValue(value);
       window.localStorage.setItem(key, JSON.stringify(value));

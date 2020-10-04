@@ -4,74 +4,57 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./Form.scss";
 import { useCreateAccountMutation } from "../../generated/graphql";
+import { useAppContext } from "../../context/context";
+import { convertError } from "../../utils/convertError";
 
 interface Props {
   signup?: boolean;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  schema: {};
+  initialValues: {
+    username: string;
+    email?: string;
+    password: string;
+  };
 }
 
-const LogInSchema = Yup.object().shape({
-  username: Yup.string()
-    .min(3, "Username is too short")
-    .max(12, "Username is too long")
-    .required(),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .min(5, "Password is too short")
-    .max(12, "Password is too long")
-    .required(),
-});
 
-const SignUpSchema = Yup.object().shape({
-  username: Yup.string()
-    .min(3, "Username is too short")
-    .max(12, "Username is too long")
-    .required(),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .min(5, "Password is too short")
-    .max(12, "Password is too long")
-    .required(),
-});
 
-const Form = ({ onSubmit, signup }: Props) => {
-  // const [] = useCreateAccountMutation({});
-  const initialValues = signup
-    ? {
-        username: "",
-        email: "",
-        password: "",
-      }
-    : {
-        username: "",
-        password: "",
-      };
-  const schema = signup ? SignUpSchema : LogInSchema;
+const Form = ({ onSubmit, signup, schema, initialValues }: Props) => {
+  const { setIsLoggedIn, setUserDetails } = useAppContext();
+  const [, createAccount] = useCreateAccountMutation();
 
-  const {
-    handleChange,
-    handleSubmit,
-    values,
-    handleBlur,
-    errors,
-    touched,
-  } = useFormik({
-    initialValues: initialValues,
-    validationSchema: schema,
-    onSubmit: (values) => {
-      console.log(values);
-      // addUserDetails({
-      //   email: values.email,
-      //   password: values.password,
-      //   email: values.email,
-      //   phone: user.phone,
-      // });
-    },
-  });
+  const { handleChange, handleSubmit, handleBlur, errors, touched } = useFormik(
+    {
+      initialValues: initialValues,
+      validationSchema: schema,
+      onSubmit: async (values, { setErrors }) => {
+        const res = await createAccount({
+          email: values.email!,
+          password: values.password,
+          username: values.username,
+        });
+
+        if (res.data?.createAccount.error) {
+          setErrors(convertError(res.data?.createAccount.error));
+        } else if (res.data?.createAccount.user) {
+          setUserDetails({
+            username: res.data.createAccount.user.username!,
+            bio: res.data.createAccount.user.bio!,
+            location: res.data.createAccount.user.location!,
+            image: res.data.createAccount.user.image!,
+            fullname: res.data.createAccount.user.fullname!,
+            email: res.data.createAccount.user.email!,
+          });
+          setIsLoggedIn(true);
+        }
+      },
+    }
+  );
 
   return (
     <div className="form-container">
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="group">
           <label htmlFor="username">Username</label>
           <div className="input">

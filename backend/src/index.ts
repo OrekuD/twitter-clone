@@ -24,14 +24,14 @@ const main = async () => {
   app.use(
     session({
       name: "uid",
-      secret: "foo",
+      secret: "Laborisquisnullaexcepteurdoadminimadipisicing.",
       store: new MongoStore({
         mongooseConnection: mongoose.connection,
         collection: "sessions",
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 30,
-        secure: !(process.env.NODE_ENV === "production"),
+        secure: process.env.NODE_ENV === "production",
         httpOnly: true,
       },
       resave: false,
@@ -46,7 +46,7 @@ const main = async () => {
 
   const server = new ApolloServer({
     schema,
-    context: ({ req, res }) => ({ request: req, response: res }),
+    context: ({ req }) => ({ request: req }),
   });
   server.applyMiddleware({ app, cors: false });
   app.listen(PORT, () => console.log("Server is up"));

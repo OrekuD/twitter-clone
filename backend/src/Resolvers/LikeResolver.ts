@@ -2,24 +2,15 @@ import { LikeModel } from "../Models/Like";
 import { Post, PostModel } from "../Models/Post";
 import {
   Arg,
+  Ctx,
   Field,
-  InputType,
   Mutation,
   ObjectType,
   Resolver,
+  UseMiddleware,
 } from "type-graphql";
-
-@InputType()
-class LikeInput {
-  @Field()
-  value: boolean;
-
-  @Field()
-  postId: string;
-
-  @Field()
-  userId: string;
-}
+import { Context } from "../types";
+import { Auth } from "../Middleware/Auth";
 
 @ObjectType()
 class LikeError {
@@ -42,8 +33,13 @@ class LikeResponse {
 @Resolver()
 export class LikeResolver {
   @Mutation(() => LikeResponse)
-  async like(@Arg("options") options: LikeInput) {
-    const { postId, userId, value } = options;
+  @UseMiddleware(Auth)
+  async likePost(
+    @Arg("postId") postId: string,
+    // @Arg("userId") userId: string,
+    @Ctx() { request }: Context
+  ) {
+    const { userId } = request.session;
     const post = await PostModel.findOne({ _id: postId });
     if (!post) {
       return {
@@ -56,9 +52,14 @@ export class LikeResolver {
     const like = await LikeModel.create({
       postId,
       userId,
-      value,
     });
     await like.save();
+
+    await PostModel.updateOne(
+      { _id: postId },
+      { $push: { likes: [like.id] as any } }
+    );
+
     return { post };
   }
 }

@@ -28,6 +28,14 @@ export class User {
   @Field({ nullable: true })
   @prop()
   location?: string;
+
+  @Field({ nullable: true })
+  @prop()
+  image?: string;
+
+  @Field({ nullable: true })
+  @prop()
+  fullname?: string;
 }
 
 export const UserModel = getModelForClass(User);

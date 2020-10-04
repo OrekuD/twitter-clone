@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Post } from "../../generated/graphql";
+// import { Post } from "../../generated/graphql";
 import { FavouriteFilled, Favourite, ChatBubble, Share } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
 import "./PostCard.scss";
 
 interface Props {
-  post: Post;
+  post: any; // TODO: fix this
 }
 
 const PostCard = ({ post }: Props) => {
