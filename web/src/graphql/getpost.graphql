@@ -4,24 +4,28 @@ query GetPost($id: String!) {
       _id
       content
       createdAt
+      creator {
+        _id
+      }
       comments {
+        _id
         content
+        creatorId
+        createdAt
         creator {
+          _id
           username
+          image
         }
       }
       likes {
-        userId
-      }
-      creator {
         _id
-        username
-        createdAt
+        creator {
+          _id
+          username
+          image
+        }
       }
-    }
-    error {
-      message
-      field
     }
   }
 }

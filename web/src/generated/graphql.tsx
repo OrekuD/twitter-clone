@@ -20,6 +20,8 @@ export type Query = {
   getAllPosts: Array<Post>;
   getUserDetails: UserResponse;
   currentUser?: Maybe<User>;
+  getLikesByUser?: Maybe<Array<Like>>;
+  getCommentsByUser: Array<Post>;
 };
 
 
@@ -29,6 +31,16 @@ export type QueryGetPostArgs = {
 
 
 export type QueryGetUserDetailsArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type QueryGetLikesByUserArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type QueryGetCommentsByUserArgs = {
   userId: Scalars['String'];
 };
 
@@ -66,6 +78,7 @@ export type Comment = {
   _id: Scalars['ID'];
   content: Scalars['String'];
   postId: Scalars['String'];
+  creatorId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   creator: User;
 };
@@ -74,7 +87,8 @@ export type Like = {
   __typename?: 'Like';
   _id: Scalars['ID'];
   postId: Scalars['String'];
-  userId: Scalars['String'];
+  creator: User;
+  creatorId: Scalars['String'];
 };
 
 export type PostError = {
@@ -98,23 +112,17 @@ export type UserError = {
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: PostResponse;
-  createComment: CommentResponse;
   createAccount: UserResponse;
   login: UserResponse;
   addUserDetails: UserResponse;
   logout: Scalars['Boolean'];
   likePost: LikeResponse;
+  createComment: CommentResponse;
 };
 
 
 export type MutationCreatePostArgs = {
-  creatorId: Scalars['String'];
   content: Scalars['String'];
-};
-
-
-export type MutationCreateCommentArgs = {
-  options: CommentInput;
 };
 
 
@@ -137,22 +145,15 @@ export type MutationLikePostArgs = {
   postId: Scalars['String'];
 };
 
+
+export type MutationCreateCommentArgs = {
+  input: CommentInput;
+};
+
 export type PostResponse = {
   __typename?: 'PostResponse';
   post?: Maybe<Post>;
   error?: Maybe<PostError>;
-};
-
-export type CommentResponse = {
-  __typename?: 'CommentResponse';
-  comment?: Maybe<Comment>;
-  error?: Maybe<PostError>;
-};
-
-export type CommentInput = {
-  content: Scalars['String'];
-  creatorId: Scalars['String'];
-  postId: Scalars['String'];
 };
 
 export type UserInput = {
@@ -172,14 +173,25 @@ export type DetailsInput = {
 
 export type LikeResponse = {
   __typename?: 'LikeResponse';
-  post?: Maybe<Post>;
-  error?: Maybe<LikeError>;
+  state: Scalars['Boolean'];
+  message: Scalars['String'];
 };
 
-export type LikeError = {
-  __typename?: 'LikeError';
+export type CommentResponse = {
+  __typename?: 'CommentResponse';
+  comment?: Maybe<Comment>;
+  error?: Maybe<CommentError>;
+};
+
+export type CommentError = {
+  __typename?: 'CommentError';
   message: Scalars['String'];
   field: Scalars['String'];
+};
+
+export type CommentInput = {
+  content: Scalars['String'];
+  postId: Scalars['String'];
 };
 
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -192,14 +204,14 @@ export type AllPostsQuery = (
     & Pick<Post, '_id' | 'content' | 'createdAt'>
     & { likes: Array<(
       { __typename?: 'Like' }
-      & Pick<Like, 'userId'>
-    )>, comments: Array<(
-      { __typename?: 'Comment' }
-      & Pick<Comment, 'content'>
+      & Pick<Like, 'creatorId'>
       & { creator: (
         { __typename?: 'User' }
-        & Pick<User, 'username'>
+        & Pick<User, '_id' | 'image' | 'username'>
       ) }
+    )>, comments: Array<(
+      { __typename?: 'Comment' }
+      & Pick<Comment, '_id'>
     )>, creator: (
       { __typename?: 'User' }
       & Pick<User, 'username' | '_id'>
@@ -240,23 +252,24 @@ export type GetPostQuery = (
     & { post?: Maybe<(
       { __typename?: 'Post' }
       & Pick<Post, '_id' | 'content' | 'createdAt'>
-      & { comments: Array<(
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, '_id'>
+      ), comments: Array<(
         { __typename?: 'Comment' }
-        & Pick<Comment, 'content'>
+        & Pick<Comment, '_id' | 'content' | 'creatorId' | 'createdAt'>
         & { creator: (
           { __typename?: 'User' }
-          & Pick<User, 'username'>
+          & Pick<User, '_id' | 'username' | 'image'>
         ) }
       )>, likes: Array<(
         { __typename?: 'Like' }
-        & Pick<Like, 'userId'>
-      )>, creator: (
-        { __typename?: 'User' }
-        & Pick<User, '_id' | 'username' | 'createdAt'>
-      ) }
-    )>, error?: Maybe<(
-      { __typename?: 'PostError' }
-      & Pick<PostError, 'message' | 'field'>
+        & Pick<Like, '_id'>
+        & { creator: (
+          { __typename?: 'User' }
+          & Pick<User, '_id' | 'username' | 'image'>
+        ) }
+      )> }
     )> }
   ) }
 );
@@ -289,13 +302,15 @@ export const AllPostsDocument = gql`
     content
     createdAt
     likes {
-      userId
-    }
-    comments {
-      content
+      creatorId
       creator {
+        _id
+        image
         username
       }
+    }
+    comments {
+      _id
     }
     creator {
       username
@@ -340,24 +355,28 @@ export const GetPostDocument = gql`
       _id
       content
       createdAt
+      creator {
+        _id
+      }
       comments {
+        _id
         content
+        creatorId
+        createdAt
         creator {
+          _id
           username
+          image
         }
       }
       likes {
-        userId
-      }
-      creator {
         _id
-        username
-        createdAt
+        creator {
+          _id
+          username
+          image
+        }
       }
-    }
-    error {
-      message
-      field
     }
   }
 }

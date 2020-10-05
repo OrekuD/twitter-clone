@@ -4,13 +4,15 @@ query AllPosts {
     content
     createdAt
     likes {
-      userId
-    }
-    comments {
-      content
+      creatorId
       creator {
+        _id
+        image
         username
       }
+    }
+    comments {
+      _id
     }
     creator {
       username

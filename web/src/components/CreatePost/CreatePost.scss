@@ -1,0 +1,26 @@
+.create-post {
+  height: 200px;
+  background-color: aqua;
+  padding: 20px 10px;
+
+  .user-details {
+    display: flex;
+
+    .profile-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: cornflowerblue;
+
+      .text-input-container {
+        margin-left: 20px;
+
+        .text-input {
+          &::placeholder {
+            color: grey;
+          }
+        }
+      }
+    }
+  }
+}

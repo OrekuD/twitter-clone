@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { PostCard, Spinner } from "../../components";
+import { Layout, PostCard, Spinner } from "../../components";
 import { useGetPostQuery } from "../../generated/graphql";
 import "./Post.scss";
 
@@ -22,9 +22,11 @@ const Post = () => {
   }
 
   return (
-    <div>
-      <PostCard post={data.getPost.post!} />
-    </div>
+    <Layout>
+      <div>
+        <PostCard post={data.getPost.post!} />
+      </div>
+    </Layout>
   );
 };
 

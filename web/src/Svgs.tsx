@@ -102,3 +102,31 @@ export const Calendar = ({ color, size }: SvgProps) => (
     />
   </svg>
 );
+
+export const Info = ({ color, size }: SvgProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill={color}
+      d="M12 24c6.627 0 12-5.373 12-12s-5.373-12-12-12-12 5.373-12 12 5.373 12 12 12zm1-6h-2v-8h2v8zm-1-12.25c.69 0 1.25.56 1.25 1.25s-.56 1.25-1.25 1.25-1.25-.56-1.25-1.25.56-1.25 1.25-1.25z"
+    />
+  </svg>
+);
+
+export const Arrow = ({ color, size }: SvgProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill={color}
+      d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"
+    />
+  </svg>
+);
