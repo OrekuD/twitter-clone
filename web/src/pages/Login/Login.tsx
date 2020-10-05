@@ -32,13 +32,21 @@ const Login = () => {
         if (res.data?.login.error) {
           setErrors(convertError(res.data?.login.error));
         } else if (res.data?.login.user) {
+          const {
+            username,
+            bio,
+            location,
+            image,
+            fullname,
+            email,
+          } = res.data?.login.user;
           setUserDetails({
-            username: res.data.login.user.username!,
-            bio: res.data.login.user.bio!,
-            location: res.data.login.user.location!,
-            image: res.data.login.user.image!,
-            fullname: res.data.login.user.fullname!,
-            email: res.data.login.user.email!,
+            username,
+            bio,
+            location,
+            image,
+            fullname,
+            email,
           });
           setIsLoggedIn(true);
         }

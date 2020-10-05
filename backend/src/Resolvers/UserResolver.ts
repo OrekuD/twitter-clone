@@ -97,10 +97,13 @@ export class UserResolver {
       password: hashedPassword,
       _id: new mongoose.Types.ObjectId(),
       createdAt: Date.now(),
+      bio: "",
+      fullname: "",
+      location: "",
+      image: "",
     });
     await newUser.save();
     request.session.userId = newUser.id;
-    console.log(request.session);
     return { user: newUser };
   }
 

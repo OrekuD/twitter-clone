@@ -55,10 +55,10 @@ export type User = {
   username: Scalars['String'];
   email: Scalars['String'];
   createdAt: Scalars['DateTime'];
-  bio?: Maybe<Scalars['String']>;
-  location?: Maybe<Scalars['String']>;
-  image?: Maybe<Scalars['String']>;
-  fullname?: Maybe<Scalars['String']>;
+  bio: Scalars['String'];
+  location: Scalars['String'];
+  image: Scalars['String'];
+  fullname: Scalars['String'];
 };
 
 export type Comment = {

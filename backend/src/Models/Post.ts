@@ -25,9 +25,9 @@ export class Post {
   @Field(() => Date)
   createdAt: Date;
 
-  @prop()
-  @Field()
-  creator: User;
+  @prop({ ref: () => User, autopopulate: true })
+  @Field(() => User)
+  creator: Ref<User>;
 
   @prop({ ref: () => Comment, autopopulate: true })
   @Field(() => [Comment])

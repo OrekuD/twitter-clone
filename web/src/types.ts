@@ -6,10 +6,10 @@ export type AppContext = {
 };
 
 export type User = {
-  image: string | null;
-  fullname: string | null;
+  image: string;
+  fullname: string;
   username: string;
-  bio: string | null;
-  location: string | null;
-  email: string | null;
+  bio: string;
+  location: string;
+  email: string;
 };

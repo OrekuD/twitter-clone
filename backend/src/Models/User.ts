@@ -21,21 +21,21 @@ export class User {
   @Field(() => Date)
   createdAt: Date;
 
-  @Field({ nullable: true })
+  @Field()
   @prop()
-  bio?: string;
+  bio: string;
 
-  @Field({ nullable: true })
+  @Field()
   @prop()
-  location?: string;
+  location: string;
 
-  @Field({ nullable: true })
+  @Field()
   @prop()
-  image?: string;
+  image: string;
 
-  @Field({ nullable: true })
+  @Field()
   @prop()
-  fullname?: string;
+  fullname: string;
 }
 
 export const UserModel = getModelForClass(User);

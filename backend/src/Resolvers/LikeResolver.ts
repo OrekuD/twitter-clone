@@ -1,11 +1,12 @@
-import { LikeModel } from "../Models/Like";
-import { Post, PostModel } from "../Models/Post";
+import { LikeModel, Like } from "../Models/Like";
+import { PostModel } from "../Models/Post";
 import {
   Arg,
   Ctx,
   Field,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
   UseMiddleware,
 } from "type-graphql";
@@ -13,45 +14,31 @@ import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
 
 @ObjectType()
-class LikeError {
+class LikeResponse {
+  @Field()
+  state: boolean;
+
   @Field()
   message: string;
-
-  @Field()
-  field: string;
-}
-
-@ObjectType()
-class LikeResponse {
-  @Field(() => Post, { nullable: true })
-  post?: Post;
-
-  @Field(() => LikeError, { nullable: true })
-  error?: LikeError;
 }
 
 @Resolver()
 export class LikeResolver {
   @Mutation(() => LikeResponse)
   @UseMiddleware(Auth)
-  async likePost(
-    @Arg("postId") postId: string,
-    // @Arg("userId") userId: string,
-    @Ctx() { request }: Context
-  ) {
+  async likePost(@Arg("postId") postId: string, @Ctx() { request }: Context) {
     const { userId } = request.session;
     const post = await PostModel.findOne({ _id: postId });
     if (!post) {
       return {
-        error: {
-          message: "Post doesn't exist",
-          field: "post",
-        },
+        state: false,
+        message: "Post is unavailable",
       };
     }
     const like = await LikeModel.create({
+      creator: userId,
       postId,
-      userId,
+      creatorId: userId,
     });
     await like.save();
 
@@ -60,6 +47,12 @@ export class LikeResolver {
       { $push: { likes: [like.id] as any } }
     );
 
-    return { post };
+    return { state: true, message: "Like successfull" };
+  }
+
+  @Query(() => [Like], { nullable: true })
+  async getLikesByUser(@Arg("userId") userId: string) {
+    const likes = await LikeModel.find({ creatorId: userId });
+    return likes;
   }
 }

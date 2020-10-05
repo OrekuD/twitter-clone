@@ -1,27 +1,31 @@
-import { getModelForClass, mongoose, prop } from "@typegoose/typegoose";
+import {
+  getModelForClass,
+  mongoose,
+  prop,
+  plugin,
+  Ref,
+} from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "type-graphql";
-// import { User } from "./User";
+import { User } from "./User";
+import autopopulate from "mongoose-autopopulate";
 
+@plugin(autopopulate as any)
 @ObjectType()
 export class Like {
   @Field(() => ID)
   _id: mongoose.Types.ObjectId;
 
-  // @Field()
-  // @prop()
-  // value: boolean;
-
   @Field()
   @prop()
   postId: string;
 
-  // @prop()
-  // @Field()
-  // creator: User;
+  @prop({ ref: () => User, autopopulate: true })
+  @Field(() => User)
+  creator: Ref<User>;
 
-  @Field()
   @prop()
-  userId: string;
+  @Field()
+  creatorId: string;
 }
 
 export const LikeModel = getModelForClass(Like);

@@ -8,6 +8,7 @@ import cors from "cors";
 import { LikeResolver } from "./Resolvers/LikeResolver";
 import session from "express-session";
 import connectMongo from "connect-mongo";
+import { CommentResolver } from "./Resolvers/CommentResolver";
 
 const PORT = process.env.PORT || 4000;
 
@@ -40,7 +41,7 @@ const main = async () => {
   );
 
   const schema = await buildSchema({
-    resolvers: [PostResolver, UserResolver, LikeResolver],
+    resolvers: [PostResolver, UserResolver, LikeResolver, CommentResolver],
     validate: false,
   });
 
