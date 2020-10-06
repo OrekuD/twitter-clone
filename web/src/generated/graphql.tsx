@@ -240,6 +240,29 @@ export type CreateAccountMutation = (
   ) }
 );
 
+export type CreatePostMutationVariables = Exact<{
+  content: Scalars['String'];
+}>;
+
+
+export type CreatePostMutation = (
+  { __typename?: 'Mutation' }
+  & { createPost: (
+    { __typename?: 'PostResponse' }
+    & { post?: Maybe<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'content' | '_id' | 'createdAt'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | 'bio' | '_id'>
+      ) }
+    )>, error?: Maybe<(
+      { __typename?: 'PostError' }
+      & Pick<PostError, 'message'>
+    )> }
+  ) }
+);
+
 export type GetPostQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -347,6 +370,29 @@ export const CreateAccountDocument = gql`
 
 export function useCreateAccountMutation() {
   return Urql.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument);
+};
+export const CreatePostDocument = gql`
+    mutation CreatePost($content: String!) {
+  createPost(content: $content) {
+    post {
+      content
+      _id
+      createdAt
+      creator {
+        username
+        bio
+        _id
+      }
+    }
+    error {
+      message
+    }
+  }
+}
+    `;
+
+export function useCreatePostMutation() {
+  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
 };
 export const GetPostDocument = gql`
     query GetPost($id: String!) {

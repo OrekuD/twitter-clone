@@ -122,7 +122,7 @@ const Register = () => {
             </div>
           </div>
           <div className="bottom-section">
-            <button className="ripple" type="submit">
+            <button className="ripple-btn" type="submit">
               Submit
             </button>
             <p>

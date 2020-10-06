@@ -35,6 +35,15 @@ a {
   color: inherit;
 }
 
+input {
+  border: none;
+  background-color: transparent;
+
+  &:focus {
+    outline: none;
+  }
+}
+
 .form-container {
   display: flex;
   flex-direction: column;
@@ -60,12 +69,13 @@ a {
           display: flex;
           align-items: center;
           margin-top: 5px;
-        }
-        .error-label {
-          font-size: 12px;
-          color: red;
-          margin-top: 2px;
-          margin-left: 4px;
+
+          .error-label {
+            font-size: 12px;
+            color: red;
+            margin-top: 2px;
+            margin-left: 4px;
+          }
         }
 
         input {
@@ -93,42 +103,8 @@ a {
       flex-direction: column;
       align-items: center;
 
-      .submit {
-        padding: 10px 30px;
-        border-radius: 5px;
-        background-color: #3498ff;
-        color: white;
-        align-self: center;
-      }
-
-      /* Ripple effect */
-      .ripple {
-        background-position: center;
-        transition: background 0.8s;
-        align-self: center;
-      }
-      .ripple:hover {
-        background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%)
-          center/15000%;
-      }
-      .ripple:active {
-        background-color: #6eb9f7;
-        background-size: 100%;
-        transition: background 0s;
-      }
-
-      /* Button style */
-      button {
-        border: none;
-        border-radius: 2px;
-        padding: 12px 18px;
-        font-size: 16px;
-        text-transform: uppercase;
-        cursor: pointer;
-        color: white;
-        background-color: #2196f3;
-        box-shadow: 0 0 4px #999;
-        outline: none;
+      .ripple-btn {
+        width: 100px;
       }
 
       p {
@@ -140,5 +116,28 @@ a {
         }
       }
     }
+  }
+}
+
+.ripple-btn {
+  background-position: center;
+  transition: background 0.8s;
+  width: 80px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #2196f3;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+
+  &:hover {
+    background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%)
+      center/15000%;
+  }
+
+  &:active {
+    background-color: #6eb9f7;
+    background-size: 100%;
+    transition: background 0s;
   }
 }

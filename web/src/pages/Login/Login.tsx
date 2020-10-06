@@ -97,7 +97,7 @@ const Login = () => {
             </div>
           </div>
           <div className="bottom-section">
-            <button className="ripple" type="submit">
+            <button className="ripple-btn" type="submit">
               Log in
             </button>
             <p>

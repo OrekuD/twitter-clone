@@ -1,26 +1,46 @@
 .create-post {
-  height: 200px;
-  background-color: aqua;
+  // height: 120px;
+  // background-color: aqua;
   padding: 20px 10px;
+  display: flex;
 
-  .user-details {
+  .profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    object-fit: cover;
+  }
+
+  .form {
+    margin-left: 20px;
+    width: 100%;
     display: flex;
+    flex-direction: column;
 
-    .profile-image {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background-color: cornflowerblue;
+    .text-input {
+      font-size: 20px;
+      width: 100%;
 
-      .text-input-container {
-        margin-left: 20px;
-
-        .text-input {
-          &::placeholder {
-            color: grey;
-          }
-        }
+      &::placeholder {
+        color: grey;
       }
+    }
+
+    .error {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+
+      .error-label {
+        font-size: 12px;
+        color: red;
+        margin-left: 4px;
+      }
+    }
+
+    .ripple-btn {
+      margin-top: 30px;
+      align-self: flex-end;
     }
   }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import { useAppContext } from "../../context/context";
 import "./Profile.scss";
+import Image from "../../assets/images/dummy.jpg";
 
 // const sampleData = {
 //   _id: "0",
@@ -19,7 +20,7 @@ const Profile = () => {
   console.log(image);
   return (
     <div className="profile">
-      <div className="image"></div>
+      <img src={Image} alt="profile" className="image" />
       <div className="content">
         <p className="fullname">{fullname}</p>
         <p className="username">@{username}</p>
