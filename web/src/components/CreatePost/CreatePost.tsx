@@ -1,11 +1,11 @@
 import React from "react";
-// import { useAppContext } from "../../context/context";
+import { useAppContext } from "../../context/context";
 import "./CreatePost.scss";
-import Image from "../../assets/images/dummy.jpg";
 import { useCreatePostMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Info } from "../../Svgs";
+import { PROFILE_IMAGES_BASE_URL } from "../../constants";
 
 const schema = Yup.object().shape({
   twoot: Yup.string()
@@ -15,7 +15,9 @@ const schema = Yup.object().shape({
 });
 
 const CreatePost = () => {
-  // const {} = useAppContext();
+  const {
+    userDetails: { image },
+  } = useAppContext();
   const [, createPost] = useCreatePostMutation();
 
   const {
@@ -38,13 +40,15 @@ const CreatePost = () => {
       });
       resetForm();
     },
-    // isInitialValid: false,
-    // validateOnChange: true,
   });
 
   return (
     <div className="create-post">
-      <img src={Image} alt="profile" className="profile-image" />
+      <img
+        src={`${PROFILE_IMAGES_BASE_URL + image}`}
+        alt="profile"
+        className="profile-image"
+      />
       <form onSubmit={handleSubmit} className="form">
         <input
           type="text"

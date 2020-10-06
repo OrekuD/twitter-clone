@@ -20,12 +20,6 @@ class PostError {
 }
 
 @ObjectType()
-class PostResponse {
-  @Field(() => Post, { nullable: true })
-  post?: Post;
-}
-
-@ObjectType()
 class SinglePostResponse {
   @Field(() => Post, { nullable: true })
   post?: Post;

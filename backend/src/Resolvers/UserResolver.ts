@@ -100,7 +100,7 @@ export class UserResolver {
       bio: "",
       fullname: "",
       location: "",
-      image: "",
+      image: "/dummy.jpg",
     });
     await newUser.save();
     request.session.userId = newUser.id;

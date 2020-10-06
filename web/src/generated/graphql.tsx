@@ -285,6 +285,22 @@ export type GetPostQuery = (
   ) }
 );
 
+export type GetUserDetailsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetUserDetailsQuery = (
+  { __typename?: 'Query' }
+  & { getUserDetails: (
+    { __typename?: 'UserResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'username' | 'createdAt' | 'bio' | 'location' | 'email' | 'fullname' | 'image'>
+    )> }
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -413,6 +429,26 @@ export const GetPostDocument = gql`
 
 export function useGetPostQuery(options: Omit<Urql.UseQueryArgs<GetPostQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetPostQuery>({ query: GetPostDocument, ...options });
+};
+export const GetUserDetailsDocument = gql`
+    query GetUserDetails($id: String!) {
+  getUserDetails(userId: $id) {
+    user {
+      _id
+      username
+      createdAt
+      bio
+      location
+      email
+      fullname
+      image
+    }
+  }
+}
+    `;
+
+export function useGetUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetUserDetailsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserDetailsQuery>({ query: GetUserDetailsDocument, ...options });
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {

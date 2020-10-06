@@ -2,7 +2,7 @@ import React from "react";
 import { useCreateAccountMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { convertError } from "../../utils/convertError";
 import { useAppContext } from "../../context/context";
 import { Info } from "../../Svgs";
@@ -20,8 +20,9 @@ const SignUpSchema = Yup.object().shape({
 });
 
 const Register = () => {
-  const { setIsLoggedIn, setUserDetails } = useAppContext();
+  const { setIsLoggedIn, setUserId } = useAppContext();
   const [, createAccount] = useCreateAccountMutation();
+  const history = useHistory();
   const initialValues = {
     username: "",
     email: "",
@@ -42,23 +43,10 @@ const Register = () => {
         if (res.data?.createAccount.error) {
           setErrors(convertError(res.data?.createAccount.error));
         } else if (res.data?.createAccount.user) {
-          const {
-            username,
-            bio,
-            location,
-            image,
-            fullname,
-            email,
-          } = res.data?.createAccount.user;
-          setUserDetails({
-            username,
-            bio,
-            location,
-            image,
-            fullname,
-            email,
-          });
+          const { _id } = res.data?.createAccount.user;
+          setUserId(_id);
           setIsLoggedIn(true);
+          history.push("/");
         }
       },
     }

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { User } from "../types";
 
-type InitialValue = boolean | User;
+type InitialValue = boolean | string;
 
 const useLocalStorage = (key: string, initialValue: InitialValue) => {
   const [storedValue, setStoredValue] = useState(() => {

@@ -2,6 +2,7 @@ import React from "react";
 import { useAppContext } from "../../context/context";
 import "./Profile.scss";
 import Image from "../../assets/images/dummy.jpg";
+import { PROFILE_IMAGES_BASE_URL } from "../../constants";
 
 // const sampleData = {
 //   _id: "0",
@@ -17,10 +18,13 @@ const Profile = () => {
   const {
     userDetails: { bio, email, fullname, image, location, username },
   } = useAppContext();
-  console.log(image);
   return (
     <div className="profile">
-      <img src={Image} alt="profile" className="image" />
+      <img
+        src={`${PROFILE_IMAGES_BASE_URL + image}`}
+        alt="profile"
+        className="image"
+      />
       <div className="content">
         <p className="fullname">{fullname}</p>
         <p className="username">@{username}</p>

@@ -20,6 +20,7 @@ const main = async () => {
 
   const app = express();
   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  app.use("/profile_images", express.static("public/profile_images"));
 
   const MongoStore = connectMongo(session);
   app.use(
