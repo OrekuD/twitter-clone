@@ -111,7 +111,7 @@ export type UserError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createPost: PostResponse;
+  createPost: Post;
   createAccount: UserResponse;
   login: UserResponse;
   addUserDetails: UserResponse;
@@ -148,12 +148,6 @@ export type MutationLikePostArgs = {
 
 export type MutationCreateCommentArgs = {
   input: CommentInput;
-};
-
-export type PostResponse = {
-  __typename?: 'PostResponse';
-  post?: Maybe<Post>;
-  error?: Maybe<PostError>;
 };
 
 export type UserInput = {
@@ -248,18 +242,12 @@ export type CreatePostMutationVariables = Exact<{
 export type CreatePostMutation = (
   { __typename?: 'Mutation' }
   & { createPost: (
-    { __typename?: 'PostResponse' }
-    & { post?: Maybe<(
-      { __typename?: 'Post' }
-      & Pick<Post, 'content' | '_id' | 'createdAt'>
-      & { creator: (
-        { __typename?: 'User' }
-        & Pick<User, 'username' | 'bio' | '_id'>
-      ) }
-    )>, error?: Maybe<(
-      { __typename?: 'PostError' }
-      & Pick<PostError, 'message'>
-    )> }
+    { __typename?: 'Post' }
+    & Pick<Post, 'content' | '_id' | 'createdAt'>
+    & { creator: (
+      { __typename?: 'User' }
+      & Pick<User, 'username' | 'bio' | '_id'>
+    ) }
   ) }
 );
 
@@ -374,18 +362,13 @@ export function useCreateAccountMutation() {
 export const CreatePostDocument = gql`
     mutation CreatePost($content: String!) {
   createPost(content: $content) {
-    post {
-      content
+    content
+    _id
+    createdAt
+    creator {
+      username
+      bio
       _id
-      createdAt
-      creator {
-        username
-        bio
-        _id
-      }
-    }
-    error {
-      message
     }
   }
 }

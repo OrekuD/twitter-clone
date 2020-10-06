@@ -140,4 +140,8 @@ input {
     background-size: 100%;
     transition: background 0s;
   }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }

@@ -1,17 +1,12 @@
 mutation CreatePost($content: String!) {
   createPost(content: $content) {
-    post {
-      content
+    content
+    _id
+    createdAt
+    creator {
+      username
+      bio
       _id
-      createdAt
-      creator {
-        username
-        bio
-        _id
-      }
-    }
-    error {
-      message
     }
   }
 }

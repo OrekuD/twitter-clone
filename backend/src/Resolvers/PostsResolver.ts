@@ -23,9 +23,6 @@ class PostError {
 class PostResponse {
   @Field(() => Post, { nullable: true })
   post?: Post;
-
-  @Field(() => PostError, { nullable: true })
-  error?: PostError;
 }
 
 @ObjectType()
@@ -56,11 +53,11 @@ export class PostResolver {
     return await PostModel.find().sort({ createdAt: "desc" });
   }
 
-  @Mutation(() => PostResponse)
+  @Mutation(() => Post)
   async createPost(
     @Arg("content") content: string,
     @Ctx() { request }: Context
-  ): Promise<PostResponse> {
+  ): Promise<Post> {
     const post = await PostModel.create({
       content,
       creator: request.session.userId,
@@ -69,6 +66,6 @@ export class PostResolver {
       likes: [],
     });
     await post.save();
-    return { post };
+    return post;
   }
 }
