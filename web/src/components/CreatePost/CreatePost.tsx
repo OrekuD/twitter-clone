@@ -50,14 +50,14 @@ const CreatePost = () => {
         className="profile-image"
       />
       <form onSubmit={handleSubmit} className="form">
-        <input
-          type="text"
+        <textarea
           placeholder="Say something..."
           className="text-input"
+          draggable={false}
           value={values.twoot}
           onChange={handleChange("twoot")}
           onBlur={handleBlur("twoot")}
-          style={{ color: errors.twoot && touched.twoot ? "red" : "black" }}
+          style={{ color: errors.twoot && touched.twoot ? "#b00020" : "black" }}
         />
         {errors.twoot && touched.twoot && (
           <div className="error">

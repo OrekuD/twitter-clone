@@ -1,0 +1,6 @@
+mutation LikePost($postId: String!) {
+  likePost(postId: $postId) {
+    state
+    message
+  }
+}

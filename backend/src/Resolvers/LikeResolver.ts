@@ -50,6 +50,37 @@ export class LikeResolver {
     return { state: true, message: "Like successfull" };
   }
 
+  @Mutation(() => LikeResponse)
+  @UseMiddleware(Auth)
+  async unLikePost(
+    @Arg("postId") postId: string,
+    @Arg("likeId") likeId: string,
+    @Ctx() { request }: Context
+  ) {
+    const post = await PostModel.findOne({ _id: postId });
+    if (!post) {
+      return {
+        state: false,
+        message: "Post is unavailable",
+      };
+    }
+
+    await LikeModel.deleteOne({
+      _id: likeId,
+    });
+
+    const updatedLikes = post.likes.filter(
+      (like) => like !== request.session.userId
+    );
+
+    await PostModel.updateOne(
+      { _id: postId },
+      { $set: { likes: updatedLikes } }
+    );
+
+    return { state: true, message: "Unlike successfull" };
+  }
+
   @Query(() => [Like], { nullable: true })
   async getLikesByUser(@Arg("userId") userId: string) {
     const likes = await LikeModel.find({ creatorId: userId });

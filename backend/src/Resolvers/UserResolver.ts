@@ -183,7 +183,6 @@ export class UserResolver {
   @Query(() => User, { nullable: true })
   async currentUser(@Ctx() { request }: Context) {
     const user = await UserModel.findOne({ _id: request.session.userId });
-    console.log(request.session.userId);
     if (!user) {
       return null;
     }

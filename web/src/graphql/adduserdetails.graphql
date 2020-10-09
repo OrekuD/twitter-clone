@@ -1,0 +1,31 @@
+mutation AddUserDetails(
+  $username: String!
+  $bio: String!
+  $location: String!
+  $email: String!
+  $fullname: String!
+  $image: String!
+) {
+  addUserDetails(
+    input: {
+      username: $username
+      bio: $bio
+      location: $location
+      email: $email
+      fullname: $fullname
+      image: $image
+    }
+  ) {
+    user {
+      username
+      createdAt
+      bio
+      location
+      email
+    }
+    error {
+      message
+      field
+    }
+  }
+}

@@ -13,7 +13,7 @@ const LogInSchema = Yup.object().shape({
 });
 
 const Login = () => {
-  const { setIsLoggedIn, setUserId } = useAppContext();
+  const { setIsLoggedIn } = useAppContext();
   const [, login] = useLoginMutation();
   const history = useHistory();
   const initialValues = {
@@ -30,13 +30,10 @@ const Login = () => {
           password: values.password,
           username: values.username,
         });
-        // console.log(res);
 
         if (res.data?.login.error) {
           setErrors(convertError(res.data?.login.error));
         } else if (res.data?.login.user) {
-          const { _id } = res.data?.login.user;
-          setUserId(_id);
           setIsLoggedIn(true);
           history.push("/");
         }

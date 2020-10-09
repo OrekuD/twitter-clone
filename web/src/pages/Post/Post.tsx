@@ -13,21 +13,27 @@ const Post = () => {
     getPost();
   }, [getPost, pathname]);
 
+  let content = (
+    <div>
+      <PostCard post={data?.getPost.post!} />
+    </div>
+  );
+
   if (!data) {
-    return (
+    content = (
       <div className="loading-screen">
         <Spinner />
       </div>
     );
+  } else {
+    content = (
+      <div>
+        <PostCard post={data?.getPost.post!} />
+      </div>
+    );
   }
 
-  return (
-    <Layout>
-      <div>
-        <PostCard post={data.getPost.post!} />
-      </div>
-    </Layout>
-  );
+  return <Layout>{content}</Layout>;
 };
 
 export default Post;

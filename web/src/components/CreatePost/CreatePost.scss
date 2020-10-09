@@ -1,6 +1,4 @@
 .create-post {
-  // height: 120px;
-  // background-color: aqua;
   padding: 20px 10px;
   display: flex;
 
@@ -20,6 +18,10 @@
     .text-input {
       font-size: 20px;
       width: 100%;
+      min-height: 100px;
+      // background-color: yellow;
+      resize: none;
+      overflow: auto;
 
       &::placeholder {
         color: grey;
@@ -33,7 +35,7 @@
 
       .error-label {
         font-size: 12px;
-        color: red;
+        color: #b00020;
         margin-left: 4px;
       }
     }

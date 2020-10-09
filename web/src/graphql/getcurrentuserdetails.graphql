@@ -1,0 +1,12 @@
+query GetCurrentUserDetails {
+  currentUser {
+    username
+    email
+    createdAt
+    bio
+    location
+    image
+    fullname
+    _id
+  }
+}

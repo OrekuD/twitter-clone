@@ -20,7 +20,7 @@ const SignUpSchema = Yup.object().shape({
 });
 
 const Register = () => {
-  const { setIsLoggedIn, setUserId } = useAppContext();
+  const { setIsLoggedIn } = useAppContext();
   const [, createAccount] = useCreateAccountMutation();
   const history = useHistory();
   const initialValues = {
@@ -43,8 +43,6 @@ const Register = () => {
         if (res.data?.createAccount.error) {
           setErrors(convertError(res.data?.createAccount.error));
         } else if (res.data?.createAccount.user) {
-          const { _id } = res.data?.createAccount.user;
-          setUserId(_id);
           setIsLoggedIn(true);
           history.push("/");
         }

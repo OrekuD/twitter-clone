@@ -1,0 +1,6 @@
+mutation UnLikePost($postId: String!, $likeId: String!) {
+  unLikePost(postId: $postId, likeId: $likeId) {
+    state
+    message
+  }
+}

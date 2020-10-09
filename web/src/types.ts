@@ -1,7 +1,6 @@
 export type AppContext = {
   isLoggedIn: boolean;
   userDetails: User;
-  setUserId: (id: string) => void;
   setIsLoggedIn: (state: boolean) => void;
 };
 

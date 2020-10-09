@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-// import { Post } from "../../generated/graphql";
+import { useAppContext } from "../../context/context";
+import { Post, useLikePostMutation } from "../../generated/graphql";
 import { FavouriteFilled, Favourite, ChatBubble, Share } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
+import { userLiked } from "../../utils/userLiked";
 import "./PostCard.scss";
 
 interface Props {
@@ -16,7 +18,12 @@ const PostCard = ({ post }: Props) => {
     createdAt,
     creator: { username },
     comments,
-  } = post;
+    likes,
+  } = post as Post;
+  const [, likePost] = useLikePostMutation();
+  const {
+    userDetails: { _id: userId },
+  } = useAppContext();
 
   const url = "https://weconnect.netlify.app";
 
@@ -50,19 +57,38 @@ const PostCard = ({ post }: Props) => {
         <p className="content">{content}</p>
       </Link>
       <div className="icons">
+        {userLiked(likes, userId) ? (
+          <button
+            className="icon"
+            onClick={() =>
+              likePost({
+                postId: _id,
+              })
+            }
+          >
+            <FavouriteFilled size={14} color="#121212" />
+            {likes.length > 0 && <p className="count">{likes.length}</p>}
+          </button>
+        ) : (
+          <button
+            className="icon"
+            onClick={() =>
+              likePost({
+                postId: _id,
+              })
+            }
+          >
+            <Favourite size={14} color="#121212" />
+            {likes.length > 0 && <p className="count">{likes.length}</p>}
+          </button>
+        )}
+
         <button className="icon">
-          {false ? (
-            <FavouriteFilled size={18} color="#121212" />
-          ) : (
-            <Favourite size={18} color="#121212" />
-          )}
-        </button>
-        <button className="icon">
-          <ChatBubble size={18} color="#121212" />
+          <ChatBubble size={14} color="#121212" />
+          {comments.length > 0 && <p className="count">{comments.length}</p>}
         </button>
         <button className="icon" onClick={share}>
-          <p className="count">{comments.length}</p>
-          <Share size={18} color="#121212" />
+          <Share size={14} color="#121212" />
         </button>
       </div>
     </div>

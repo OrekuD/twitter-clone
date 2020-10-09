@@ -117,6 +117,7 @@ export type Mutation = {
   addUserDetails: UserResponse;
   logout: Scalars['Boolean'];
   likePost: LikeResponse;
+  unLikePost: LikeResponse;
   createComment: CommentResponse;
 };
 
@@ -142,6 +143,12 @@ export type MutationAddUserDetailsArgs = {
 
 
 export type MutationLikePostArgs = {
+  postId: Scalars['String'];
+};
+
+
+export type MutationUnLikePostArgs = {
+  likeId: Scalars['String'];
   postId: Scalars['String'];
 };
 
@@ -187,6 +194,30 @@ export type CommentInput = {
   content: Scalars['String'];
   postId: Scalars['String'];
 };
+
+export type AddUserDetailsMutationVariables = Exact<{
+  username: Scalars['String'];
+  bio: Scalars['String'];
+  location: Scalars['String'];
+  email: Scalars['String'];
+  fullname: Scalars['String'];
+  image: Scalars['String'];
+}>;
+
+
+export type AddUserDetailsMutation = (
+  { __typename?: 'Mutation' }
+  & { addUserDetails: (
+    { __typename?: 'UserResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'username' | 'createdAt' | 'bio' | 'location' | 'email'>
+    )>, error?: Maybe<(
+      { __typename?: 'UserError' }
+      & Pick<UserError, 'message' | 'field'>
+    )> }
+  ) }
+);
 
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -234,6 +265,30 @@ export type CreateAccountMutation = (
   ) }
 );
 
+export type CreateCommentMutationVariables = Exact<{
+  content: Scalars['String'];
+  postId: Scalars['String'];
+}>;
+
+
+export type CreateCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { createComment: (
+    { __typename?: 'CommentResponse' }
+    & { comment?: Maybe<(
+      { __typename?: 'Comment' }
+      & Pick<Comment, 'content' | '_id' | 'postId'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
+    )>, error?: Maybe<(
+      { __typename?: 'CommentError' }
+      & Pick<CommentError, 'message'>
+    )> }
+  ) }
+);
+
 export type CreatePostMutationVariables = Exact<{
   content: Scalars['String'];
 }>;
@@ -249,6 +304,17 @@ export type CreatePostMutation = (
       & Pick<User, 'username' | 'bio' | '_id'>
     ) }
   ) }
+);
+
+export type GetCurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentUserDetailsQuery = (
+  { __typename?: 'Query' }
+  & { currentUser?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'username' | 'email' | 'createdAt' | 'bio' | 'location' | 'image' | 'fullname' | '_id'>
+  )> }
 );
 
 export type GetPostQueryVariables = Exact<{
@@ -301,6 +367,19 @@ export type GetUserDetailsQuery = (
   ) }
 );
 
+export type LikePostMutationVariables = Exact<{
+  postId: Scalars['String'];
+}>;
+
+
+export type LikePostMutation = (
+  { __typename?: 'Mutation' }
+  & { likePost: (
+    { __typename?: 'LikeResponse' }
+    & Pick<LikeResponse, 'state' | 'message'>
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -321,7 +400,42 @@ export type LoginMutation = (
   ) }
 );
 
+export type UnLikePostMutationVariables = Exact<{
+  postId: Scalars['String'];
+  likeId: Scalars['String'];
+}>;
 
+
+export type UnLikePostMutation = (
+  { __typename?: 'Mutation' }
+  & { unLikePost: (
+    { __typename?: 'LikeResponse' }
+    & Pick<LikeResponse, 'state' | 'message'>
+  ) }
+);
+
+
+export const AddUserDetailsDocument = gql`
+    mutation AddUserDetails($username: String!, $bio: String!, $location: String!, $email: String!, $fullname: String!, $image: String!) {
+  addUserDetails(input: {username: $username, bio: $bio, location: $location, email: $email, fullname: $fullname, image: $image}) {
+    user {
+      username
+      createdAt
+      bio
+      location
+      email
+    }
+    error {
+      message
+      field
+    }
+  }
+}
+    `;
+
+export function useAddUserDetailsMutation() {
+  return Urql.useMutation<AddUserDetailsMutation, AddUserDetailsMutationVariables>(AddUserDetailsDocument);
+};
 export const AllPostsDocument = gql`
     query AllPosts {
   getAllPosts {
@@ -375,6 +489,27 @@ export const CreateAccountDocument = gql`
 export function useCreateAccountMutation() {
   return Urql.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument);
 };
+export const CreateCommentDocument = gql`
+    mutation CreateComment($content: String!, $postId: String!) {
+  createComment(input: {content: $content, postId: $postId}) {
+    comment {
+      content
+      _id
+      postId
+      creator {
+        username
+      }
+    }
+    error {
+      message
+    }
+  }
+}
+    `;
+
+export function useCreateCommentMutation() {
+  return Urql.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument);
+};
 export const CreatePostDocument = gql`
     mutation CreatePost($content: String!) {
   createPost(content: $content) {
@@ -392,6 +527,24 @@ export const CreatePostDocument = gql`
 
 export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
+};
+export const GetCurrentUserDetailsDocument = gql`
+    query GetCurrentUserDetails {
+  currentUser {
+    username
+    email
+    createdAt
+    bio
+    location
+    image
+    fullname
+    _id
+  }
+}
+    `;
+
+export function useGetCurrentUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserDetailsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetCurrentUserDetailsQuery>({ query: GetCurrentUserDetailsDocument, ...options });
 };
 export const GetPostDocument = gql`
     query GetPost($id: String!) {
@@ -450,6 +603,18 @@ export const GetUserDetailsDocument = gql`
 export function useGetUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetUserDetailsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUserDetailsQuery>({ query: GetUserDetailsDocument, ...options });
 };
+export const LikePostDocument = gql`
+    mutation LikePost($postId: String!) {
+  likePost(postId: $postId) {
+    state
+    message
+  }
+}
+    `;
+
+export function useLikePostMutation() {
+  return Urql.useMutation<LikePostMutation, LikePostMutationVariables>(LikePostDocument);
+};
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   login(input: {username: $username, password: $password}) {
@@ -473,4 +638,16 @@ export const LoginDocument = gql`
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const UnLikePostDocument = gql`
+    mutation UnLikePost($postId: String!, $likeId: String!) {
+  unLikePost(postId: $postId, likeId: $likeId) {
+    state
+    message
+  }
+}
+    `;
+
+export function useUnLikePostMutation() {
+  return Urql.useMutation<UnLikePostMutation, UnLikePostMutationVariables>(UnLikePostDocument);
 };
