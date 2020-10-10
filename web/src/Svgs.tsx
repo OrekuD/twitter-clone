@@ -59,8 +59,8 @@ export const Share = ({ color, size }: SvgProps) => (
     <path
       fill="none"
       stroke={color}
-      stroke-miterlimit="10"
-      stroke-width="2"
+      strokeMiterlimit="10"
+      strokeWidth="2"
       d="M20 4L4 12 20 20"
     />
   </svg>

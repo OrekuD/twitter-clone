@@ -4,19 +4,26 @@ import "./Profile.scss";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants";
 
 const Profile = () => {
-  const {
-    userDetails: { bio, email, fullname, image, location, username },
-  } = useAppContext();
+  const { userDetails } = useAppContext();
+
+  if (!userDetails) {
+    return null;
+  }
+
+  const { bio, email, fullname, image, location, username } = userDetails;
+
   return (
     <div className="profile">
-      <img
-        src={`${PROFILE_IMAGES_BASE_URL + image}`}
-        alt="profile"
-        className="image"
-      />
+      {image && (
+        <img
+          src={`${PROFILE_IMAGES_BASE_URL + image}`}
+          alt="profile"
+          className="image"
+        />
+      )}
       <div className="content">
         <p className="fullname">{fullname}</p>
-        <p className="username">@{username}</p>
+        {username && <p className="username">@{username}</p>}
         <p className="bio">{bio}</p>
         <p className="email">{email}</p>
         <p className="location">{location}</p>

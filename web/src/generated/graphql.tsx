@@ -148,7 +148,6 @@ export type MutationLikePostArgs = {
 
 
 export type MutationUnLikePostArgs = {
-  likeId: Scalars['String'];
   postId: Scalars['String'];
 };
 
@@ -402,7 +401,6 @@ export type LoginMutation = (
 
 export type UnLikePostMutationVariables = Exact<{
   postId: Scalars['String'];
-  likeId: Scalars['String'];
 }>;
 
 
@@ -640,8 +638,8 @@ export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };
 export const UnLikePostDocument = gql`
-    mutation UnLikePost($postId: String!, $likeId: String!) {
-  unLikePost(postId: $postId, likeId: $likeId) {
+    mutation UnLikePost($postId: String!) {
+  unLikePost(postId: $postId) {
     state
     message
   }

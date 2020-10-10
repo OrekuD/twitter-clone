@@ -1002,20 +1002,6 @@
             "description": null,
             "args": [
               {
-                "name": "likeId",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null
-              },
-              {
                 "name": "postId",
                 "description": null,
                 "type": {

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Layout, PostCard, CreatePost } from "../../components";
+import { Layout, PostCard, CreatePost, Spinner } from "../../components";
 import { useAllPostsQuery } from "../../generated/graphql";
 import "./Home.scss";
 
@@ -14,9 +14,17 @@ const Home = () => {
     <Layout>
       <CreatePost />
       <div className="posts">
-        {data?.getAllPosts.map((post, index) => (
-          <PostCard post={post} key={index} />
-        ))}
+        {data?.getAllPosts ? (
+          <>
+            {data?.getAllPosts.map((post, index) => (
+              <PostCard post={post} key={index} />
+            ))}
+          </>
+        ) : (
+          <div className="loading-screen">
+            <Spinner />
+          </div>
+        )}
       </div>
     </Layout>
   );

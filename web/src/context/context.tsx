@@ -1,17 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { defaultUserDetails } from "../constants";
 import { useGetCurrentUserDetailsQuery } from "../generated/graphql";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { AppContext, User } from "../types";
-
-const defaultUserDetails = {
-  image: "",
-  fullname: "",
-  username: "",
-  bio: "",
-  location: "",
-  email: "",
-  _id: "",
-};
 
 const Context = createContext<AppContext>({
   isLoggedIn: false,

@@ -44,11 +44,13 @@ const CreatePost = () => {
 
   return (
     <div className="create-post">
-      <img
-        src={`${PROFILE_IMAGES_BASE_URL + image}`}
-        alt="profile"
-        className="profile-image"
-      />
+      {image && (
+        <img
+          src={`${PROFILE_IMAGES_BASE_URL + image}`}
+          alt="profile"
+          className="profile-image"
+        />
+      )}
       <form onSubmit={handleSubmit} className="form">
         <textarea
           placeholder="Say something..."

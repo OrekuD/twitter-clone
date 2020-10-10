@@ -1,7 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { defaultUserDetails } from "../../constants";
 import { useAppContext } from "../../context/context";
-import { Post, useLikePostMutation } from "../../generated/graphql";
+import {
+  Like,
+  Post,
+  useLikePostMutation,
+  useUnLikePostMutation,
+  User,
+} from "../../generated/graphql";
 import { FavouriteFilled, Favourite, ChatBubble, Share } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
 import { userLiked } from "../../utils/userLiked";
@@ -21,6 +28,7 @@ const PostCard = ({ post }: Props) => {
     likes,
   } = post as Post;
   const [, likePost] = useLikePostMutation();
+  const [, unlikePost] = useUnLikePostMutation();
   const {
     userDetails: { _id: userId },
   } = useAppContext();
@@ -57,32 +65,32 @@ const PostCard = ({ post }: Props) => {
         <p className="content">{content}</p>
       </Link>
       <div className="icons">
-        {userLiked(likes, userId) ? (
-          <button
-            className="icon"
-            onClick={() =>
-              likePost({
+        <button
+          className="icon"
+          onClick={() => {
+            if (userLiked(likes, userId) >= 0) {
+              likes.splice(userLiked(likes, userId), 1);
+            } else {
+              likes.unshift({
+                _id: Math.random().toString(),
+                creatorId: userId,
                 postId: _id,
-              })
+                creator: defaultUserDetails,
+              });
             }
-          >
-            <FavouriteFilled size={14} color="#121212" />
-            {likes.length > 0 && <p className="count">{likes.length}</p>}
-          </button>
-        ) : (
-          <button
-            className="icon"
-            onClick={() =>
-              likePost({
-                postId: _id,
-              })
-            }
-          >
+            likePost({
+              postId: _id,
+            });
+          }}
+        >
+          {userLiked(likes, userId) >= 0 ? (
+            <FavouriteFilled size={14} color="#b00020" />
+          ) : (
             <Favourite size={14} color="#121212" />
-            {likes.length > 0 && <p className="count">{likes.length}</p>}
-          </button>
-        )}
+          )}
 
+          {likes.length > 0 && <p className="count">{likes.length}</p>}
+        </button>
         <button className="icon">
           <ChatBubble size={14} color="#121212" />
           {comments.length > 0 && <p className="count">{comments.length}</p>}

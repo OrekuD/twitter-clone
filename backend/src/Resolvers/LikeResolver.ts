@@ -35,6 +35,24 @@ export class LikeResolver {
         message: "Post is unavailable",
       };
     }
+
+    const hasUserAlreadyLiked = post.likes.findIndex(
+      (like) => like.creatorId === userId // TODO: fix this later
+    );
+
+    if (hasUserAlreadyLiked >= 0) {
+      const updatedLikes = post.likes.filter(
+        (like) => like?.creatorId !== userId
+      );
+
+      await PostModel.updateOne(
+        { _id: postId },
+        { $set: { likes: updatedLikes } }
+      );
+
+      return { state: true, message: "Unlike successfull" };
+    }
+
     const like = await LikeModel.create({
       creator: userId,
       postId,
@@ -52,12 +70,9 @@ export class LikeResolver {
 
   @Mutation(() => LikeResponse)
   @UseMiddleware(Auth)
-  async unLikePost(
-    @Arg("postId") postId: string,
-    @Arg("likeId") likeId: string,
-    @Ctx() { request }: Context
-  ) {
+  async unLikePost(@Arg("postId") postId: string, @Ctx() { request }: Context) {
     const post = await PostModel.findOne({ _id: postId });
+    const { userId } = request.session;
     if (!post) {
       return {
         state: false,
@@ -65,13 +80,13 @@ export class LikeResolver {
       };
     }
 
-    await LikeModel.deleteOne({
-      _id: likeId,
-    });
+    // const likedPost = post.likes.find((like) => like?.creatorId === userId);
 
-    const updatedLikes = post.likes.filter(
-      (like) => like !== request.session.userId
-    );
+    // await LikeModel.deleteOne({
+    //   _id: likedPost._id,
+    // });
+
+    const updatedLikes = post.likes.filter((like) => like !== userId);
 
     await PostModel.updateOne(
       { _id: postId },
