@@ -1,4 +1,32 @@
 .search-tab {
   flex: 1.5;
-  background-color: aqua;
+  padding-top: 40px;
+  // background-color: aqua;
+
+  .search-tab-content {
+    position: fixed;
+    width: 28%;
+    // background-color: red;
+
+    .search-input-container {
+      display: flex;
+      align-items: center;
+      width: 90%;
+      height: 45px;
+      border: 1px solid rgb(208, 201, 201);
+      border-radius: 22.5px;
+      margin: 0 auto;
+      padding: 0 20px;
+
+      input {
+        width: 100%;
+        margin-left: 10px;
+        // padding: 0 10px;
+
+        &::placeholder {
+          color: grey;
+        }
+      }
+    }
+  }
 }

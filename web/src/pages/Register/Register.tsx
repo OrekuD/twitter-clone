@@ -51,72 +51,71 @@ const Register = () => {
   );
 
   return (
-    <div>
-      <div className="form-container">
-        <form onSubmit={handleSubmit}>
-          <div className="group">
-            <label htmlFor="username">Username</label>
-            <div className="input">
-              <input
-                type="text"
-                name="username"
-                onChange={handleChange("username")}
-                onBlur={handleBlur("username")}
-              />
-              {errors.username && touched.username && (
-                <div className="error">
-                  <Info size={14} color="red" />
-                  <p className="error-label">{errors.username}</p>
-                </div>
-              )}
-            </div>
+    <div className="form-container">
+      <p className="form-title">Create Account</p>
+      <form onSubmit={handleSubmit}>
+        <div className="group">
+          <label htmlFor="username">Username</label>
+          <div className="input">
+            <input
+              type="text"
+              name="username"
+              onChange={handleChange("username")}
+              onBlur={handleBlur("username")}
+            />
+            {errors.username && touched.username && (
+              <div className="error">
+                <Info size={14} color="red" />
+                <p className="error-label">{errors.username}</p>
+              </div>
+            )}
           </div>
+        </div>
 
-          <div className="group">
-            <label htmlFor="email">Email</label>
-            <div className="input">
-              <input
-                type="text"
-                name="email"
-                onChange={handleChange("email")}
-                onBlur={handleBlur("email")}
-              />
-              {errors.email && touched.email && (
-                <div className="error">
-                  <Info size={14} color="red" />
-                  <p className="error-label">{errors.email}</p>
-                </div>
-              )}
-            </div>
+        <div className="group">
+          <label htmlFor="email">Email</label>
+          <div className="input">
+            <input
+              type="text"
+              name="email"
+              onChange={handleChange("email")}
+              onBlur={handleBlur("email")}
+            />
+            {errors.email && touched.email && (
+              <div className="error">
+                <Info size={14} color="red" />
+                <p className="error-label">{errors.email}</p>
+              </div>
+            )}
           </div>
+        </div>
 
-          <div className="group">
-            <label htmlFor="password">Password</label>
-            <div className="input">
-              <input
-                type="password"
-                name="password"
-                onChange={handleChange("password")}
-                onBlur={handleBlur("password")}
-              />
-              {errors.password && touched.password && (
-                <div className="error">
-                  <Info size={14} color="red" />
-                  <p className="error-label">{errors.password}</p>
-                </div>
-              )}
-            </div>
+        <div className="group">
+          <label htmlFor="password">Password</label>
+          <div className="input">
+            <input
+              type="password"
+              name="password"
+              onChange={handleChange("password")}
+              onBlur={handleBlur("password")}
+            />
+            {errors.password && touched.password && (
+              <div className="error">
+                <Info size={14} color="red" />
+                <p className="error-label">{errors.password}</p>
+              </div>
+            )}
           </div>
-          <div className="bottom-section">
-            <button className="ripple-btn" type="submit">
-              Submit
-            </button>
-            <p>
-              Already have an account? <Link to="/login">Log in</Link>
-            </p>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div className="bottom-section">
+          <button className="ripple-btn" type="submit">
+            Submit
+          </button>
+          <p>
+            Already have an account? <Link to="/login">Log in</Link>
+          </p>
+        </div>
+      </form>
     </div>
   );
 };

@@ -28,7 +28,7 @@ const CreatePost = () => {
     touched,
     values: { twoot },
   } = useFormik({
-    initialValues: { twoot: "88" },
+    initialValues: { twoot: "" },
     validationSchema: schema,
     onSubmit: async (values, { resetForm, setFieldError }) => {
       if (values.twoot.split("").length === 0) {

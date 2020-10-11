@@ -1,0 +1,30 @@
+query Search($searchTerm: String!) {
+  search(searchTerm: $searchTerm) {
+    posts {
+      content
+      _id
+      createdAt
+      creator {
+        username
+        _id
+      }
+      comments {
+        _id
+      }
+      likes {
+        _id
+        creatorId
+        creator {
+          _id
+          image
+          username
+        }
+      }
+    }
+    users {
+      username
+      fullname
+      _id
+    }
+  }
+}

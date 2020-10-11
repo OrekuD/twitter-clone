@@ -51,9 +51,15 @@ textarea {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-top: 100px;
+
+  .form-title {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+  }
 
   form {
-    margin-top: 100px;
     .group {
       margin: 20px 0;
       display: flex;
@@ -87,6 +93,25 @@ textarea {
           border-radius: 5px;
           border: 1px solid #adadbb;
           transition: 0.3s ease-in-out border-color;
+
+          &:hover {
+            border: 1px solid #1675e0;
+          }
+
+          &:focus {
+            outline: none;
+            border: 1px solid #1675e0;
+          }
+        }
+
+        textarea {
+          height: 130px;
+          width: 300px;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #adadbb;
+          transition: 0.3s ease-in-out border-color;
+          resize: none;
 
           &:hover {
             border: 1px solid #1675e0;

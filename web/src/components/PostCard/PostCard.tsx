@@ -25,6 +25,7 @@ const PostCard = ({ post, nolink = false }: Props) => {
   const [, likePost] = useLikePostMutation();
   const {
     userDetails: { _id: userId },
+    setModalState,
   } = useAppContext();
 
   const url = "https://weconnect.netlify.app";
@@ -40,6 +41,10 @@ const PostCard = ({ post, nolink = false }: Props) => {
     } else {
       alert("share not supported");
     }
+  };
+
+  const commentPost = () => {
+    setModalState(true);
   };
 
   return (
@@ -59,9 +64,28 @@ const PostCard = ({ post, nolink = false }: Props) => {
         <p className="content">{content}</p>
       ) : (
         <Link to={`/post/${_id}`}>
-          <p className="content">{content}</p>
+          <p className="content">
+            {content.split("\n").map((str, index) => {
+              if (!str) {
+                return <br key={index} />;
+              } else {
+                return str.split(" ").map((substr, index) => {
+                  if (substr[0] === "#" || substr[0] === "@") {
+                    return (
+                      <span className="link" key={index}>
+                        {" " + substr + " "}
+                      </span>
+                    );
+                  } else {
+                    return <span key={index}> {substr} </span>;
+                  }
+                });
+              }
+            })}
+          </p>
         </Link>
       )}
+
       <div className="icons">
         <button
           className="icon"
@@ -89,7 +113,7 @@ const PostCard = ({ post, nolink = false }: Props) => {
 
           {likes.length > 0 && <p className="count">{likes.length}</p>}
         </button>
-        <button className="icon">
+        <button className="icon" onClick={commentPost}>
           <ChatBubble size={14} color="#121212" />
           {comments.length > 0 && <p className="count">{comments.length}</p>}
         </button>

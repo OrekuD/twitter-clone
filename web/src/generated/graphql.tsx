@@ -22,6 +22,7 @@ export type Query = {
   currentUser?: Maybe<User>;
   getLikesByUser?: Maybe<Array<Like>>;
   getCommentsByUser: Array<Post>;
+  search: Response;
 };
 
 
@@ -42,6 +43,11 @@ export type QueryGetLikesByUserArgs = {
 
 export type QueryGetCommentsByUserArgs = {
   userId: Scalars['String'];
+};
+
+
+export type QuerySearchArgs = {
+  searchTerm: Scalars['String'];
 };
 
 export type SinglePostResponse = {
@@ -107,6 +113,12 @@ export type UserError = {
   __typename?: 'UserError';
   message: Scalars['String'];
   field: Scalars['String'];
+};
+
+export type Response = {
+  __typename?: 'Response';
+  posts: Array<Post>;
+  users: Array<User>;
 };
 
 export type Mutation = {
@@ -391,6 +403,39 @@ export type LoginMutation = (
   ) }
 );
 
+export type SearchQueryVariables = Exact<{
+  searchTerm: Scalars['String'];
+}>;
+
+
+export type SearchQuery = (
+  { __typename?: 'Query' }
+  & { search: (
+    { __typename?: 'Response' }
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'content' | '_id' | 'createdAt'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | '_id'>
+      ), comments: Array<(
+        { __typename?: 'Comment' }
+        & Pick<Comment, '_id'>
+      )>, likes: Array<(
+        { __typename?: 'Like' }
+        & Pick<Like, '_id' | 'creatorId'>
+        & { creator: (
+          { __typename?: 'User' }
+          & Pick<User, '_id' | 'image' | 'username'>
+        ) }
+      )> }
+    )>, users: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'username' | 'fullname' | '_id'>
+    )> }
+  ) }
+);
+
 
 export const AddUserDetailsDocument = gql`
     mutation AddUserDetails($username: String!, $bio: String!, $location: String!, $email: String!, $fullname: String!) {
@@ -615,4 +660,40 @@ export const LoginDocument = gql`
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const SearchDocument = gql`
+    query Search($searchTerm: String!) {
+  search(searchTerm: $searchTerm) {
+    posts {
+      content
+      _id
+      createdAt
+      creator {
+        username
+        _id
+      }
+      comments {
+        _id
+      }
+      likes {
+        _id
+        creatorId
+        creator {
+          _id
+          image
+          username
+        }
+      }
+    }
+    users {
+      username
+      fullname
+      _id
+    }
+  }
+}
+    `;
+
+export function useSearchQuery(options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SearchQuery>({ query: SearchDocument, ...options });
 };

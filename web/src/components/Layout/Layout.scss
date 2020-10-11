@@ -2,10 +2,12 @@
   padding: 0 10px;
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
 
   .content-container {
-    flex: 3;
-    padding: 40px 0px;
-    // max-width: 750px;
+    flex: 2.5;
+    padding: 40px 10px;
+    border-right: 1px solid rgb(208, 201, 201);
+    border-left: 1px solid rgb(208, 201, 201);
   }
 }

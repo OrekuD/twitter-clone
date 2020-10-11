@@ -6,6 +6,8 @@ import { AppContext, User } from "../types";
 
 const Context = createContext<AppContext>({
   isLoggedIn: false,
+  showModal: false,
+  setModalState: () => {},
   userDetails: dummyUserDetails,
   setIsLoggedIn: () => {},
   addUserDetails: () => {},
@@ -14,6 +16,7 @@ const Context = createContext<AppContext>({
 const Provider: React.FC = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isLoggedIn", false);
   const [userDetails, setUserDetails] = useState<User>(dummyUserDetails);
+  const [showModal, setShowModal] = useState(false);
   const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
 
   useEffect(() => {
@@ -43,6 +46,10 @@ const Provider: React.FC = ({ children }) => {
     }
   }, [data]);
 
+  const setModalState = (state: boolean) => {
+    setShowModal(state);
+  };
+
   const addUserDetails = (details: Partial<User>) => {
     setUserDetails((prevValue) => {
       return {
@@ -59,7 +66,14 @@ const Provider: React.FC = ({ children }) => {
 
   return (
     <Context.Provider
-      value={{ isLoggedIn, userDetails, setIsLoggedIn, addUserDetails }}
+      value={{
+        isLoggedIn,
+        userDetails,
+        setIsLoggedIn,
+        addUserDetails,
+        showModal,
+        setModalState,
+      }}
     >
       {children}
     </Context.Provider>

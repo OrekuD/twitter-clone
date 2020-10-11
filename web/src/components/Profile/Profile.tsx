@@ -11,24 +11,26 @@ const Profile = () => {
 
   return (
     <div className="profile">
-      {image && (
-        <img
-          src={`${PROFILE_IMAGES_BASE_URL + image}`}
-          alt="profile"
-          className="image"
-        />
-      )}
-      <div className="content">
-        <p className="fullname">{fullname}</p>
-        {username && <p className="username">@{username}</p>}
-        <p className="bio">{bio}</p>
-        <p className="email">{email}</p>
-        <p className="location">{location}</p>
-        <Link to="/edit-details">
-          <button className="ripple-btn" style={{ marginTop: 20 }}>
-            Edit Profile
-          </button>
-        </Link>
+      <div className="profile-content">
+        {image && (
+          <img
+            src={`${PROFILE_IMAGES_BASE_URL + image}`}
+            alt="profile"
+            className="image"
+          />
+        )}
+        <div className="content">
+          <p className="fullname">{fullname}</p>
+          {username && <p className="username">@{username}</p>}
+          <p className="bio">{bio}</p>
+          <p className="email">{email}</p>
+          <p className="location">{location}</p>
+          <Link to="/edit-details">
+            <button className="ripple-btn" style={{ marginTop: 20 }}>
+              Edit Profile
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
