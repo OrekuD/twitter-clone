@@ -2,13 +2,10 @@ import React from "react";
 import { useAppContext } from "../../context/context";
 import "./Profile.scss";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const { userDetails } = useAppContext();
-
-  if (!userDetails) {
-    return null;
-  }
 
   const { bio, email, fullname, image, location, username } = userDetails;
 
@@ -27,6 +24,11 @@ const Profile = () => {
         <p className="bio">{bio}</p>
         <p className="email">{email}</p>
         <p className="location">{location}</p>
+        <Link to="/edit-details">
+          <button className="ripple-btn" style={{ marginTop: 20 }}>
+            Edit Profile
+          </button>
+        </Link>
       </div>
     </div>
   );

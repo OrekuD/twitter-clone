@@ -26,9 +26,9 @@ const CreatePost = () => {
     handleBlur,
     errors,
     touched,
-    values,
+    values: { twoot },
   } = useFormik({
-    initialValues: { twoot: "" },
+    initialValues: { twoot: "88" },
     validationSchema: schema,
     onSubmit: async (values, { resetForm, setFieldError }) => {
       if (values.twoot.split("").length === 0) {
@@ -56,7 +56,7 @@ const CreatePost = () => {
           placeholder="Say something..."
           className="text-input"
           draggable={false}
-          value={values.twoot}
+          value={twoot}
           onChange={handleChange("twoot")}
           onBlur={handleBlur("twoot")}
           style={{ color: errors.twoot && touched.twoot ? "#b00020" : "black" }}

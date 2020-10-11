@@ -1,6 +1,6 @@
 export const PROFILE_IMAGES_BASE_URL = "http://localhost:4000/profile_images";
 
-export const defaultUserDetails = {
+export const dummyUserDetails = {
   image: "",
   fullname: "",
   username: "",

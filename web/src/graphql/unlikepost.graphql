@@ -1,6 +1,0 @@
-mutation UnLikePost($postId: String!) {
-  unLikePost(postId: $postId) {
-    state
-    message
-  }
-}

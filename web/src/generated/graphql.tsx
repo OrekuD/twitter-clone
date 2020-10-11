@@ -117,7 +117,6 @@ export type Mutation = {
   addUserDetails: UserResponse;
   logout: Scalars['Boolean'];
   likePost: LikeResponse;
-  unLikePost: LikeResponse;
   createComment: CommentResponse;
 };
 
@@ -147,11 +146,6 @@ export type MutationLikePostArgs = {
 };
 
 
-export type MutationUnLikePostArgs = {
-  postId: Scalars['String'];
-};
-
-
 export type MutationCreateCommentArgs = {
   input: CommentInput;
 };
@@ -167,7 +161,6 @@ export type DetailsInput = {
   bio: Scalars['String'];
   location: Scalars['String'];
   email: Scalars['String'];
-  image: Scalars['String'];
   fullname: Scalars['String'];
 };
 
@@ -200,7 +193,6 @@ export type AddUserDetailsMutationVariables = Exact<{
   location: Scalars['String'];
   email: Scalars['String'];
   fullname: Scalars['String'];
-  image: Scalars['String'];
 }>;
 
 
@@ -399,23 +391,10 @@ export type LoginMutation = (
   ) }
 );
 
-export type UnLikePostMutationVariables = Exact<{
-  postId: Scalars['String'];
-}>;
-
-
-export type UnLikePostMutation = (
-  { __typename?: 'Mutation' }
-  & { unLikePost: (
-    { __typename?: 'LikeResponse' }
-    & Pick<LikeResponse, 'state' | 'message'>
-  ) }
-);
-
 
 export const AddUserDetailsDocument = gql`
-    mutation AddUserDetails($username: String!, $bio: String!, $location: String!, $email: String!, $fullname: String!, $image: String!) {
-  addUserDetails(input: {username: $username, bio: $bio, location: $location, email: $email, fullname: $fullname, image: $image}) {
+    mutation AddUserDetails($username: String!, $bio: String!, $location: String!, $email: String!, $fullname: String!) {
+  addUserDetails(input: {username: $username, bio: $bio, location: $location, email: $email, fullname: $fullname}) {
     user {
       username
       createdAt
@@ -636,16 +615,4 @@ export const LoginDocument = gql`
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
-};
-export const UnLikePostDocument = gql`
-    mutation UnLikePost($postId: String!) {
-  unLikePost(postId: $postId) {
-    state
-    message
-  }
-}
-    `;
-
-export function useUnLikePostMutation() {
-  return Urql.useMutation<UnLikePostMutation, UnLikePostMutationVariables>(UnLikePostDocument);
 };

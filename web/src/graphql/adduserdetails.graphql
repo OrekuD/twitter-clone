@@ -4,7 +4,6 @@ mutation AddUserDetails(
   $location: String!
   $email: String!
   $fullname: String!
-  $image: String!
 ) {
   addUserDetails(
     input: {
@@ -13,7 +12,6 @@ mutation AddUserDetails(
       location: $location
       email: $email
       fullname: $fullname
-      image: $image
     }
   ) {
     user {

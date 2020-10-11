@@ -1,14 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { defaultUserDetails } from "../../constants";
+import { dummyUserDetails } from "../../constants";
 import { useAppContext } from "../../context/context";
-import {
-  Like,
-  Post,
-  useLikePostMutation,
-  useUnLikePostMutation,
-  User,
-} from "../../generated/graphql";
+import { Post, useLikePostMutation } from "../../generated/graphql";
 import { FavouriteFilled, Favourite, ChatBubble, Share } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
 import { userLiked } from "../../utils/userLiked";
@@ -16,9 +10,10 @@ import "./PostCard.scss";
 
 interface Props {
   post: any; // TODO: fix this
+  nolink?: boolean;
 }
 
-const PostCard = ({ post }: Props) => {
+const PostCard = ({ post, nolink = false }: Props) => {
   const {
     _id,
     content,
@@ -28,7 +23,6 @@ const PostCard = ({ post }: Props) => {
     likes,
   } = post as Post;
   const [, likePost] = useLikePostMutation();
-  const [, unlikePost] = useUnLikePostMutation();
   const {
     userDetails: { _id: userId },
   } = useAppContext();
@@ -61,9 +55,13 @@ const PostCard = ({ post }: Props) => {
           </div>
         </div>
       </div>
-      <Link to={`/post/${_id}`}>
+      {nolink ? (
         <p className="content">{content}</p>
-      </Link>
+      ) : (
+        <Link to={`/post/${_id}`}>
+          <p className="content">{content}</p>
+        </Link>
+      )}
       <div className="icons">
         <button
           className="icon"
@@ -75,7 +73,7 @@ const PostCard = ({ post }: Props) => {
                 _id: Math.random().toString(),
                 creatorId: userId,
                 postId: _id,
-                creator: defaultUserDetails,
+                creator: dummyUserDetails,
               });
             }
             likePost({

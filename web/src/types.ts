@@ -2,6 +2,7 @@ export type AppContext = {
   isLoggedIn: boolean;
   userDetails: User;
   setIsLoggedIn: (state: boolean) => void;
+  addUserDetails: (details: Partial<User>) => void;
 };
 
 export type User = {

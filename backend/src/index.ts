@@ -9,6 +9,7 @@ import { LikeResolver } from "./Resolvers/LikeResolver";
 import session from "express-session";
 import connectMongo from "connect-mongo";
 import { CommentResolver } from "./Resolvers/CommentResolver";
+import { SearchResolver } from "./Resolvers/SearchResolver";
 
 const PORT = process.env.PORT || 4000;
 
@@ -42,7 +43,13 @@ const main = async () => {
   );
 
   const schema = await buildSchema({
-    resolvers: [PostResolver, UserResolver, LikeResolver, CommentResolver],
+    resolvers: [
+      PostResolver,
+      UserResolver,
+      LikeResolver,
+      CommentResolver,
+      SearchResolver,
+    ],
     validate: false,
   });
 

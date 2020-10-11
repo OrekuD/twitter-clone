@@ -51,9 +51,6 @@ class DetailsInput {
   email: string;
 
   @Field()
-  image: string;
-
-  @Field()
   fullname: string;
 }
 
@@ -141,7 +138,7 @@ export class UserResolver {
     @Arg("input") input: DetailsInput,
     @Ctx() { request }: Context
   ): Promise<UserResponse> {
-    const { bio, location, username, email, fullname, image } = input;
+    const { bio, location, username, email, fullname } = input;
     const { userId } = request.session;
     const user = await UserModel.findOne({ username });
 
@@ -156,7 +153,7 @@ export class UserResolver {
 
     await UserModel.updateOne(
       { _id: userId },
-      { bio, location, username, email, fullname, image }
+      { bio, location, username, email, fullname }
     );
     const updatedUser = await UserModel.findOne({
       _id: userId,
