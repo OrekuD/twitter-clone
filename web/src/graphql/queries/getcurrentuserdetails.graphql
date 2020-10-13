@@ -1,0 +1,5 @@
+query GetCurrentUserDetails {
+  currentUser {
+    ...UserFullDetails
+  }
+}

@@ -1,14 +1,13 @@
 import React from "react";
 import "./Modal.scss";
 import { AnimatePresence, motion } from "framer-motion";
-import { useAppContext } from "../../context/context";
 
 interface Props {
   isVisible: boolean;
+  onClose: () => void;
 }
 
-const Modal = ({ isVisible }: Props) => {
-  const { setModalState } = useAppContext();
+const Modal: React.FC<Props> = ({ isVisible, onClose, children }) => {
   return (
     <AnimatePresence exitBeforeEnter>
       {isVisible && (
@@ -29,7 +28,7 @@ const Modal = ({ isVisible }: Props) => {
             },
           }}
           className="modal-backdrop"
-          onClick={() => setModalState(false)}
+          onClick={onClose}
         >
           <motion.div
             initial={{
@@ -46,14 +45,7 @@ const Modal = ({ isVisible }: Props) => {
             }}
             className="modal-content"
           >
-            <p>
-              Occaecat sunt fugiat culpa cillum adipisicing ullamco magna veniam
-              tempor mollit. Esse quis velit in amet aute reprehenderit dolor.
-              Qui fugiat in dolor veniam. Qui in reprehenderit laborum ad
-              nostrud reprehenderit enim enim esse ea est laboris. Esse deserunt
-              nulla consectetur ea velit est mollit fugiat elit esse pariatur
-              veniam commodo id. Dolor sunt et ad in consectetur laboris Lorem.
-            </p>
+            {children}
           </motion.div>
         </motion.div>
       )}

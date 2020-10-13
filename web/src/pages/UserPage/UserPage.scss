@@ -1,0 +1,109 @@
+@import "../../constants/colors.scss";
+
+.user-page {
+  //   height: 300px;
+  //   background-color: red;
+  // padding-bottom: 0;
+  // border-bottom: 1px solid $lightgrey;
+
+  .profile {
+    padding: 20px 20px;
+    .top-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .profile-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 60px;
+        background-color: aqua;
+      }
+    }
+
+    .profile-details {
+      padding-top: 10px;
+
+      .fullname {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .username {
+        font-size: 14px;
+        color: grey;
+      }
+
+      .bio {
+        margin-top: 5px;
+        .link {
+          color: #2196f3;
+        }
+      }
+
+      .links {
+        display: flex;
+        padding-top: 10px;
+
+        .row {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          color: grey;
+
+          &:first-of-type {
+            margin-right: 20px;
+          }
+
+          svg {
+            margin-right: 5px;
+          }
+        }
+      }
+
+      .bottom-section {
+        display: flex;
+        padding-top: 10px;
+
+        .follow-text {
+          span {
+            font-weight: 700;
+          }
+
+          &:first-of-type {
+            margin-right: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .tabs {
+    height: 60px;
+    display: flex;
+    // background-color: red;
+    margin-bottom: 10px;
+
+    .tab {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      border-bottom: 1px solid $lightgrey;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .active {
+      border-bottom: 2px solid $blue;
+    }
+  }
+}
+
+.no-user {
+  padding: 100px 0;
+  text-align: center;
+
+  p {
+    font-size: 18px;
+    font-weight: 600;
+  }
+}

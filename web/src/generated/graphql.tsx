@@ -18,7 +18,9 @@ export type Query = {
   __typename?: 'Query';
   getPost: SinglePostResponse;
   getAllPosts: Array<Post>;
+  getPostsByUser: Array<Post>;
   getUserDetails: UserResponse;
+  getUser: UserResponse;
   currentUser?: Maybe<User>;
   getLikesByUser?: Maybe<Array<Like>>;
   getCommentsByUser: Array<Post>;
@@ -31,8 +33,18 @@ export type QueryGetPostArgs = {
 };
 
 
+export type QueryGetPostsByUserArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type QueryGetUserDetailsArgs = {
   userId: Scalars['String'];
+};
+
+
+export type QueryGetUserArgs = {
+  username: Scalars['String'];
 };
 
 
@@ -199,6 +211,31 @@ export type CommentInput = {
   postId: Scalars['String'];
 };
 
+export type PostDetailsFragment = (
+  { __typename?: 'Post' }
+  & Pick<Post, '_id' | 'content' | 'createdAt'>
+  & { creator: (
+    { __typename?: 'User' }
+    & UserPartialDetailsFragment
+  ), likes: Array<(
+    { __typename?: 'Like' }
+    & Pick<Like, '_id' | 'creatorId'>
+  )>, comments: Array<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, '_id'>
+  )> }
+);
+
+export type UserFullDetailsFragment = (
+  { __typename?: 'User' }
+  & Pick<User, '_id' | 'username' | 'email' | 'bio' | 'createdAt' | 'location' | 'image' | 'fullname'>
+);
+
+export type UserPartialDetailsFragment = (
+  { __typename?: 'User' }
+  & Pick<User, '_id' | 'username' | 'image' | 'fullname'>
+);
+
 export type AddUserDetailsMutationVariables = Exact<{
   username: Scalars['String'];
   bio: Scalars['String'];
@@ -220,31 +257,6 @@ export type AddUserDetailsMutation = (
       & Pick<UserError, 'message' | 'field'>
     )> }
   ) }
-);
-
-export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllPostsQuery = (
-  { __typename?: 'Query' }
-  & { getAllPosts: Array<(
-    { __typename?: 'Post' }
-    & Pick<Post, '_id' | 'content' | 'createdAt'>
-    & { likes: Array<(
-      { __typename?: 'Like' }
-      & Pick<Like, 'creatorId'>
-      & { creator: (
-        { __typename?: 'User' }
-        & Pick<User, '_id' | 'image' | 'username'>
-      ) }
-    )>, comments: Array<(
-      { __typename?: 'Comment' }
-      & Pick<Comment, '_id'>
-    )>, creator: (
-      { __typename?: 'User' }
-      & Pick<User, 'username' | '_id'>
-    ) }
-  )> }
 );
 
 export type CreateAccountMutationVariables = Exact<{
@@ -309,67 +321,6 @@ export type CreatePostMutation = (
   ) }
 );
 
-export type GetCurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetCurrentUserDetailsQuery = (
-  { __typename?: 'Query' }
-  & { currentUser?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'username' | 'email' | 'createdAt' | 'bio' | 'location' | 'image' | 'fullname' | '_id'>
-  )> }
-);
-
-export type GetPostQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type GetPostQuery = (
-  { __typename?: 'Query' }
-  & { getPost: (
-    { __typename?: 'SinglePostResponse' }
-    & { post?: Maybe<(
-      { __typename?: 'Post' }
-      & Pick<Post, '_id' | 'content' | 'createdAt'>
-      & { creator: (
-        { __typename?: 'User' }
-        & Pick<User, '_id'>
-      ), comments: Array<(
-        { __typename?: 'Comment' }
-        & Pick<Comment, '_id' | 'content' | 'creatorId' | 'createdAt'>
-        & { creator: (
-          { __typename?: 'User' }
-          & Pick<User, '_id' | 'username' | 'image'>
-        ) }
-      )>, likes: Array<(
-        { __typename?: 'Like' }
-        & Pick<Like, '_id'>
-        & { creator: (
-          { __typename?: 'User' }
-          & Pick<User, '_id' | 'username' | 'image'>
-        ) }
-      )> }
-    )> }
-  ) }
-);
-
-export type GetUserDetailsQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type GetUserDetailsQuery = (
-  { __typename?: 'Query' }
-  & { getUserDetails: (
-    { __typename?: 'UserResponse' }
-    & { user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, '_id' | 'username' | 'createdAt' | 'bio' | 'location' | 'email' | 'fullname' | 'image'>
-    )> }
-  ) }
-);
-
 export type LikePostMutationVariables = Exact<{
   postId: Scalars['String'];
 }>;
@@ -403,6 +354,133 @@ export type LoginMutation = (
   ) }
 );
 
+export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllPostsQuery = (
+  { __typename?: 'Query' }
+  & { getAllPosts: Array<(
+    { __typename?: 'Post' }
+    & PostDetailsFragment
+  )> }
+);
+
+export type GetCommentsByUserQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type GetCommentsByUserQuery = (
+  { __typename?: 'Query' }
+  & { getCommentsByUser: Array<(
+    { __typename?: 'Post' }
+    & Pick<Post, '_id' | 'content' | 'createdAt'>
+    & { creator: (
+      { __typename?: 'User' }
+      & UserPartialDetailsFragment
+    ), likes: Array<(
+      { __typename?: 'Like' }
+      & Pick<Like, '_id' | 'creatorId'>
+    )>, comments: Array<(
+      { __typename?: 'Comment' }
+      & Pick<Comment, '_id'>
+    )> }
+  )> }
+);
+
+export type GetCurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentUserDetailsQuery = (
+  { __typename?: 'Query' }
+  & { currentUser?: Maybe<(
+    { __typename?: 'User' }
+    & UserFullDetailsFragment
+  )> }
+);
+
+export type GetPostQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetPostQuery = (
+  { __typename?: 'Query' }
+  & { getPost: (
+    { __typename?: 'SinglePostResponse' }
+    & { post?: Maybe<(
+      { __typename?: 'Post' }
+      & Pick<Post, '_id' | 'content' | 'createdAt'>
+      & { creator: (
+        { __typename?: 'User' }
+        & UserPartialDetailsFragment
+      ), comments: Array<(
+        { __typename?: 'Comment' }
+        & Pick<Comment, '_id' | 'content' | 'creatorId' | 'createdAt'>
+        & { creator: (
+          { __typename?: 'User' }
+          & UserPartialDetailsFragment
+        ) }
+      )>, likes: Array<(
+        { __typename?: 'Like' }
+        & Pick<Like, '_id'>
+        & { creator: (
+          { __typename?: 'User' }
+          & UserPartialDetailsFragment
+        ) }
+      )> }
+    )> }
+  ) }
+);
+
+export type GetPostsByUserQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type GetPostsByUserQuery = (
+  { __typename?: 'Query' }
+  & { getPostsByUser: Array<(
+    { __typename?: 'Post' }
+    & PostDetailsFragment
+  )> }
+);
+
+export type GetUserQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type GetUserQuery = (
+  { __typename?: 'Query' }
+  & { getUser: (
+    { __typename?: 'UserResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & UserFullDetailsFragment
+    )>, error?: Maybe<(
+      { __typename?: 'UserError' }
+      & Pick<UserError, 'message' | 'field'>
+    )> }
+  ) }
+);
+
+export type GetUserDetailsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetUserDetailsQuery = (
+  { __typename?: 'Query' }
+  & { getUserDetails: (
+    { __typename?: 'UserResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & UserFullDetailsFragment
+    )> }
+  ) }
+);
+
 export type SearchQueryVariables = Exact<{
   searchTerm: Scalars['String'];
 }>;
@@ -417,7 +495,7 @@ export type SearchQuery = (
       & Pick<Post, 'content' | '_id' | 'createdAt'>
       & { creator: (
         { __typename?: 'User' }
-        & Pick<User, 'username' | '_id'>
+        & UserPartialDetailsFragment
       ), comments: Array<(
         { __typename?: 'Comment' }
         & Pick<Comment, '_id'>
@@ -426,17 +504,53 @@ export type SearchQuery = (
         & Pick<Like, '_id' | 'creatorId'>
         & { creator: (
           { __typename?: 'User' }
-          & Pick<User, '_id' | 'image' | 'username'>
+          & UserPartialDetailsFragment
         ) }
       )> }
     )>, users: Array<(
       { __typename?: 'User' }
-      & Pick<User, 'username' | 'fullname' | '_id'>
+      & UserPartialDetailsFragment
     )> }
   ) }
 );
 
-
+export const UserPartialDetailsFragmentDoc = gql`
+    fragment UserPartialDetails on User {
+  _id
+  username
+  image
+  fullname
+}
+    `;
+export const PostDetailsFragmentDoc = gql`
+    fragment PostDetails on Post {
+  _id
+  content
+  createdAt
+  creator {
+    ...UserPartialDetails
+  }
+  likes {
+    _id
+    creatorId
+  }
+  comments {
+    _id
+  }
+}
+    ${UserPartialDetailsFragmentDoc}`;
+export const UserFullDetailsFragmentDoc = gql`
+    fragment UserFullDetails on User {
+  _id
+  username
+  email
+  bio
+  createdAt
+  location
+  image
+  fullname
+}
+    `;
 export const AddUserDetailsDocument = gql`
     mutation AddUserDetails($username: String!, $bio: String!, $location: String!, $email: String!, $fullname: String!) {
   addUserDetails(input: {username: $username, bio: $bio, location: $location, email: $email, fullname: $fullname}) {
@@ -457,35 +571,6 @@ export const AddUserDetailsDocument = gql`
 
 export function useAddUserDetailsMutation() {
   return Urql.useMutation<AddUserDetailsMutation, AddUserDetailsMutationVariables>(AddUserDetailsDocument);
-};
-export const AllPostsDocument = gql`
-    query AllPosts {
-  getAllPosts {
-    _id
-    content
-    createdAt
-    likes {
-      creatorId
-      creator {
-        _id
-        image
-        username
-      }
-    }
-    comments {
-      _id
-    }
-    creator {
-      username
-      _id
-    }
-    createdAt
-  }
-}
-    `;
-
-export function useAllPostsQuery(options: Omit<Urql.UseQueryArgs<AllPostsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllPostsQuery>({ query: AllPostsDocument, ...options });
 };
 export const CreateAccountDocument = gql`
     mutation CreateAccount($username: String!, $password: String!, $email: String!) {
@@ -550,81 +635,6 @@ export const CreatePostDocument = gql`
 export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
 };
-export const GetCurrentUserDetailsDocument = gql`
-    query GetCurrentUserDetails {
-  currentUser {
-    username
-    email
-    createdAt
-    bio
-    location
-    image
-    fullname
-    _id
-  }
-}
-    `;
-
-export function useGetCurrentUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserDetailsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetCurrentUserDetailsQuery>({ query: GetCurrentUserDetailsDocument, ...options });
-};
-export const GetPostDocument = gql`
-    query GetPost($id: String!) {
-  getPost(id: $id) {
-    post {
-      _id
-      content
-      createdAt
-      creator {
-        _id
-      }
-      comments {
-        _id
-        content
-        creatorId
-        createdAt
-        creator {
-          _id
-          username
-          image
-        }
-      }
-      likes {
-        _id
-        creator {
-          _id
-          username
-          image
-        }
-      }
-    }
-  }
-}
-    `;
-
-export function useGetPostQuery(options: Omit<Urql.UseQueryArgs<GetPostQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetPostQuery>({ query: GetPostDocument, ...options });
-};
-export const GetUserDetailsDocument = gql`
-    query GetUserDetails($id: String!) {
-  getUserDetails(userId: $id) {
-    user {
-      _id
-      username
-      createdAt
-      bio
-      location
-      email
-      fullname
-      image
-    }
-  }
-}
-    `;
-
-export function useGetUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetUserDetailsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetUserDetailsQuery>({ query: GetUserDetailsDocument, ...options });
-};
 export const LikePostDocument = gql`
     mutation LikePost($postId: String!) {
   likePost(postId: $postId) {
@@ -661,6 +671,125 @@ export const LoginDocument = gql`
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };
+export const AllPostsDocument = gql`
+    query AllPosts {
+  getAllPosts {
+    ...PostDetails
+  }
+}
+    ${PostDetailsFragmentDoc}`;
+
+export function useAllPostsQuery(options: Omit<Urql.UseQueryArgs<AllPostsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AllPostsQuery>({ query: AllPostsDocument, ...options });
+};
+export const GetCommentsByUserDocument = gql`
+    query GetCommentsByUser($userId: String!) {
+  getCommentsByUser(userId: $userId) {
+    _id
+    content
+    createdAt
+    creator {
+      ...UserPartialDetails
+    }
+    likes {
+      _id
+      creatorId
+    }
+    comments {
+      _id
+    }
+  }
+}
+    ${UserPartialDetailsFragmentDoc}`;
+
+export function useGetCommentsByUserQuery(options: Omit<Urql.UseQueryArgs<GetCommentsByUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetCommentsByUserQuery>({ query: GetCommentsByUserDocument, ...options });
+};
+export const GetCurrentUserDetailsDocument = gql`
+    query GetCurrentUserDetails {
+  currentUser {
+    ...UserFullDetails
+  }
+}
+    ${UserFullDetailsFragmentDoc}`;
+
+export function useGetCurrentUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserDetailsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetCurrentUserDetailsQuery>({ query: GetCurrentUserDetailsDocument, ...options });
+};
+export const GetPostDocument = gql`
+    query GetPost($id: String!) {
+  getPost(id: $id) {
+    post {
+      _id
+      content
+      createdAt
+      creator {
+        ...UserPartialDetails
+      }
+      comments {
+        _id
+        content
+        creatorId
+        createdAt
+        creator {
+          ...UserPartialDetails
+        }
+      }
+      likes {
+        _id
+        creator {
+          ...UserPartialDetails
+        }
+      }
+    }
+  }
+}
+    ${UserPartialDetailsFragmentDoc}`;
+
+export function useGetPostQuery(options: Omit<Urql.UseQueryArgs<GetPostQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPostQuery>({ query: GetPostDocument, ...options });
+};
+export const GetPostsByUserDocument = gql`
+    query GetPostsByUser($userId: String!) {
+  getPostsByUser(userId: $userId) {
+    ...PostDetails
+  }
+}
+    ${PostDetailsFragmentDoc}`;
+
+export function useGetPostsByUserQuery(options: Omit<Urql.UseQueryArgs<GetPostsByUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPostsByUserQuery>({ query: GetPostsByUserDocument, ...options });
+};
+export const GetUserDocument = gql`
+    query GetUser($username: String!) {
+  getUser(username: $username) {
+    user {
+      ...UserFullDetails
+    }
+    error {
+      message
+      field
+    }
+  }
+}
+    ${UserFullDetailsFragmentDoc}`;
+
+export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserQuery>({ query: GetUserDocument, ...options });
+};
+export const GetUserDetailsDocument = gql`
+    query GetUserDetails($id: String!) {
+  getUserDetails(userId: $id) {
+    user {
+      ...UserFullDetails
+    }
+  }
+}
+    ${UserFullDetailsFragmentDoc}`;
+
+export function useGetUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetUserDetailsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserDetailsQuery>({ query: GetUserDetailsDocument, ...options });
+};
 export const SearchDocument = gql`
     query Search($searchTerm: String!) {
   search(searchTerm: $searchTerm) {
@@ -669,8 +798,7 @@ export const SearchDocument = gql`
       _id
       createdAt
       creator {
-        username
-        _id
+        ...UserPartialDetails
       }
       comments {
         _id
@@ -679,20 +807,16 @@ export const SearchDocument = gql`
         _id
         creatorId
         creator {
-          _id
-          image
-          username
+          ...UserPartialDetails
         }
       }
     }
     users {
-      username
-      fullname
-      _id
+      ...UserPartialDetails
     }
   }
 }
-    `;
+    ${UserPartialDetailsFragmentDoc}`;
 
 export function useSearchQuery(options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<SearchQuery>({ query: SearchDocument, ...options });

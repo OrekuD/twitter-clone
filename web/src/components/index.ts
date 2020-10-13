@@ -1,4 +1,4 @@
-export { default as Header } from "./Header/Header";
+export { Header, StackHeader } from "./AppBars";
 export { default as CreatePost } from "./CreatePost/CreatePost";
 export { default as PostCard } from "./PostCard/PostCard";
 export { default as Spinner } from "./Spinner/Spinner";

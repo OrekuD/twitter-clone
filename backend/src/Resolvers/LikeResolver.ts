@@ -37,18 +37,22 @@ export class LikeResolver {
     }
 
     const hasUserAlreadyLiked = post.likes.findIndex(
-      (like) => like?.creatorId === userId // TODO: fix this later
+      (like) => like?.creatorId === userId // TODO: fix this
     );
 
     if (hasUserAlreadyLiked >= 0) {
       const updatedLikes = post.likes.filter(
-        (like) => like?.creatorId !== userId
+        (like) => like?.creatorId !== userId // TODO: fix this
       );
 
       await PostModel.updateOne(
         { _id: postId },
         { $set: { likes: updatedLikes } }
       );
+
+      await LikeModel.deleteOne({
+        _id: post.likes[hasUserAlreadyLiked]?.id, // TODO: fix this
+      });
 
       return { state: true, message: "Unlike successfull" };
     }

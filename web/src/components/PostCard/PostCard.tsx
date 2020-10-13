@@ -25,7 +25,6 @@ const PostCard = ({ post, nolink = false }: Props) => {
   const [, likePost] = useLikePostMutation();
   const {
     userDetails: { _id: userId },
-    setModalState,
   } = useAppContext();
 
   const url = "https://weconnect.netlify.app";
@@ -44,7 +43,7 @@ const PostCard = ({ post, nolink = false }: Props) => {
   };
 
   const commentPost = () => {
-    setModalState(true);
+    // setModalState(true);
   };
 
   return (

@@ -5,8 +5,7 @@ query Search($searchTerm: String!) {
       _id
       createdAt
       creator {
-        username
-        _id
+        ...UserPartialDetails
       }
       comments {
         _id
@@ -15,16 +14,12 @@ query Search($searchTerm: String!) {
         _id
         creatorId
         creator {
-          _id
-          image
-          username
+          ...UserPartialDetails
         }
       }
     }
     users {
-      username
-      fullname
-      _id
+      ...UserPartialDetails
     }
   }
 }

@@ -1,0 +1,11 @@
+query GetUser($username: String!) {
+  getUser(username: $username) {
+    user {
+      ...UserFullDetails
+    }
+    error {
+      message
+      field
+    }
+  }
+}

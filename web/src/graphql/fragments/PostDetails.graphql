@@ -1,0 +1,15 @@
+fragment PostDetails on Post {
+  _id
+  content
+  createdAt
+  creator {
+    ...UserPartialDetails
+  }
+  likes {
+    _id
+    creatorId
+  }
+  comments {
+    _id
+  }
+}

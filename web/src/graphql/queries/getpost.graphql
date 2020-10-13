@@ -5,7 +5,7 @@ query GetPost($id: String!) {
       content
       createdAt
       creator {
-        _id
+        ...UserPartialDetails
       }
       comments {
         _id
@@ -13,17 +13,13 @@ query GetPost($id: String!) {
         creatorId
         createdAt
         creator {
-          _id
-          username
-          image
+          ...UserPartialDetails
         }
       }
       likes {
         _id
         creator {
-          _id
-          username
-          image
+          ...UserPartialDetails
         }
       }
     }

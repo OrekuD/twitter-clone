@@ -66,6 +66,7 @@ class UserResponse {
 @Resolver()
 export class UserResolver {
   @Mutation(() => UserResponse)
+  @UseMiddleware(Auth)
   async createAccount(
     @Arg("input") input: UserInput,
     @Ctx() { request }: Context
@@ -165,6 +166,21 @@ export class UserResolver {
   @Query(() => UserResponse)
   async getUserDetails(@Arg("userId") userId: string) {
     const user = await UserModel.findOne({ _id: userId });
+
+    if (!user) {
+      return {
+        error: {
+          message: "Username does not exist",
+          field: "username",
+        },
+      };
+    }
+    return { user };
+  }
+
+  @Query(() => UserResponse)
+  async getUser(@Arg("username") username: string) {
+    const user = await UserModel.findOne({ username: username });
 
     if (!user) {
       return {

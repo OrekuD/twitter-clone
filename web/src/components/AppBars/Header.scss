@@ -1,0 +1,21 @@
+@import "../../constants/colors.scss";
+
+.stack-header {
+  height: 70px;
+  border-bottom: 1px solid $lightgrey;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  // background-color: red;
+
+  svg {
+    transform: rotateY(180deg);
+    margin-top: 5px;
+  }
+
+  .label {
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+}

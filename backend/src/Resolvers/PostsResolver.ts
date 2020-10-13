@@ -1,3 +1,4 @@
+import { Auth } from "../Middleware/Auth";
 import {
   Resolver,
   Arg,
@@ -6,6 +7,7 @@ import {
   ObjectType,
   Field,
   Ctx,
+  UseMiddleware,
 } from "type-graphql";
 import { Post, PostModel } from "../Models/Post";
 import { Context } from "../types";
@@ -47,7 +49,15 @@ export class PostResolver {
     return await PostModel.find().sort({ createdAt: "desc" });
   }
 
+  @Query(() => [Post])
+  async getPostsByUser(@Arg("userId") userId: string) {
+    return await PostModel.find({ creator: userId }).sort({
+      createdAt: "desc",
+    });
+  }
+
   @Mutation(() => Post)
+  @UseMiddleware(Auth)
   async createPost(
     @Arg("content") content: string,
     @Ctx() { request }: Context

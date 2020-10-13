@@ -1,0 +1,6 @@
+fragment UserPartialDetails on User {
+  _id
+  username
+  image
+  fullname
+}

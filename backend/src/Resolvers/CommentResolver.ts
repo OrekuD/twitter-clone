@@ -8,9 +8,11 @@ import {
   Field,
   InputType,
   Ctx,
+  UseMiddleware,
 } from "type-graphql";
 import { Post, PostModel } from "../Models/Post";
 import { Context } from "../types";
+import { Auth } from "../Middleware/Auth";
 
 @ObjectType()
 class CommentError {
@@ -48,6 +50,7 @@ export class CommentResolver {
   }
 
   @Mutation(() => CommentResponse)
+  @UseMiddleware(Auth)
   async createComment(
     @Arg("input") input: CommentInput,
     @Ctx() { request }: Context
