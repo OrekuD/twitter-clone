@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useAppContext } from "../../context/context";
 import { useGetCurrentUserDetailsQuery } from "../../generated/graphql";
 import CreateComment from "../CreateComment/CreateComment";
@@ -9,10 +10,11 @@ import "./Layout.scss";
 const Layout: React.FC = ({ children }) => {
   const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
   const { addUserDetails } = useAppContext();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     getUserDetails();
-  }, [getUserDetails]);
+  }, [getUserDetails, pathname]);
 
   useEffect(() => {
     if (data?.currentUser) {

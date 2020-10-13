@@ -73,6 +73,7 @@ export class CommentResolver {
       createdAt: Date.now(),
       postId,
       creatorId: userId,
+      likes: [],
     });
     await comment.save();
 

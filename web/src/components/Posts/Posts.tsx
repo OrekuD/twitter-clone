@@ -9,21 +9,25 @@ interface Props {
 }
 
 const Posts = ({ posts }: Props) => {
-  return (
-    <div className="posts">
-      {posts && posts.length > 0 ? (
-        <>
-          {posts.map((post, index) => (
-            <PostCard post={post} />
-          ))}
-        </>
-      ) : (
-        <div className="loading-screen">
-          <Spinner />
-        </div>
-      )}
-    </div>
-  );
+  let content;
+  if (typeof posts === "undefined") {
+    content = (
+      <div className="loading-screen">
+        <Spinner />
+      </div>
+    );
+  } else if (posts.length === 0) {
+    content = <p className="no-tweets">No tweets</p>;
+  } else {
+    content = (
+      <>
+        {posts.map((post, index) => (
+          <PostCard post={post} />
+        ))}
+      </>
+    );
+  }
+  return <div className="posts">{content}</div>;
 };
 
 export default Posts;

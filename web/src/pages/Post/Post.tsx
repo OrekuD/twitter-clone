@@ -28,7 +28,7 @@ const Post = () => {
   } else {
     content = (
       <div>
-        <PostCard post={data?.getPost.post!} nolink />
+        <p>{data.getPost.post?.content}</p>
       </div>
     );
   }

@@ -1,10 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { dummyUserDetails } from "../../constants";
-import { grey, lightgrey } from "../../constants/colors";
+import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import { Post, useLikePostMutation } from "../../generated/graphql";
-import { FavouriteFilled, Favourite, ChatBubble, Share } from "../../Svgs";
+import {
+  FavouriteFilled,
+  Favourite,
+  ChatBubble,
+  Share,
+  ChevronDown,
+} from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
 import { userLiked } from "../../utils/userLiked";
 import "./PostCard.scss";
@@ -14,7 +20,7 @@ interface Props {
   nolink?: boolean;
 }
 
-const PostCard = ({ post, nolink = false }: Props) => {
+const PostCard = ({ post }: Props) => {
   const {
     _id,
     content,
@@ -64,6 +70,11 @@ const PostCard = ({ post, nolink = false }: Props) => {
             </div>
           </div>
         </Link>
+        <div className="view-tweet">
+          <Link to={`/post/${_id}`}>
+            <ChevronDown size={12} color={grey} />
+          </Link>
+        </div>
       </div>
       <p className="content">
         {content.split("\n").map((str) => {

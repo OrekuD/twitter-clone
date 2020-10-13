@@ -10,6 +10,7 @@ import session from "express-session";
 import connectMongo from "connect-mongo";
 import { CommentResolver } from "./Resolvers/CommentResolver";
 import { SearchResolver } from "./Resolvers/SearchResolver";
+import { TrendsResolver } from "./Resolvers/TrendsResolver";
 
 const PORT = process.env.PORT || 4000;
 
@@ -49,6 +50,7 @@ const main = async () => {
       LikeResolver,
       CommentResolver,
       SearchResolver,
+      TrendsResolver,
     ],
     validate: false,
   });

@@ -47,7 +47,9 @@ const CreateComment = () => {
         postId: _id,
       });
       resetForm();
-      setCommentModalState(false);
+      setTimeout(() => {
+        setCommentModalState(false);
+      }, 500);
     },
   });
 

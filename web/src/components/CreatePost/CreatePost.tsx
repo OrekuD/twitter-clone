@@ -4,7 +4,6 @@ import "./CreatePost.scss";
 import { useCreatePostMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { Info } from "../../Svgs";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants";
 
 const schema = Yup.object().shape({

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Layout, Modal, Posts, Spinner, StackHeader } from "../../components";
-import { useAppContext } from "../../context/context";
+import { Layout, Posts, Spinner, StackHeader } from "../../components";
 import {
   Post,
+  useGetCommentsByUserQuery,
   useGetPostsByUserQuery,
   useGetUserQuery,
 } from "../../generated/graphql";
@@ -29,12 +29,30 @@ const UserPage = () => {
     },
   });
 
+  const [
+    { data: commentsByUser },
+    getCommentsByUser,
+  ] = useGetCommentsByUserQuery({
+    variables: {
+      userId: data?.getUser.user?._id!,
+    },
+  });
+
   useEffect(() => {
-    getPostsByUser();
-    if (postsByUser) {
-      setPosts(postsByUser?.getPostsByUser as Post[]);
+    if (activeIndex === 0) {
+      getPostsByUser();
+      if (postsByUser) {
+        setPosts(postsByUser?.getPostsByUser as Post[]);
+      }
+    } else if (activeIndex === 1) {
+      // console.log("--------");
+      getCommentsByUser();
+      if (commentsByUser) {
+        setPosts([]);
+        // setPosts(commentsByUser?.getCommentsByUser as Comment[]);
+      }
     }
-  }, [activeIndex, postsByUser]);
+  }, [activeIndex, getPostsByUser]);
 
   const tabs = ["Twoots", "Replies", "Likes"];
 

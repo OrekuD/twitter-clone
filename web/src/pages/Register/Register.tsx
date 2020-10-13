@@ -29,26 +29,31 @@ const Register = () => {
     password: "",
   };
 
-  const { handleChange, handleSubmit, handleBlur, errors, touched } = useFormik(
-    {
-      initialValues,
-      validationSchema: SignUpSchema,
-      onSubmit: async (values, { setErrors }) => {
-        const res = await createAccount({
-          email: values.email!,
-          password: values.password,
-          username: values.username,
-        });
+  const {
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    errors,
+    touched,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    validationSchema: SignUpSchema,
+    onSubmit: async (values, { setErrors }) => {
+      const res = await createAccount({
+        email: values.email!,
+        password: values.password,
+        username: values.username,
+      });
 
-        if (res.data?.createAccount.error) {
-          setErrors(convertError(res.data?.createAccount.error));
-        } else if (res.data?.createAccount.user) {
-          setIsLoggedIn(true);
-          history.push("/");
-        }
-      },
-    }
-  );
+      if (res.data?.createAccount.error) {
+        setErrors(convertError(res.data?.createAccount.error));
+      } else if (res.data?.createAccount.user) {
+        setIsLoggedIn(true);
+        history.push("/");
+      }
+    },
+  });
 
   return (
     <div className="form-container">
@@ -108,7 +113,7 @@ const Register = () => {
           </div>
         </div>
         <div className="bottom-section">
-          <button className="ripple-btn" type="submit">
+          <button className="ripple-btn" type="submit" disabled={isSubmitting}>
             Submit
           </button>
           <p>

@@ -11,7 +11,6 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import argon2 from "argon2";
-import mongoose from "mongoose";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
 
@@ -66,7 +65,6 @@ class UserResponse {
 @Resolver()
 export class UserResolver {
   @Mutation(() => UserResponse)
-  @UseMiddleware(Auth)
   async createAccount(
     @Arg("input") input: UserInput,
     @Ctx() { request }: Context
@@ -93,7 +91,6 @@ export class UserResolver {
       username: input.username,
       email: input.email!,
       password: hashedPassword,
-      _id: new mongoose.Types.ObjectId(),
       createdAt: Date.now(),
       bio: "",
       fullname: "",

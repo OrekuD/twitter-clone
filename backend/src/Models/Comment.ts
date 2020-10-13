@@ -8,6 +8,7 @@ import {
 import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
 import autopopulate from "mongoose-autopopulate";
+import { Like } from "./Like";
 
 @plugin(autopopulate as any)
 @ObjectType()
@@ -34,6 +35,10 @@ export class Comment {
   @prop({ ref: () => User, autopopulate: true })
   @Field(() => User)
   creator: Ref<User>;
+
+  @prop({ ref: () => Like, autopopulate: true })
+  @Field(() => [Like])
+  likes: Ref<Like>[];
 }
 
 export const CommentModel = getModelForClass(Comment);

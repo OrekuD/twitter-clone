@@ -11,6 +11,8 @@ import {
 } from "type-graphql";
 import { Post, PostModel } from "../Models/Post";
 import { Context } from "../types";
+import { extractHashtags } from "../Util/extractHashtags";
+import { TrendsModel } from "../Models/Trends";
 
 @ObjectType()
 class PostError {
@@ -70,6 +72,27 @@ export class PostResolver {
       likes: [],
     });
     await post.save();
+    const hashtags = extractHashtags(content);
+    if (hashtags.length > 0) {
+      hashtags.forEach(async (hashtag) => {
+        const trend = await TrendsModel.findOne({ hashtag });
+        if (!trend) {
+          await TrendsModel.create({
+            hashtag,
+            numberOfPosts: 1,
+            posts: [post.id],
+          });
+        } else {
+          await TrendsModel.updateOne(
+            { _id: trend.id! },
+            {
+              $push: { posts: [post.id] as any },
+              numberOfPosts: trend.numberOfPosts + 1,
+            }
+          );
+        }
+      });
+    }
     return post;
   }
 }
