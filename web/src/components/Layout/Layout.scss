@@ -1,3 +1,5 @@
+@import "../../constants/colors.scss";
+
 .layout {
   padding: 0 10px;
   display: flex;
@@ -6,8 +8,9 @@
 
   .content-container {
     flex: 2.5;
-    padding: 40px 10px;
-    border-right: 1px solid rgb(208, 201, 201);
-    border-left: 1px solid rgb(208, 201, 201);
+    // padding: 40px 0px;
+    border-right: 1px solid $lightgrey;
+    border-left: 1px solid $lightgrey;
+    min-height: 100vh;
   }
 }

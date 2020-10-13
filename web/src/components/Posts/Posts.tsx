@@ -1,20 +1,20 @@
 import React from "react";
-import { AllPostsQuery } from "../../generated/graphql";
+import { Post } from "../../generated/graphql";
 import PostCard from "../PostCard/PostCard";
 import Spinner from "../Spinner/Spinner";
 import "./Posts.scss";
 
 interface Props {
-  data: AllPostsQuery | undefined;
+  posts: Post[] | undefined;
 }
 
-const Posts = ({ data }: Props) => {
+const Posts = ({ posts }: Props) => {
   return (
     <div className="posts">
-      {data?.getAllPosts ? (
+      {posts && posts.length > 0 ? (
         <>
-          {data?.getAllPosts.map((post, index) => (
-            <PostCard post={post} key={index} />
+          {posts.map((post, index) => (
+            <PostCard post={post} />
           ))}
         </>
       ) : (

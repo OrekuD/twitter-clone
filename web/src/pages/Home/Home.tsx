@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Layout, CreatePost, Posts } from "../../components";
-import { useAllPostsQuery } from "../../generated/graphql";
+import { Layout, CreatePost, Posts, Header } from "../../components";
+import { Post, useAllPostsQuery } from "../../generated/graphql";
 import "./Home.scss";
 
 const Home = () => {
@@ -12,8 +12,9 @@ const Home = () => {
 
   return (
     <Layout>
+      <Header label="Home" />
       <CreatePost />
-      <Posts data={data} />
+      <Posts posts={data?.getAllPosts as Post[]} />
     </Layout>
   );
 };

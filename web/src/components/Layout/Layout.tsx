@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppContext } from "../../context/context";
 import { useGetCurrentUserDetailsQuery } from "../../generated/graphql";
+import CreateComment from "../CreateComment/CreateComment";
 import Profile from "../Profile/Profile";
 import SearchTab from "../SearchTab/SearchTab";
 import "./Layout.scss";
@@ -42,6 +43,7 @@ const Layout: React.FC = ({ children }) => {
         <Profile />
         <div className="content-container">{children}</div>
         <SearchTab />
+        <CreateComment />
       </div>
     </>
   );

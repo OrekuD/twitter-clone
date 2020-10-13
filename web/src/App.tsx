@@ -1,17 +1,21 @@
 import React from "react";
 import "./App.scss";
-import { EditDetails, Home, Login, Post, Register } from "./pages";
+import { EditDetails, Home, Login, Post, Register, UserPage } from "./pages";
 // import "rsuite/dist/styles/rsuite-default.css";
-import { Route } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
+import { useAppContext } from "./context/context";
 
 function App() {
+  const { isLoggedIn } = useAppContext();
   return (
     <>
+      {!isLoggedIn && <Redirect from="/" to="/user/login" />}
       <Route path="/" exact component={Home} />
       <Route path="/post/:postId" exact component={Post} />
-      <Route path="/register" exact component={Register} />
-      <Route path="/login" exact component={Login} />
-      <Route path="/edit-details" exact component={EditDetails} />
+      <Route path="/user/register" exact component={Register} />
+      <Route path="/user/login" exact component={Login} />
+      <Route path="/user/edit-details" exact component={EditDetails} />
+      <Route path="/:username" exact component={UserPage} />
     </>
   );
 }

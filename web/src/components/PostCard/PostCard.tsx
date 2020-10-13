@@ -25,6 +25,8 @@ const PostCard = ({ post, nolink = false }: Props) => {
   const [, likePost] = useLikePostMutation();
   const {
     userDetails: { _id: userId },
+    setCommentModalState,
+    setSelectedPost,
   } = useAppContext();
 
   const url = "https://weconnect.netlify.app";
@@ -43,52 +45,56 @@ const PostCard = ({ post, nolink = false }: Props) => {
   };
 
   const commentPost = () => {
-    // setModalState(true);
+    setSelectedPost(post);
+    setCommentModalState(true);
   };
 
   return (
     <div className="card">
       <div className="card-header">
         <div className="image"></div>
-        <div className="profile-details">
-          <p className="fullname">David Opoku</p>
-          <div className="row">
-            <p className="username">@{username}</p>
-            <div className="dot" />
-            <p className="username">{timeSince(new Date(createdAt))}</p>
+        <Link to={`/${username}`}>
+          <div className="profile-details">
+            <p className="fullname">David Opoku</p>
+            <div className="row">
+              <p className="username">@{username}</p>
+              <div className="dot" />
+              <p className="username">{timeSince(new Date(createdAt))}</p>
+            </div>
           </div>
-        </div>
-      </div>
-      {nolink ? (
-        <p className="content">{content}</p>
-      ) : (
-        <Link to={`/post/${_id}`}>
-          <p className="content">
-            {content.split("\n").map((str, index) => {
-              if (!str) {
-                return <br key={index} />;
-              } else {
-                return str.split(" ").map((substr, index) => {
-                  if (substr[0] === "#" || substr[0] === "@") {
-                    return (
-                      <span className="link" key={index}>
-                        {" " + substr + " "}
-                      </span>
-                    );
-                  } else {
-                    return <span key={index}> {substr} </span>;
-                  }
-                });
-              }
-            })}
-          </p>
         </Link>
-      )}
-
+      </div>
+      <p className="content">
+        {content.split("\n").map((str) => {
+          if (!str) {
+            return <br key={Math.random()} />;
+          } else {
+            return str.split(" ").map((substr) => {
+              if (substr[0] === "@") {
+                return (
+                  <Link to={`/${substr.slice(1)}`} key={Math.random()}>
+                    <span className="link">{" " + substr + " "}</span>
+                  </Link>
+                );
+              } else if (substr[0] === "#") {
+                return (
+                  <span className="link" key={Math.random()}>
+                    {" " + substr + " "}
+                  </span>
+                );
+              } else {
+                return <span key={Math.random()}> {substr} </span>;
+              }
+            });
+          }
+        })}
+      </p>
       <div className="icons">
         <button
           className="icon"
-          onClick={() => {
+          onClick={async () => {
+            // Mutate array on client side just for visual feedback
+
             if (userLiked(likes, userId) >= 0) {
               likes.splice(userLiked(likes, userId), 1);
             } else {
@@ -99,7 +105,7 @@ const PostCard = ({ post, nolink = false }: Props) => {
                 creator: dummyUserDetails,
               });
             }
-            likePost({
+            await likePost({
               postId: _id,
             });
           }}

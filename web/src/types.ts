@@ -1,7 +1,11 @@
+import { Post } from "./generated/graphql";
+
 export type AppContext = {
   isLoggedIn: boolean;
-  showModal: boolean;
-  setModalState: (state: boolean) => void;
+  showCommentModal: boolean;
+  setCommentModalState: (state: boolean) => void;
+  selectedPost: Post | null;
+  setSelectedPost: (post: Post) => void;
   userDetails: User;
   setIsLoggedIn: (state: boolean) => void;
   addUserDetails: (details: Partial<User>) => void;

@@ -7,7 +7,7 @@ interface Props {
   onClose: () => void;
 }
 
-const Modal: React.FC<Props> = ({ isVisible, onClose, children }) => {
+const Modal: React.FC<Props> = ({ isVisible, children, onClose }) => {
   return (
     <AnimatePresence exitBeforeEnter>
       {isVisible && (

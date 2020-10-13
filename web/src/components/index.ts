@@ -6,3 +6,4 @@ export { default as Profile } from "./Profile/Profile";
 export { default as Layout } from "./Layout/Layout";
 export { default as Posts } from "./Posts/Posts";
 export { default as Modal } from "./Modal/Modal";
+export { default as CreateComment } from "./CreateComment/CreateComment";

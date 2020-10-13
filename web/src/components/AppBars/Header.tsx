@@ -1,16 +1,14 @@
 import React from "react";
 import "./Header.scss";
-import { Link } from "react-router-dom";
 
-const Header = () => {
+interface Props {
+  label?: string;
+}
+
+const Header = ({ label }: Props) => {
   return (
-    <header>
-      <Link to="/register">
-        <p>Register</p>
-      </Link>
-      <Link to="/login">
-        <p>Login</p>
-      </Link>
+    <header className="header">
+      {label && <p className="label">{label}</p>}
     </header>
   );
 };
