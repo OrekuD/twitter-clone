@@ -1,11 +1,9 @@
+@import "../../constants/colors.scss";
+
 .card {
-  background-color: white;
   padding: 10px 20px;
   padding-bottom: 0;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
-    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  border-bottom: 1px solid $lightgrey;
 
   .card-header {
     height: 50px;
@@ -52,7 +50,7 @@
     display: inline;
 
     .link {
-      color: #2196f3;
+      color: $blue;
     }
   }
 
@@ -81,6 +79,7 @@
         font-size: 12px;
         font-weight: 600;
         margin-left: 3px;
+        color: $grey;
       }
     }
   }

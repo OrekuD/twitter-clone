@@ -1,0 +1,8 @@
+@import "../../constants/colors.scss";
+
+.tweet {
+  font-size: 14px;
+  .link {
+    color: $blue;
+  }
+}

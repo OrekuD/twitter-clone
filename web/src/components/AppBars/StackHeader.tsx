@@ -2,6 +2,7 @@ import React from "react";
 import "./Header.scss";
 import { useHistory } from "react-router-dom";
 import { Arrow } from "../../Svgs";
+import { blue } from "../../constants/colors";
 
 interface Props {
   label?: string;
@@ -12,7 +13,7 @@ const StackHeader = ({ label }: Props) => {
   return (
     <header className="stack-header">
       <button onClick={history.goBack}>
-        <Arrow size={18} color="#121212" />
+        <Arrow size={18} color={blue} />
       </button>
       {label && <p className="label">{label}</p>}
     </header>

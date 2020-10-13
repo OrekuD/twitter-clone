@@ -1,5 +1,6 @@
 import React from "react";
-import { ChatBubble } from "../../Svgs";
+import { grey } from "../../constants/colors";
+import { SearchIcon } from "../../Svgs";
 import "./SearchTab.scss";
 
 const SearchTab = () => {
@@ -7,11 +8,11 @@ const SearchTab = () => {
     <div className="search-tab">
       <div className="search-tab-content">
         <div className="search-input-container">
-          <ChatBubble size={20} color="#121212" />
+          <SearchIcon size={18} color={grey} />
           <input
             type="text"
             className="search-input"
-            placeholder="Search for posts, or users"
+            placeholder="Search posts, users"
           />
         </div>
       </div>

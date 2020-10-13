@@ -4,7 +4,7 @@
   //   height: 300px;
   //   background-color: red;
   // padding-bottom: 0;
-  // border-bottom: 1px solid $lightgrey;
+  // border-bottom: 1px solid $grey;
 
   .profile {
     padding: 20px 20px;
@@ -31,13 +31,13 @@
 
       .username {
         font-size: 14px;
-        color: grey;
+        color: $grey;
       }
 
       .bio {
         margin-top: 5px;
         .link {
-          color: #2196f3;
+          color: $blue;
         }
       }
 
@@ -48,8 +48,11 @@
         .row {
           display: flex;
           align-items: center;
-          font-size: 14px;
-          color: grey;
+
+          p {
+            font-size: 14px;
+            color: $grey;
+          }
 
           &:first-of-type {
             margin-right: 20px;
@@ -66,8 +69,11 @@
         padding-top: 10px;
 
         .follow-text {
+          color: $grey;
+
           span {
-            font-weight: 700;
+            color: #ffffff;
+            font-weight: 600;
           }
 
           &:first-of-type {
@@ -88,9 +94,10 @@
       flex: 1;
       display: grid;
       place-items: center;
-      border-bottom: 1px solid $lightgrey;
+      border-bottom: 1px solid $grey;
       font-size: 16px;
       font-weight: 600;
+      color: $grey;
     }
     .active {
       border-bottom: 2px solid $blue;

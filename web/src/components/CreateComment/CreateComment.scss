@@ -1,0 +1,95 @@
+@import "../../constants/colors.scss";
+
+.create-comment {
+  .top-section {
+    height: 50px;
+    border-bottom: 1px solid $lightgrey;
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+  }
+
+  .profile-image {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    // background-color: aqua;
+    margin-top: 2px;
+  }
+
+  .comment-content {
+    padding: 10px;
+
+    .post {
+      display: flex;
+
+      .post-content {
+        margin-left: 15px;
+
+        p {
+          font-size: 14px;
+        }
+
+        .user-details {
+          display: flex;
+          align-items: center;
+
+          .fullname {
+            font-weight: 600;
+            margin-right: 5px;
+          }
+
+          .username {
+            color: $grey;
+          }
+
+          .dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background-color: $grey;
+            margin: 0 5px;
+          }
+        }
+
+        .replying-to {
+          color: $grey;
+          margin-top: 15px;
+
+          span {
+            color: $blue;
+          }
+        }
+      }
+    }
+
+    .reply {
+      display: flex;
+      margin-top: 15px;
+
+      .comment-input {
+        margin-left: 15px;
+        flex: 1;
+
+        .textarea {
+          font-size: 16px;
+          width: 100%;
+          min-height: 100px;
+          resize: none;
+          overflow: auto;
+          margin-top: 10px;
+
+          &::placeholder {
+            color: $grey;
+          }
+        }
+
+        .ripple-btn {
+          margin: 10px;
+          float: right;
+          border-radius: 20px;
+        }
+      }
+    }
+  }
+}

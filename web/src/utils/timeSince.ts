@@ -16,7 +16,7 @@ export const timeSince = (date: Date) => {
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    return Math.floor(interval) + "hr";
+    return Math.floor(interval) + "h";
   }
   interval = seconds / 60;
   if (interval > 1) {

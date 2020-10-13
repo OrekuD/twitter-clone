@@ -28,7 +28,7 @@ const Modal: React.FC<Props> = ({ isVisible, children, onClose }) => {
             },
           }}
           className="modal-backdrop"
-          onClick={onClose}
+          // onClick={onClose}
         >
           <motion.div
             initial={{

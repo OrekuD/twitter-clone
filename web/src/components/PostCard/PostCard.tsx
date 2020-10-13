@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { dummyUserDetails } from "../../constants";
+import { grey, lightgrey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import { Post, useLikePostMutation } from "../../generated/graphql";
 import { FavouriteFilled, Favourite, ChatBubble, Share } from "../../Svgs";
@@ -94,7 +95,6 @@ const PostCard = ({ post, nolink = false }: Props) => {
           className="icon"
           onClick={async () => {
             // Mutate array on client side just for visual feedback
-
             if (userLiked(likes, userId) >= 0) {
               likes.splice(userLiked(likes, userId), 1);
             } else {
@@ -111,19 +111,19 @@ const PostCard = ({ post, nolink = false }: Props) => {
           }}
         >
           {userLiked(likes, userId) >= 0 ? (
-            <FavouriteFilled size={14} color="#b00020" />
+            <FavouriteFilled size={18} color="#b00020" />
           ) : (
-            <Favourite size={14} color="#121212" />
+            <Favourite size={18} color={grey} />
           )}
 
           {likes.length > 0 && <p className="count">{likes.length}</p>}
         </button>
         <button className="icon" onClick={commentPost}>
-          <ChatBubble size={14} color="#121212" />
+          <ChatBubble size={18} color={grey} />
           {comments.length > 0 && <p className="count">{comments.length}</p>}
         </button>
         <button className="icon" onClick={share}>
-          <Share size={14} color="#121212" />
+          <Share size={18} color={grey} />
         </button>
       </div>
     </div>

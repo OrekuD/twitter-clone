@@ -8,10 +8,10 @@ import { Info } from "../../Svgs";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants";
 
 const schema = Yup.object().shape({
-  twoot: Yup.string()
-    .min(2, "Twoot must exceed 2 characters")
-    .max(140, "Twoot cannot exceed 140 characters")
-    .required(""),
+  tweet: Yup.string()
+    .min(1, "Tweet must exceed 1 character")
+    .max(140, "Tweet cannot exceed 140 characters")
+    .required(),
 });
 
 const CreatePost = () => {
@@ -26,17 +26,17 @@ const CreatePost = () => {
     handleBlur,
     errors,
     touched,
-    values: { twoot },
+    values: { tweet },
   } = useFormik({
-    initialValues: { twoot: "" },
+    initialValues: { tweet: "" },
     validationSchema: schema,
     onSubmit: async (values, { resetForm, setFieldError }) => {
-      if (values.twoot.split("").length === 0) {
-        setFieldError("twoot", "Twoot must exceed 2 characters");
+      if (values.tweet.split("").length === 0) {
+        setFieldError("tweet", "Tweet must exceed 1 character");
         return;
       }
       await createPost({
-        content: values.twoot,
+        content: values.tweet,
       });
       resetForm();
     },
@@ -54,21 +54,21 @@ const CreatePost = () => {
       <form onSubmit={handleSubmit} className="form">
         <textarea
           placeholder="Say something..."
-          className="text-input"
+          className="textarea"
           draggable={false}
-          value={twoot}
-          onChange={handleChange("twoot")}
-          onBlur={handleBlur("twoot")}
-          style={{ color: errors.twoot && touched.twoot ? "#b00020" : "black" }}
+          value={tweet}
+          onChange={handleChange("tweet")}
+          onBlur={handleBlur("tweet")}
+          style={{
+            color: errors.tweet && touched.tweet ? "#b00020" : "#ffffff",
+          }}
         />
-        {errors.twoot && touched.twoot && (
-          <div className="error">
-            <Info size={14} color="red" />
-            <p className="error-label">{errors.twoot}</p>
-          </div>
-        )}
-        <button className="ripple-btn" type="submit">
-          Twoot
+        <button
+          className="ripple-btn"
+          type="submit"
+          style={{ opacity: errors.tweet || !touched.tweet ? 0.5 : 1 }}
+        >
+          Tweet
         </button>
       </form>
     </div>

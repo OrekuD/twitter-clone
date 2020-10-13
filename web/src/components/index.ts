@@ -7,3 +7,4 @@ export { default as Layout } from "./Layout/Layout";
 export { default as Posts } from "./Posts/Posts";
 export { default as Modal } from "./Modal/Modal";
 export { default as CreateComment } from "./CreateComment/CreateComment";
+export { default as RenderTweet } from "./RenderTweet/RenderTweet";
