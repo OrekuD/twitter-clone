@@ -32,9 +32,10 @@ const menu = [
 
 const SideMenu = () => {
   const [{ data }, getCurrentUser] = useGetCurrentUserDetailsQuery();
+  const { isLoggedIn } = useAppContext();
   useEffect(() => {
     getCurrentUser();
-  }, [data, getCurrentUser]);
+  }, [data, getCurrentUser, isLoggedIn]);
 
   return (
     <div className="side-menu">
@@ -45,8 +46,13 @@ const SideMenu = () => {
           </div>
           <div className="links">
             {menu.map(({ Icon, name, path }, index) => (
-              <NavLink to={path} activeClassName="active-link" exact>
-                <div className="link" key={index}>
+              <NavLink
+                to={path}
+                activeClassName="active-link"
+                exact
+                key={index}
+              >
+                <div className="link">
                   <Icon size={24} />
                   <p>{name}</p>
                 </div>

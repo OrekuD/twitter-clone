@@ -1,0 +1,5 @@
+query GetTweetsByUser($userId: String!) {
+  getTweetsByUser(userId: $userId) {
+    ...TweetDetails
+  }
+}

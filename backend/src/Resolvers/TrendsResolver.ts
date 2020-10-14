@@ -6,7 +6,7 @@ export class TrendsResolver {
   @Query(() => [Trends])
   async getTrends() {
     return await TrendsModel.find().sort({
-      numberOfPosts: "desc",
+      numberOfTweets: "desc",
     });
   }
 

@@ -1,6 +1,6 @@
 query GetTrends {
   getTrends {
     hashtag
-    numberOfPosts
+    numberOfTweets
   }
 }

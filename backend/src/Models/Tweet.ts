@@ -13,7 +13,7 @@ import { Like } from "./Like";
 
 @plugin(autopopulate as any)
 @ObjectType()
-export class Post {
+export class Tweet {
   @Field(() => ID)
   _id: mongoose.Types.ObjectId;
 
@@ -38,4 +38,4 @@ export class Post {
   likes: Ref<Like>[];
 }
 
-export const PostModel = getModelForClass(Post);
+export const TweetModel = getModelForClass(Tweet);

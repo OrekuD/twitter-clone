@@ -1,9 +1,9 @@
-mutation CreateComment($content: String!, $postId: String!) {
-  createComment(input: { content: $content, postId: $postId }) {
+mutation CreateComment($content: String!, $tweetId: String!) {
+  createComment(input: { content: $content, tweetId: $tweetId }) {
     comment {
       content
       _id
-      postId
+      tweetId
       creator {
         username
       }

@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import mongoose from "mongoose";
 import { buildSchema } from "type-graphql";
-import { PostResolver } from "./Resolvers/PostsResolver";
+import { TweetsResolver } from "./Resolvers/TweetsResolver";
 import { UserResolver } from "./Resolvers/UserResolver";
 import cors from "cors";
 import { LikeResolver } from "./Resolvers/LikeResolver";
@@ -15,7 +15,7 @@ import { TrendsResolver } from "./Resolvers/TrendsResolver";
 const PORT = process.env.PORT || 4000;
 
 const main = async () => {
-  await mongoose.connect("mongodb://localhost:27017/weconnect", {
+  await mongoose.connect("mongodb://localhost:27017/twitter-clone", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
@@ -45,7 +45,7 @@ const main = async () => {
 
   const schema = await buildSchema({
     resolvers: [
-      PostResolver,
+      TweetsResolver,
       UserResolver,
       LikeResolver,
       CommentResolver,

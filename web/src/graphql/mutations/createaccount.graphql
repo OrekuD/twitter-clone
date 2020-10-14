@@ -2,9 +2,15 @@ mutation CreateAccount(
   $username: String!
   $password: String!
   $email: String!
+  $fullname: String!
 ) {
   createAccount(
-    input: { username: $username, password: $password, email: $email }
+    input: {
+      username: $username
+      password: $password
+      email: $email
+      fullname: $fullname
+    }
   ) {
     user {
       username

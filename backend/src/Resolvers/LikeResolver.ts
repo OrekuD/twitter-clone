@@ -1,5 +1,5 @@
 import { LikeModel, Like } from "../Models/Like";
-import { PostModel } from "../Models/Post";
+import { Tweet, TweetModel } from "../Models/Tweet";
 import {
   Arg,
   Ctx,
@@ -12,7 +12,7 @@ import {
 } from "type-graphql";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
-import { CommentModel } from "../Models/Comment";
+import { Comment, CommentModel } from "../Models/Comment";
 
 @ObjectType()
 class LikeResponse {
@@ -27,83 +27,50 @@ class LikeResponse {
 export class LikeResolver {
   @Mutation(() => LikeResponse)
   @UseMiddleware(Auth)
-  async likePost(@Arg("postId") postId: string, @Ctx() { request }: Context) {
-    const { userId } = request.session;
-    const post = await PostModel.findOne({ _id: postId });
-    if (!post) {
-      return {
-        state: false,
-        message: "Post is unavailable",
-      };
-    }
-
-    const hasUserAlreadyLiked = post.likes.findIndex(
-      (like) => like?.creatorId === userId // TODO: fix this
-    );
-
-    if (hasUserAlreadyLiked >= 0) {
-      const updatedLikes = post.likes.filter(
-        (like) => like?.creatorId !== userId // TODO: fix this
-      );
-
-      await PostModel.updateOne(
-        { _id: postId },
-        { $set: { likes: updatedLikes } }
-      );
-
-      await LikeModel.deleteOne({
-        _id: post.likes[hasUserAlreadyLiked]?.id, // TODO: fix this
-      });
-
-      return { state: true, message: "Unlike successfull" };
-    }
-
-    const like = await LikeModel.create({
-      creator: userId,
-      postId,
-      creatorId: userId,
-    });
-    await like.save();
-
-    await PostModel.updateOne(
-      { _id: postId },
-      { $push: { likes: [like.id] as any } }
-    );
-
-    return { state: true, message: "Like successfull" };
-  }
-
-  @Mutation(() => LikeResponse)
-  @UseMiddleware(Auth)
-  async likeComment(
-    @Arg("commentId") commentId: string,
+  async likeTweet(
+    @Arg("tweetId") tweetId: string,
+    @Arg("isComment") isComment: boolean,
     @Ctx() { request }: Context
   ) {
     const { userId } = request.session;
-    const comment = await CommentModel.findOne({ _id: commentId });
-    if (!comment) {
+    let tweet: Tweet | Comment | null;
+
+    if (isComment) {
+      tweet = await CommentModel.findOne({ _id: tweetId });
+    } else {
+      tweet = await TweetModel.findOne({ _id: tweetId });
+    }
+
+    if (!tweet) {
       return {
         state: false,
-        message: "Comment is unavailable",
+        message: "Tweet is unavailable",
       };
     }
 
-    const hasUserAlreadyLiked = comment.likes.findIndex(
+    const hasUserAlreadyLiked = tweet.likes.findIndex(
       (like) => like?.creatorId === userId // TODO: fix this
     );
 
     if (hasUserAlreadyLiked >= 0) {
-      const updatedLikes = comment.likes.filter(
+      const updatedLikes = tweet.likes.filter(
         (like) => like?.creatorId !== userId // TODO: fix this
       );
 
-      await CommentModel.updateOne(
-        { _id: commentId },
-        { $set: { likes: updatedLikes } }
-      );
+      if (isComment) {
+        await CommentModel.updateOne(
+          { _id: tweetId },
+          { $set: { likes: updatedLikes } }
+        );
+      } else {
+        await TweetModel.updateOne(
+          { _id: tweetId },
+          { $set: { likes: updatedLikes } }
+        );
+      }
 
       await LikeModel.deleteOne({
-        _id: comment.likes[hasUserAlreadyLiked]?.id, // TODO: fix this
+        _id: tweet.likes[hasUserAlreadyLiked]?.id, // TODO: fix this
       });
 
       return { state: true, message: "Unlike successfull" };
@@ -111,18 +78,76 @@ export class LikeResolver {
 
     const like = await LikeModel.create({
       creator: userId,
-      postId: commentId,
+      tweetId,
       creatorId: userId,
     });
     await like.save();
 
-    await CommentModel.updateOne(
-      { _id: commentId },
-      { $push: { likes: [like.id] as any } }
-    );
+    if (isComment) {
+      await CommentModel.updateOne(
+        { _id: tweetId },
+        { $push: { likes: [like.id] as any } }
+      );
+    } else {
+      await TweetModel.updateOne(
+        { _id: tweetId },
+        { $push: { likes: [like.id] as any } }
+      );
+    }
 
     return { state: true, message: "Like successfull" };
   }
+
+  // @Mutation(() => LikeResponse)
+  // @UseMiddleware(Auth)
+  // async likeComment(
+  //   @Arg("commentId") commentId: string,
+  //   @Ctx() { request }: Context
+  // ) {
+  //   const { userId } = request.session;
+  //   const comment = await CommentModel.findOne({ _id: commentId });
+  //   if (!comment) {
+  //     return {
+  //       state: false,
+  //       message: "Comment is unavailable",
+  //     };
+  //   }
+
+  //   const hasUserAlreadyLiked = comment.likes.findIndex(
+  //     (like) => like?.creatorId === userId // TODO: fix this
+  //   );
+
+  //   if (hasUserAlreadyLiked >= 0) {
+  //     const updatedLikes = comment.likes.filter(
+  //       (like) => like?.creatorId !== userId // TODO: fix this
+  //     );
+
+  //     await CommentModel.updateOne(
+  //       { _id: commentId },
+  //       { $set: { likes: updatedLikes } }
+  //     );
+
+  //     await LikeModel.deleteOne({
+  //       _id: comment.likes[hasUserAlreadyLiked]?.id, // TODO: fix this
+  //     });
+
+  //     return { state: true, message: "Unlike successfull" };
+  //   }
+
+  //   const like = await LikeModel.create({
+  //     creator: userId,
+  //     tweetId: commentId,
+  //     creatorId: userId,
+  //   });
+  //   await like.save();
+
+  //   await CommentModel.updateOne(
+  //     { _id: commentId },
+  //     { $push: { likes: [like.id] as any } }
+  //   );
+
+  //   return { state: true, message: "Like successfull" };
+  // }
 
   @Query(() => [Like], { nullable: true })
   async getLikesByUser(@Arg("userId") userId: string) {

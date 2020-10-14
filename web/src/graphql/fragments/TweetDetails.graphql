@@ -1,4 +1,4 @@
-fragment PostDetails on Post {
+fragment TweetDetails on Tweet {
   _id
   content
   createdAt

@@ -17,7 +17,7 @@ export class Like {
 
   @Field()
   @prop()
-  postId: string;
+  tweetId: string;
 
   @prop({ ref: () => User, autopopulate: true })
   @Field(() => User)

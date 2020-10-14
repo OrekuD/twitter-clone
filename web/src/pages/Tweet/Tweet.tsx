@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Layout, PostCard, Spinner } from "../../components";
-import { useGetPostQuery } from "../../generated/graphql";
-import "./Post.scss";
+import { Layout, TweetCard, Spinner } from "../../components";
+import { useGetTweetQuery } from "../../generated/graphql";
+import "./Tweet.scss";
 
-const Post = () => {
+const Tweet = () => {
   const { pathname } = useLocation();
-  const [{ data }, getPost] = useGetPostQuery({
+  const [{ data }, getTweet] = useGetTweetQuery({
     variables: { id: pathname.slice(6) },
   });
   useEffect(() => {
-    getPost();
-  }, [getPost, pathname]);
+    getTweet();
+  }, [getTweet, pathname]);
 
   let content = (
     <div>
-      <PostCard post={data?.getPost.post!} />
+      <TweetCard tweet={data?.getTweet.tweet!} />
     </div>
   );
 
@@ -28,7 +28,7 @@ const Post = () => {
   } else {
     content = (
       <div>
-        <p>{data.getPost.post?.content}</p>
+        <p>{data.getTweet.tweet?.content}</p>
       </div>
     );
   }
@@ -36,4 +36,4 @@ const Post = () => {
   return <Layout>{content}</Layout>;
 };
 
-export default Post;
+export default Tweet;

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Layout, Posts, Spinner, StackHeader } from "../../components";
+import { Layout, Tweets, Spinner, StackHeader } from "../../components";
 import {
-  Post,
+  Tweet,
   useGetCommentsByUserQuery,
-  useGetPostsByUserQuery,
+  useGetTweetsByUserQuery,
   useGetUserQuery,
 } from "../../generated/graphql";
 import Profile from "./Profile";
@@ -13,7 +13,7 @@ import "./UserPage.scss";
 const UserPage = () => {
   const { pathname } = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [tweets, setTweets] = useState<Tweet[]>([]);
 
   const [{ data }, getUser] = useGetUserQuery({
     variables: { username: pathname.slice(1) },
@@ -23,7 +23,7 @@ const UserPage = () => {
     getUser();
   }, [getUser, pathname]);
 
-  const [{ data: postsByUser }, getPostsByUser] = useGetPostsByUserQuery({
+  const [{ data: tweetsByUser }, getTweetsByUser] = useGetTweetsByUserQuery({
     variables: {
       userId: data?.getUser.user?._id!,
     },
@@ -40,21 +40,21 @@ const UserPage = () => {
 
   useEffect(() => {
     if (activeIndex === 0) {
-      getPostsByUser();
-      if (postsByUser) {
-        setPosts(postsByUser?.getPostsByUser as Post[]);
+      getTweetsByUser();
+      if (tweetsByUser) {
+        setTweets(tweetsByUser?.getTweetsByUser as Tweet[]);
       }
     } else if (activeIndex === 1) {
       // console.log("--------");
       getCommentsByUser();
       if (commentsByUser) {
-        setPosts([]);
-        // setPosts(commentsByUser?.getCommentsByUser as Comment[]);
+        setTweets([]);
+        // setTweets(commentsByUser?.getCommentsByUser as Comment[]);
       }
     }
-  }, [activeIndex, getPostsByUser]);
+  }, [activeIndex, getTweetsByUser]);
 
-  const tabs = ["Twoots", "Replies", "Likes"];
+  const tabs = ["Tweets", "Replies", "Likes"];
 
   if (data?.getUser.error) {
     return (
@@ -88,7 +88,7 @@ const UserPage = () => {
               </button>
             ))}
           </div>
-          <Posts posts={posts} />
+          <Tweets tweets={tweets} />
         </div>
       )}
     </Layout>

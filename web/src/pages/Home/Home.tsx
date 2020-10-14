@@ -1,20 +1,20 @@
 import React, { useEffect } from "react";
-import { Layout, CreatePost, Posts, Header } from "../../components";
-import { Post, useAllPostsQuery } from "../../generated/graphql";
+import { Layout, CreateTweet, Tweets, Header } from "../../components";
+import { Tweet, useAllTweetsQuery } from "../../generated/graphql";
 import "./Home.scss";
 
 const Home = () => {
-  const [{ data }, allPosts] = useAllPostsQuery();
+  const [{ data }, allTweets] = useAllTweetsQuery();
 
   useEffect(() => {
-    allPosts();
-  }, [allPosts, data]);
+    allTweets();
+  }, [allTweets, data]);
 
   return (
     <Layout>
       <Header label="Home" />
-      <CreatePost />
-      <Posts posts={data?.getAllPosts as Post[]} />
+      <CreateTweet />
+      <Tweets tweets={data?.getAllTweets as Tweet[]} />
     </Layout>
   );
 };

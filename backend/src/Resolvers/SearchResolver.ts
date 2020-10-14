@@ -1,12 +1,12 @@
-import { Post, PostModel } from "../Models/Post";
+import { Tweet, TweetModel } from "../Models/Tweet";
 import { Arg, Field, ObjectType, Query, Resolver } from "type-graphql";
 import Fuse from "fuse.js";
 import { User, UserModel } from "../Models/User";
 
 @ObjectType()
 class Response {
-  @Field(() => [Post])
-  posts: Post[];
+  @Field(() => [Tweet])
+  tweets: Tweet[];
 
   @Field(() => [User])
   users: User[];
@@ -16,20 +16,20 @@ class Response {
 export class SearchResolver {
   @Query(() => Response)
   async search(@Arg("searchTerm") searchTerm: string): Promise<Response> {
-    const posts = await PostModel.find();
+    const tweets = await TweetModel.find();
     const users = await UserModel.find();
     const userkeys = ["username", "fullname"];
-    const postkeys = ["content"];
+    const tweetkeys = ["content"];
     const userSearch = new Fuse(users, {
       keys: userkeys,
     });
-    const postSearch = new Fuse(posts, {
-      keys: postkeys,
+    const tweetSearch = new Fuse(tweets, {
+      keys: tweetkeys,
     });
     const usersResults = userSearch.search(searchTerm);
-    const postResults = postSearch.search(searchTerm);
+    const tweetResults = tweetSearch.search(searchTerm);
     return {
-      posts: postResults.map((result) => result.item),
+      tweets: tweetResults.map((result) => result.item),
       users: usersResults.map((result) => result.item),
     };
   }

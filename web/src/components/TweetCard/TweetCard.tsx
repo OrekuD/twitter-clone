@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { dummyUserDetails } from "../../constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
-import { Post, useLikePostMutation } from "../../generated/graphql";
+import { Tweet, useLikeTweetMutation } from "../../generated/graphql";
 import {
   FavouriteFilled,
   Favourite,
@@ -15,14 +15,14 @@ import {
 import { timeSince } from "../../utils/timeSince";
 import { userLiked } from "../../utils/userLiked";
 import RenderTweet from "../RenderTweet/RenderTweet";
-import "./PostCard.scss";
+import "./TweetCard.scss";
 
 interface Props {
-  post: any; // TODO: fix this
+  tweet: any; // TODO: fix this
   nolink?: boolean;
 }
 
-const PostCard = ({ post }: Props) => {
+const TweetCard = ({ tweet }: Props) => {
   const {
     _id,
     content,
@@ -30,31 +30,31 @@ const PostCard = ({ post }: Props) => {
     creator: { username, fullname },
     comments,
     likes,
-  } = post as Post;
-  const [, likePost] = useLikePostMutation();
+  } = tweet as Tweet;
+  const [, likeTweet] = useLikeTweetMutation();
   const {
     userDetails: { _id: userId },
     setCommentModalState,
-    setSelectedPost,
+    setSelectedTweet,
   } = useAppContext();
 
-  const url = "https://weconnect.netlify.app";
+  const url = "https://twitter-clone.netlify.app";
 
   const share = async () => {
     let newVariable = window.navigator as any;
     if (newVariable.share) {
       await newVariable.share({
-        title: "WeConnect",
-        text: "Check out this post",
-        url: `${url}/post/${_id}`,
+        title: "Twitter-clone",
+        text: "Check out this tweet",
+        url: `${url}/tweet/${_id}`,
       });
     } else {
       alert("share not supported");
     }
   };
 
-  const commentPost = () => {
-    setSelectedPost(post);
+  const commentTweet = () => {
+    setSelectedTweet(tweet);
     setCommentModalState(true);
   };
 
@@ -72,7 +72,7 @@ const PostCard = ({ post }: Props) => {
             <p className="username">{timeSince(new Date(createdAt))}</p>
           </div>
           <div className="view-tweet">
-            <Link to={`/post/${_id}`}>
+            <Link to={`/tweet/${_id}`}>
               <ChevronDown size={16} color={grey} />
             </Link>
           </div>
@@ -81,7 +81,7 @@ const PostCard = ({ post }: Props) => {
           <RenderTweet text={content} />
         </p>
         <div className="icons">
-          <button className="icon" onClick={commentPost}>
+          <button className="icon" onClick={commentTweet}>
             <ChatBubble size={18} color={grey} />
             {comments.length > 0 && <p className="count">{comments.length}</p>}
           </button>
@@ -98,12 +98,13 @@ const PostCard = ({ post }: Props) => {
                 likes.unshift({
                   _id: Math.random().toString(),
                   creatorId: userId,
-                  postId: _id,
+                  tweetId: _id,
                   creator: dummyUserDetails,
                 });
               }
-              await likePost({
-                postId: _id,
+              await likeTweet({
+                tweetId: _id,
+                isComment: false,
               });
             }}
           >
@@ -124,4 +125,4 @@ const PostCard = ({ post }: Props) => {
   );
 };
 
-export default PostCard;
+export default TweetCard;

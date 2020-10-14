@@ -18,10 +18,10 @@ const Trends = () => {
       <div className="top-section">
         <p>Trends for you</p>
       </div>
-      {data?.getTrends.map(({ hashtag, numberOfPosts }, index) => (
+      {data?.getTrends.map(({ hashtag, numberOfTweets }, index) => (
         <button className="trend" key={index}>
           <p className="hashtag">{hashtag}</p>
-          <p className="number-of-tweets">{numberOfPosts} Tweets</p>
+          <p className="number-of-tweets">{numberOfTweets} Tweets</p>
         </button>
       ))}
       <button className="show-more">Show more</button>

@@ -7,11 +7,15 @@ import { convertError } from "../../utils/convertError";
 import { useAppContext } from "../../context/context";
 import { Info } from "../../Svgs";
 
-const SignUpSchema = Yup.object().shape({
+const schema = Yup.object().shape({
   username: Yup.string()
     .min(3, "Username is too short")
     .max(20, "Username is too long")
     .required("Username is required"),
+  fullname: Yup.string()
+    .min(3, "Fullname is too short")
+    .max(50, "Fullname is too long")
+    .required("Fullname is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
     .min(5, "Password is too short")
@@ -25,6 +29,7 @@ const Register = () => {
   const history = useHistory();
   const initialValues = {
     username: "",
+    fullname: "",
     email: "",
     password: "",
   };
@@ -38,12 +43,13 @@ const Register = () => {
     isSubmitting,
   } = useFormik({
     initialValues,
-    validationSchema: SignUpSchema,
+    validationSchema: schema,
     onSubmit: async (values, { setErrors }) => {
       const res = await createAccount({
         email: values.email!,
         password: values.password,
         username: values.username,
+        fullname: values.fullname,
       });
 
       if (res.data?.createAccount.error) {
@@ -76,7 +82,23 @@ const Register = () => {
             )}
           </div>
         </div>
-
+        <div className="group">
+          <label htmlFor="fullname">Fullname</label>
+          <div className="input">
+            <input
+              type="text"
+              name="fullname"
+              onChange={handleChange("fullname")}
+              onBlur={handleBlur("fullname")}
+            />
+            {errors.fullname && touched.fullname && (
+              <div className="error">
+                <Info size={14} color="red" />
+                <p className="error-label">{errors.fullname}</p>
+              </div>
+            )}
+          </div>
+        </div>
         <div className="group">
           <label htmlFor="email">Email</label>
           <div className="input">
@@ -94,7 +116,6 @@ const Register = () => {
             )}
           </div>
         </div>
-
         <div className="group">
           <label htmlFor="password">Password</label>
           <div className="input">

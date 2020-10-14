@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppContext } from "../../context/context";
-import "./CreatePost.scss";
-import { useCreatePostMutation } from "../../generated/graphql";
+import "./CreateTweet.scss";
+import { useCreateTweetMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants";
@@ -13,11 +13,11 @@ const schema = Yup.object().shape({
     .required(),
 });
 
-const CreatePost = () => {
+const CreateTweet = () => {
   const {
     userDetails: { image },
   } = useAppContext();
-  const [, createPost] = useCreatePostMutation();
+  const [, createTweet] = useCreateTweetMutation();
 
   const {
     handleChange,
@@ -34,7 +34,7 @@ const CreatePost = () => {
         setFieldError("tweet", "Tweet must exceed 1 character");
         return;
       }
-      await createPost({
+      await createTweet({
         content: values.tweet,
       });
       resetForm();
@@ -42,7 +42,7 @@ const CreatePost = () => {
   });
 
   return (
-    <div className="create-post">
+    <div className="create-tweet">
       {image && (
         <img
           src={`${PROFILE_IMAGES_BASE_URL + image}`}
@@ -74,4 +74,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default CreateTweet;

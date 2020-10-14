@@ -24,15 +24,27 @@ class UserError {
 }
 
 @InputType()
-class UserInput {
+class RegisterInput {
+  @Field()
+  username: string;
+
+  @Field()
+  fullname: string;
+
+  @Field()
+  password: string;
+
+  @Field()
+  email: string;
+}
+
+@InputType()
+class LoginInput {
   @Field()
   username: string;
 
   @Field()
   password: string;
-
-  @Field({ nullable: true })
-  email?: string;
 }
 
 @InputType()
@@ -66,7 +78,7 @@ class UserResponse {
 export class UserResolver {
   @Mutation(() => UserResponse)
   async createAccount(
-    @Arg("input") input: UserInput,
+    @Arg("input") input: RegisterInput,
     @Ctx() { request }: Context
   ): Promise<UserResponse> {
     const user = await UserModel.findOne({ username: input.username });
@@ -91,9 +103,9 @@ export class UserResolver {
       username: input.username,
       email: input.email!,
       password: hashedPassword,
+      fullname: input.fullname,
       createdAt: Date.now(),
       bio: "",
-      fullname: "",
       location: "",
       image: "/dummy.jpg",
     });
@@ -104,7 +116,7 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("input") input: UserInput,
+    @Arg("input") input: LoginInput,
     @Ctx() { request }: Context
   ): Promise<UserResponse> {
     const user = await UserModel.findOne({ username: input.username });

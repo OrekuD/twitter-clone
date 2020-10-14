@@ -20,7 +20,7 @@ const schema = Yup.object().shape({
 
 const CreateComment = () => {
   const {
-    selectedPost,
+    selectedTweet,
     setCommentModalState,
     showCommentModal,
     userDetails,
@@ -44,7 +44,7 @@ const CreateComment = () => {
       }
       await createComment({
         content: values.comment,
-        postId: _id,
+        tweetId: _id,
       });
       resetForm();
       setTimeout(() => {
@@ -53,7 +53,7 @@ const CreateComment = () => {
     },
   });
 
-  if (!selectedPost) {
+  if (!selectedTweet) {
     return null;
   }
   const {
@@ -61,7 +61,7 @@ const CreateComment = () => {
     content,
     createdAt,
     creator: { fullname, username, image },
-  } = selectedPost;
+  } = selectedTweet;
 
   return (
     <Modal
@@ -75,13 +75,13 @@ const CreateComment = () => {
           </button>
         </div>
         <div className="comment-content">
-          <div className="post">
+          <div className="tweet">
             <img
               src={`${PROFILE_IMAGES_BASE_URL + image}`}
               alt="profile"
               className="profile-image"
             />
-            <div className="post-content">
+            <div className="tweet-content">
               <div className="user-details">
                 <p className="fullname">{fullname}</p>
                 <p className="username">@{username}</p>

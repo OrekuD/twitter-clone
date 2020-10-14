@@ -16,26 +16,26 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  getPost: SinglePostResponse;
-  getAllPosts: Array<Post>;
-  getPostsByUser: Array<Post>;
+  getTweet: SingleTweetResponse;
+  getAllTweets: Array<Tweet>;
+  getTweetsByUser: Array<Tweet>;
   getUserDetails: UserResponse;
   getUser: UserResponse;
   currentUser?: Maybe<User>;
   getLikesByUser?: Maybe<Array<Like>>;
-  getCommentsByUser: Array<Post>;
+  getCommentsByUser: Array<Tweet>;
   search: Response;
   getTrends: Array<Trends>;
   getTrendsByHashtag?: Maybe<Trends>;
 };
 
 
-export type QueryGetPostArgs = {
+export type QueryGetTweetArgs = {
   id: Scalars['String'];
 };
 
 
-export type QueryGetPostsByUserArgs = {
+export type QueryGetTweetsByUserArgs = {
   userId: Scalars['String'];
 };
 
@@ -69,14 +69,14 @@ export type QueryGetTrendsByHashtagArgs = {
   hashtag: Scalars['String'];
 };
 
-export type SinglePostResponse = {
-  __typename?: 'SinglePostResponse';
-  post?: Maybe<Post>;
-  error?: Maybe<PostError>;
+export type SingleTweetResponse = {
+  __typename?: 'SingleTweetResponse';
+  tweet?: Maybe<Tweet>;
+  error?: Maybe<TweetError>;
 };
 
-export type Post = {
-  __typename?: 'Post';
+export type Tweet = {
+  __typename?: 'Tweet';
   _id: Scalars['ID'];
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
@@ -102,7 +102,7 @@ export type Comment = {
   __typename?: 'Comment';
   _id: Scalars['ID'];
   content: Scalars['String'];
-  postId: Scalars['String'];
+  tweetId: Scalars['String'];
   creatorId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   creator: User;
@@ -112,13 +112,13 @@ export type Comment = {
 export type Like = {
   __typename?: 'Like';
   _id: Scalars['ID'];
-  postId: Scalars['String'];
+  tweetId: Scalars['String'];
   creator: User;
   creatorId: Scalars['String'];
 };
 
-export type PostError = {
-  __typename?: 'PostError';
+export type TweetError = {
+  __typename?: 'TweetError';
   message: Scalars['String'];
   field: Scalars['String'];
 };
@@ -137,7 +137,7 @@ export type UserError = {
 
 export type Response = {
   __typename?: 'Response';
-  posts: Array<Post>;
+  tweets: Array<Tweet>;
   users: Array<User>;
 };
 
@@ -145,35 +145,34 @@ export type Trends = {
   __typename?: 'Trends';
   _id: Scalars['ID'];
   hashtag: Scalars['String'];
-  posts: Array<Post>;
-  numberOfPosts: Scalars['Float'];
+  tweets: Array<Tweet>;
+  numberOfTweets: Scalars['Float'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createPost: Post;
+  createTweet: Tweet;
   createAccount: UserResponse;
   login: UserResponse;
   addUserDetails: UserResponse;
   logout: Scalars['Boolean'];
-  likePost: LikeResponse;
-  likeComment: LikeResponse;
+  likeTweet: LikeResponse;
   createComment: CommentResponse;
 };
 
 
-export type MutationCreatePostArgs = {
+export type MutationCreateTweetArgs = {
   content: Scalars['String'];
 };
 
 
 export type MutationCreateAccountArgs = {
-  input: UserInput;
+  input: RegisterInput;
 };
 
 
 export type MutationLoginArgs = {
-  input: UserInput;
+  input: LoginInput;
 };
 
 
@@ -182,13 +181,9 @@ export type MutationAddUserDetailsArgs = {
 };
 
 
-export type MutationLikePostArgs = {
-  postId: Scalars['String'];
-};
-
-
-export type MutationLikeCommentArgs = {
-  commentId: Scalars['String'];
+export type MutationLikeTweetArgs = {
+  isComment: Scalars['Boolean'];
+  tweetId: Scalars['String'];
 };
 
 
@@ -196,10 +191,16 @@ export type MutationCreateCommentArgs = {
   input: CommentInput;
 };
 
-export type UserInput = {
+export type RegisterInput = {
+  username: Scalars['String'];
+  fullname: Scalars['String'];
+  password: Scalars['String'];
+  email: Scalars['String'];
+};
+
+export type LoginInput = {
   username: Scalars['String'];
   password: Scalars['String'];
-  email?: Maybe<Scalars['String']>;
 };
 
 export type DetailsInput = {
@@ -230,12 +231,12 @@ export type CommentError = {
 
 export type CommentInput = {
   content: Scalars['String'];
-  postId: Scalars['String'];
+  tweetId: Scalars['String'];
 };
 
-export type PostDetailsFragment = (
-  { __typename?: 'Post' }
-  & Pick<Post, '_id' | 'content' | 'createdAt'>
+export type TweetDetailsFragment = (
+  { __typename?: 'Tweet' }
+  & Pick<Tweet, '_id' | 'content' | 'createdAt'>
   & { creator: (
     { __typename?: 'User' }
     & UserPartialDetailsFragment
@@ -285,6 +286,7 @@ export type CreateAccountMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
   email: Scalars['String'];
+  fullname: Scalars['String'];
 }>;
 
 
@@ -304,7 +306,7 @@ export type CreateAccountMutation = (
 
 export type CreateCommentMutationVariables = Exact<{
   content: Scalars['String'];
-  postId: Scalars['String'];
+  tweetId: Scalars['String'];
 }>;
 
 
@@ -314,7 +316,7 @@ export type CreateCommentMutation = (
     { __typename?: 'CommentResponse' }
     & { comment?: Maybe<(
       { __typename?: 'Comment' }
-      & Pick<Comment, 'content' | '_id' | 'postId'>
+      & Pick<Comment, 'content' | '_id' | 'tweetId'>
       & { creator: (
         { __typename?: 'User' }
         & Pick<User, 'username'>
@@ -326,16 +328,16 @@ export type CreateCommentMutation = (
   ) }
 );
 
-export type CreatePostMutationVariables = Exact<{
+export type CreateTweetMutationVariables = Exact<{
   content: Scalars['String'];
 }>;
 
 
-export type CreatePostMutation = (
+export type CreateTweetMutation = (
   { __typename?: 'Mutation' }
-  & { createPost: (
-    { __typename?: 'Post' }
-    & Pick<Post, 'content' | '_id' | 'createdAt'>
+  & { createTweet: (
+    { __typename?: 'Tweet' }
+    & Pick<Tweet, 'content' | '_id' | 'createdAt'>
     & { creator: (
       { __typename?: 'User' }
       & Pick<User, 'username' | 'bio' | '_id'>
@@ -343,14 +345,15 @@ export type CreatePostMutation = (
   ) }
 );
 
-export type LikePostMutationVariables = Exact<{
-  postId: Scalars['String'];
+export type LikeTweetMutationVariables = Exact<{
+  tweetId: Scalars['String'];
+  isComment: Scalars['Boolean'];
 }>;
 
 
-export type LikePostMutation = (
+export type LikeTweetMutation = (
   { __typename?: 'Mutation' }
-  & { likePost: (
+  & { likeTweet: (
     { __typename?: 'LikeResponse' }
     & Pick<LikeResponse, 'state' | 'message'>
   ) }
@@ -376,14 +379,14 @@ export type LoginMutation = (
   ) }
 );
 
-export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllTweetsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllPostsQuery = (
+export type AllTweetsQuery = (
   { __typename?: 'Query' }
-  & { getAllPosts: Array<(
-    { __typename?: 'Post' }
-    & PostDetailsFragment
+  & { getAllTweets: Array<(
+    { __typename?: 'Tweet' }
+    & TweetDetailsFragment
   )> }
 );
 
@@ -395,8 +398,8 @@ export type GetCommentsByUserQueryVariables = Exact<{
 export type GetCommentsByUserQuery = (
   { __typename?: 'Query' }
   & { getCommentsByUser: Array<(
-    { __typename?: 'Post' }
-    & Pick<Post, '_id' | 'content' | 'createdAt'>
+    { __typename?: 'Tweet' }
+    & Pick<Tweet, '_id' | 'content' | 'createdAt'>
     & { creator: (
       { __typename?: 'User' }
       & UserPartialDetailsFragment
@@ -421,18 +424,44 @@ export type GetCurrentUserDetailsQuery = (
   )> }
 );
 
-export type GetPostQueryVariables = Exact<{
+export type GetTrendsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTrendsQuery = (
+  { __typename?: 'Query' }
+  & { getTrends: Array<(
+    { __typename?: 'Trends' }
+    & Pick<Trends, 'hashtag' | 'numberOfTweets'>
+  )> }
+);
+
+export type GetTrendsByHashtagQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTrendsByHashtagQuery = (
+  { __typename?: 'Query' }
+  & { getTrendsByHashtag?: Maybe<(
+    { __typename?: 'Trends' }
+    & Pick<Trends, 'hashtag' | 'numberOfTweets'>
+    & { tweets: Array<(
+      { __typename?: 'Tweet' }
+      & TweetDetailsFragment
+    )> }
+  )> }
+);
+
+export type GetTweetQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetPostQuery = (
+export type GetTweetQuery = (
   { __typename?: 'Query' }
-  & { getPost: (
-    { __typename?: 'SinglePostResponse' }
-    & { post?: Maybe<(
-      { __typename?: 'Post' }
-      & Pick<Post, '_id' | 'content' | 'createdAt'>
+  & { getTweet: (
+    { __typename?: 'SingleTweetResponse' }
+    & { tweet?: Maybe<(
+      { __typename?: 'Tweet' }
+      & Pick<Tweet, '_id' | 'content' | 'createdAt'>
       & { creator: (
         { __typename?: 'User' }
         & UserPartialDetailsFragment
@@ -455,42 +484,16 @@ export type GetPostQuery = (
   ) }
 );
 
-export type GetPostsByUserQueryVariables = Exact<{
+export type GetTweetsByUserQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type GetPostsByUserQuery = (
+export type GetTweetsByUserQuery = (
   { __typename?: 'Query' }
-  & { getPostsByUser: Array<(
-    { __typename?: 'Post' }
-    & PostDetailsFragment
-  )> }
-);
-
-export type GetTrendsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetTrendsQuery = (
-  { __typename?: 'Query' }
-  & { getTrends: Array<(
-    { __typename?: 'Trends' }
-    & Pick<Trends, 'hashtag' | 'numberOfPosts'>
-  )> }
-);
-
-export type GetTrendsByHashtagQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetTrendsByHashtagQuery = (
-  { __typename?: 'Query' }
-  & { getTrendsByHashtag?: Maybe<(
-    { __typename?: 'Trends' }
-    & Pick<Trends, 'hashtag' | 'numberOfPosts'>
-    & { posts: Array<(
-      { __typename?: 'Post' }
-      & PostDetailsFragment
-    )> }
+  & { getTweetsByUser: Array<(
+    { __typename?: 'Tweet' }
+    & TweetDetailsFragment
   )> }
 );
 
@@ -538,9 +541,9 @@ export type SearchQuery = (
   { __typename?: 'Query' }
   & { search: (
     { __typename?: 'Response' }
-    & { posts: Array<(
-      { __typename?: 'Post' }
-      & Pick<Post, 'content' | '_id' | 'createdAt'>
+    & { tweets: Array<(
+      { __typename?: 'Tweet' }
+      & Pick<Tweet, 'content' | '_id' | 'createdAt'>
       & { creator: (
         { __typename?: 'User' }
         & UserPartialDetailsFragment
@@ -570,8 +573,8 @@ export const UserPartialDetailsFragmentDoc = gql`
   fullname
 }
     `;
-export const PostDetailsFragmentDoc = gql`
-    fragment PostDetails on Post {
+export const TweetDetailsFragmentDoc = gql`
+    fragment TweetDetails on Tweet {
   _id
   content
   createdAt
@@ -621,8 +624,8 @@ export function useAddUserDetailsMutation() {
   return Urql.useMutation<AddUserDetailsMutation, AddUserDetailsMutationVariables>(AddUserDetailsDocument);
 };
 export const CreateAccountDocument = gql`
-    mutation CreateAccount($username: String!, $password: String!, $email: String!) {
-  createAccount(input: {username: $username, password: $password, email: $email}) {
+    mutation CreateAccount($username: String!, $password: String!, $email: String!, $fullname: String!) {
+  createAccount(input: {username: $username, password: $password, email: $email, fullname: $fullname}) {
     user {
       username
       _id
@@ -645,12 +648,12 @@ export function useCreateAccountMutation() {
   return Urql.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument);
 };
 export const CreateCommentDocument = gql`
-    mutation CreateComment($content: String!, $postId: String!) {
-  createComment(input: {content: $content, postId: $postId}) {
+    mutation CreateComment($content: String!, $tweetId: String!) {
+  createComment(input: {content: $content, tweetId: $tweetId}) {
     comment {
       content
       _id
-      postId
+      tweetId
       creator {
         username
       }
@@ -665,9 +668,9 @@ export const CreateCommentDocument = gql`
 export function useCreateCommentMutation() {
   return Urql.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument);
 };
-export const CreatePostDocument = gql`
-    mutation CreatePost($content: String!) {
-  createPost(content: $content) {
+export const CreateTweetDocument = gql`
+    mutation CreateTweet($content: String!) {
+  createTweet(content: $content) {
     content
     _id
     createdAt
@@ -680,20 +683,20 @@ export const CreatePostDocument = gql`
 }
     `;
 
-export function useCreatePostMutation() {
-  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
+export function useCreateTweetMutation() {
+  return Urql.useMutation<CreateTweetMutation, CreateTweetMutationVariables>(CreateTweetDocument);
 };
-export const LikePostDocument = gql`
-    mutation LikePost($postId: String!) {
-  likePost(postId: $postId) {
+export const LikeTweetDocument = gql`
+    mutation LikeTweet($tweetId: String!, $isComment: Boolean!) {
+  likeTweet(tweetId: $tweetId, isComment: $isComment) {
     state
     message
   }
 }
     `;
 
-export function useLikePostMutation() {
-  return Urql.useMutation<LikePostMutation, LikePostMutationVariables>(LikePostDocument);
+export function useLikeTweetMutation() {
+  return Urql.useMutation<LikeTweetMutation, LikeTweetMutationVariables>(LikeTweetDocument);
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
@@ -719,16 +722,16 @@ export const LoginDocument = gql`
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };
-export const AllPostsDocument = gql`
-    query AllPosts {
-  getAllPosts {
-    ...PostDetails
+export const AllTweetsDocument = gql`
+    query AllTweets {
+  getAllTweets {
+    ...TweetDetails
   }
 }
-    ${PostDetailsFragmentDoc}`;
+    ${TweetDetailsFragmentDoc}`;
 
-export function useAllPostsQuery(options: Omit<Urql.UseQueryArgs<AllPostsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AllPostsQuery>({ query: AllPostsDocument, ...options });
+export function useAllTweetsQuery(options: Omit<Urql.UseQueryArgs<AllTweetsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AllTweetsQuery>({ query: AllTweetsDocument, ...options });
 };
 export const GetCommentsByUserDocument = gql`
     query GetCommentsByUser($userId: String!) {
@@ -764,10 +767,37 @@ export const GetCurrentUserDetailsDocument = gql`
 export function useGetCurrentUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserDetailsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCurrentUserDetailsQuery>({ query: GetCurrentUserDetailsDocument, ...options });
 };
-export const GetPostDocument = gql`
-    query GetPost($id: String!) {
-  getPost(id: $id) {
-    post {
+export const GetTrendsDocument = gql`
+    query GetTrends {
+  getTrends {
+    hashtag
+    numberOfTweets
+  }
+}
+    `;
+
+export function useGetTrendsQuery(options: Omit<Urql.UseQueryArgs<GetTrendsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTrendsQuery>({ query: GetTrendsDocument, ...options });
+};
+export const GetTrendsByHashtagDocument = gql`
+    query GetTrendsByHashtag {
+  getTrendsByHashtag(hashtag: "#100") {
+    hashtag
+    numberOfTweets
+    tweets {
+      ...TweetDetails
+    }
+  }
+}
+    ${TweetDetailsFragmentDoc}`;
+
+export function useGetTrendsByHashtagQuery(options: Omit<Urql.UseQueryArgs<GetTrendsByHashtagQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTrendsByHashtagQuery>({ query: GetTrendsByHashtagDocument, ...options });
+};
+export const GetTweetDocument = gql`
+    query GetTweet($id: String!) {
+  getTweet(id: $id) {
+    tweet {
       _id
       content
       createdAt
@@ -794,46 +824,19 @@ export const GetPostDocument = gql`
 }
     ${UserPartialDetailsFragmentDoc}`;
 
-export function useGetPostQuery(options: Omit<Urql.UseQueryArgs<GetPostQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetPostQuery>({ query: GetPostDocument, ...options });
+export function useGetTweetQuery(options: Omit<Urql.UseQueryArgs<GetTweetQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTweetQuery>({ query: GetTweetDocument, ...options });
 };
-export const GetPostsByUserDocument = gql`
-    query GetPostsByUser($userId: String!) {
-  getPostsByUser(userId: $userId) {
-    ...PostDetails
+export const GetTweetsByUserDocument = gql`
+    query GetTweetsByUser($userId: String!) {
+  getTweetsByUser(userId: $userId) {
+    ...TweetDetails
   }
 }
-    ${PostDetailsFragmentDoc}`;
+    ${TweetDetailsFragmentDoc}`;
 
-export function useGetPostsByUserQuery(options: Omit<Urql.UseQueryArgs<GetPostsByUserQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetPostsByUserQuery>({ query: GetPostsByUserDocument, ...options });
-};
-export const GetTrendsDocument = gql`
-    query GetTrends {
-  getTrends {
-    hashtag
-    numberOfPosts
-  }
-}
-    `;
-
-export function useGetTrendsQuery(options: Omit<Urql.UseQueryArgs<GetTrendsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetTrendsQuery>({ query: GetTrendsDocument, ...options });
-};
-export const GetTrendsByHashtagDocument = gql`
-    query GetTrendsByHashtag {
-  getTrendsByHashtag(hashtag: "#100") {
-    hashtag
-    numberOfPosts
-    posts {
-      ...PostDetails
-    }
-  }
-}
-    ${PostDetailsFragmentDoc}`;
-
-export function useGetTrendsByHashtagQuery(options: Omit<Urql.UseQueryArgs<GetTrendsByHashtagQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetTrendsByHashtagQuery>({ query: GetTrendsByHashtagDocument, ...options });
+export function useGetTweetsByUserQuery(options: Omit<Urql.UseQueryArgs<GetTweetsByUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTweetsByUserQuery>({ query: GetTweetsByUserDocument, ...options });
 };
 export const GetUserDocument = gql`
     query GetUser($username: String!) {
@@ -868,7 +871,7 @@ export function useGetUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetUserDe
 export const SearchDocument = gql`
     query Search($searchTerm: String!) {
   search(searchTerm: $searchTerm) {
-    posts {
+    tweets {
       content
       _id
       createdAt

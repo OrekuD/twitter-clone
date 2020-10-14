@@ -1,6 +1,6 @@
 query Search($searchTerm: String!) {
   search(searchTerm: $searchTerm) {
-    posts {
+    tweets {
       content
       _id
       createdAt

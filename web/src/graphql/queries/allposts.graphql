@@ -1,5 +1,0 @@
-query AllPosts {
-  getAllPosts {
-    ...PostDetails
-  }
-}

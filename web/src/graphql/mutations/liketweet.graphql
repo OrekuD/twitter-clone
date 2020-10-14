@@ -1,0 +1,6 @@
+mutation LikeTweet($tweetId: String!, $isComment: Boolean!) {
+  likeTweet(tweetId: $tweetId, isComment: $isComment) {
+    state
+    message
+  }
+}

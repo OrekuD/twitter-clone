@@ -1,5 +1,5 @@
-mutation CreatePost($content: String!) {
-  createPost(content: $content) {
+mutation CreateTweet($content: String!) {
+  createTweet(content: $content) {
     content
     _id
     createdAt

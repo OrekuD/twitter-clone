@@ -14,7 +14,7 @@
         "description": null,
         "fields": [
           {
-            "name": "getPost",
+            "name": "getTweet",
             "description": null,
             "args": [
               {
@@ -37,7 +37,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "SinglePostResponse",
+                "name": "SingleTweetResponse",
                 "ofType": null
               }
             },
@@ -45,7 +45,7 @@
             "deprecationReason": null
           },
           {
-            "name": "getAllPosts",
+            "name": "getAllTweets",
             "description": null,
             "args": [],
             "type": {
@@ -59,7 +59,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Post",
+                    "name": "Tweet",
                     "ofType": null
                   }
                 }
@@ -69,7 +69,7 @@
             "deprecationReason": null
           },
           {
-            "name": "getPostsByUser",
+            "name": "getTweetsByUser",
             "description": null,
             "args": [
               {
@@ -98,7 +98,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Post",
+                    "name": "Tweet",
                     "ofType": null
                   }
                 }
@@ -246,7 +246,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Post",
+                    "name": "Tweet",
                     "ofType": null
                   }
                 }
@@ -355,16 +355,16 @@
       },
       {
         "kind": "OBJECT",
-        "name": "SinglePostResponse",
+        "name": "SingleTweetResponse",
         "description": null,
         "fields": [
           {
-            "name": "post",
+            "name": "tweet",
             "description": null,
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "Post",
+              "name": "Tweet",
               "ofType": null
             },
             "isDeprecated": false,
@@ -376,7 +376,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "PostError",
+              "name": "TweetError",
               "ofType": null
             },
             "isDeprecated": false,
@@ -390,7 +390,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "Post",
+        "name": "Tweet",
         "description": null,
         "fields": [
           {
@@ -708,7 +708,7 @@
             "deprecationReason": null
           },
           {
-            "name": "postId",
+            "name": "tweetId",
             "description": null,
             "args": [],
             "type": {
@@ -823,7 +823,7 @@
             "deprecationReason": null
           },
           {
-            "name": "postId",
+            "name": "tweetId",
             "description": null,
             "args": [],
             "type": {
@@ -878,7 +878,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "PostError",
+        "name": "TweetError",
         "description": null,
         "fields": [
           {
@@ -1003,7 +1003,7 @@
         "description": null,
         "fields": [
           {
-            "name": "posts",
+            "name": "tweets",
             "description": null,
             "args": [],
             "type": {
@@ -1017,7 +1017,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Post",
+                    "name": "Tweet",
                     "ofType": null
                   }
                 }
@@ -1094,7 +1094,7 @@
             "deprecationReason": null
           },
           {
-            "name": "posts",
+            "name": "tweets",
             "description": null,
             "args": [],
             "type": {
@@ -1108,7 +1108,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Post",
+                    "name": "Tweet",
                     "ofType": null
                   }
                 }
@@ -1118,7 +1118,7 @@
             "deprecationReason": null
           },
           {
-            "name": "numberOfPosts",
+            "name": "numberOfTweets",
             "description": null,
             "args": [],
             "type": {
@@ -1155,7 +1155,7 @@
         "description": null,
         "fields": [
           {
-            "name": "createPost",
+            "name": "createTweet",
             "description": null,
             "args": [
               {
@@ -1178,7 +1178,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Post",
+                "name": "Tweet",
                 "ofType": null
               }
             },
@@ -1197,7 +1197,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "UserInput",
+                    "name": "RegisterInput",
                     "ofType": null
                   }
                 },
@@ -1228,7 +1228,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "UserInput",
+                    "name": "LoginInput",
                     "ofType": null
                   }
                 },
@@ -1295,42 +1295,25 @@
             "deprecationReason": null
           },
           {
-            "name": "likePost",
+            "name": "likeTweet",
             "description": null,
             "args": [
               {
-                "name": "postId",
+                "name": "isComment",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "String",
+                    "name": "Boolean",
                     "ofType": null
                   }
                 },
                 "defaultValue": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "LikeResponse",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "likeComment",
-            "description": null,
-            "args": [
+              },
               {
-                "name": "commentId",
+                "name": "tweetId",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -1405,12 +1388,26 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserInput",
+        "name": "RegisterInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "username",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "fullname",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -1441,9 +1438,52 @@
             "name": "email",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "LoginInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "username",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "password",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "defaultValue": null
           }
@@ -1675,7 +1715,7 @@
             "defaultValue": null
           },
           {
-            "name": "postId",
+            "name": "tweetId",
             "description": null,
             "type": {
               "kind": "NON_NULL",

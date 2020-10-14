@@ -1,11 +1,11 @@
-import { Post } from "./generated/graphql";
+import { Tweet } from "./generated/graphql";
 
 export type AppContext = {
   isLoggedIn: boolean;
   showCommentModal: boolean;
   setCommentModalState: (state: boolean) => void;
-  selectedPost: Post | null;
-  setSelectedPost: (post: Post) => void;
+  selectedTweet: Tweet | null;
+  setSelectedTweet: (tweet: Tweet) => void;
   userDetails: User;
   setIsLoggedIn: (state: boolean) => void;
   addUserDetails: (details: Partial<User>) => void;

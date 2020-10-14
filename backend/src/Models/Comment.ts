@@ -22,7 +22,7 @@ export class Comment {
 
   @prop()
   @Field()
-  postId: string;
+  tweetId: string;
 
   @prop()
   @Field()

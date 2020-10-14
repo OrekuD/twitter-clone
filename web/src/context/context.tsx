@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { dummyUserDetails } from "../constants";
-import { Post, useGetCurrentUserDetailsQuery } from "../generated/graphql";
+import { Tweet, useGetCurrentUserDetailsQuery } from "../generated/graphql";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { AppContext, User } from "../types";
 
 const Context = createContext<AppContext>({
   isLoggedIn: false,
   showCommentModal: false,
-  selectedPost: null,
-  setSelectedPost: () => {},
+  selectedTweet: null,
+  setSelectedTweet: () => {},
   setCommentModalState: () => {},
   userDetails: dummyUserDetails,
   setIsLoggedIn: () => {},
@@ -19,7 +19,7 @@ const Provider: React.FC = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isLoggedIn", false);
   const [userDetails, setUserDetails] = useState<User>(dummyUserDetails);
   const [showCommentModal, setShowCommentModal] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
 
   useEffect(() => {
@@ -74,8 +74,8 @@ const Provider: React.FC = ({ children }) => {
     addUserDetails,
     showCommentModal,
     setCommentModalState,
-    selectedPost,
-    setSelectedPost,
+    selectedTweet,
+    setSelectedTweet,
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

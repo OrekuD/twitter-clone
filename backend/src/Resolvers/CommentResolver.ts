@@ -10,7 +10,7 @@ import {
   Ctx,
   UseMiddleware,
 } from "type-graphql";
-import { Post, PostModel } from "../Models/Post";
+import { Tweet, TweetModel } from "../Models/Tweet";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
 
@@ -38,12 +38,12 @@ class CommentInput {
   content: string;
 
   @Field()
-  postId: string;
+  tweetId: string;
 }
 
 @Resolver()
 export class CommentResolver {
-  @Query(() => [Post])
+  @Query(() => [Tweet])
   async getCommentsByUser(@Arg("userId") userId: string) {
     const comments = await CommentModel.find({ creatorId: userId });
     return comments;
@@ -55,14 +55,14 @@ export class CommentResolver {
     @Arg("input") input: CommentInput,
     @Ctx() { request }: Context
   ): Promise<CommentResponse> {
-    const { content, postId } = input;
+    const { content, tweetId } = input;
     const { userId } = request.session;
-    const post = await PostModel.findOne({ _id: postId });
-    if (!post) {
+    const tweet = await TweetModel.findOne({ _id: tweetId });
+    if (!tweet) {
       return {
         error: {
-          message: "Post is unavailable",
-          field: "post",
+          message: "Tweet is unavailable",
+          field: "tweet",
         },
       };
     }
@@ -71,14 +71,14 @@ export class CommentResolver {
       content,
       creator: userId,
       createdAt: Date.now(),
-      postId,
+      tweetId,
       creatorId: userId,
       likes: [],
     });
     await comment.save();
 
-    await PostModel.updateOne(
-      { _id: input.postId },
+    await TweetModel.updateOne(
+      { _id: tweetId },
       { $push: { comments: [comment.id] as any } }
     );
 

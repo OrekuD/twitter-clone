@@ -1,6 +1,6 @@
-query GetPost($id: String!) {
-  getPost(id: $id) {
-    post {
+query GetTweet($id: String!) {
+  getTweet(id: $id) {
+    tweet {
       _id
       content
       createdAt

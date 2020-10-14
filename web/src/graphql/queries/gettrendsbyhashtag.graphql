@@ -1,9 +1,9 @@
 query GetTrendsByHashtag {
   getTrendsByHashtag(hashtag: "#100") {
     hashtag
-    numberOfPosts
-    posts {
-      ...PostDetails
+    numberOfTweets
+    tweets {
+      ...TweetDetails
     }
   }
 }
