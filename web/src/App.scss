@@ -142,3 +142,40 @@ textarea {
     }
   }
 }
+
+.ripple-btn {
+  background-position: center;
+  transition: background 0.8s;
+  padding: 0 15px;
+  padding-bottom: 2px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #2196f3;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+
+  &:hover {
+    background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%)
+      center/15000%;
+  }
+
+  &:active {
+    background-color: #6eb9f7;
+    background-size: 100%;
+    transition: background 0s;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  .lds-ring {
+    transform: scale(0.3);
+
+    div {
+      border: 8px solid #fff;
+      border-color: #fff transparent transparent transparent;
+    }
+  }
+}

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppContext } from "../../context/context";
 import "./SideMenu.scss";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   ChevronDown,
   HashtagIcon,
@@ -10,6 +10,7 @@ import {
   Logo,
   ProfileIcon,
 } from "../../Svgs";
+import { useGetCurrentUserDetailsQuery } from "../../generated/graphql";
 
 const menu = [
   {
@@ -30,18 +31,48 @@ const menu = [
 ];
 
 const SideMenu = () => {
+  const [{ data }, getCurrentUser] = useGetCurrentUserDetailsQuery();
+  useEffect(() => {
+    getCurrentUser();
+  }, [data, getCurrentUser]);
+
   return (
     <div className="side-menu">
       <div className="side-menu-content">
-        <Logo size={40} color="#ffffff" />
-        <div className="links">
-          {menu.map(({ Icon, name, path }, index) => (
-            <div className="link" key={index}>
-              <Icon size={24} color="#ffffff" />
-              <p>{name}</p>
-            </div>
-          ))}
+        <div>
+          <div className="logo">
+            <Logo size={40} color="#ffffff" />
+          </div>
+          <div className="links">
+            {menu.map(({ Icon, name, path }, index) => (
+              <NavLink to={path} activeClassName="active-link" exact>
+                <div className="link" key={index}>
+                  <Icon size={24} />
+                  <p>{name}</p>
+                </div>
+              </NavLink>
+            ))}
+          </div>
+          <button className="ripple-btn">Tweet</button>
         </div>
+        {data && (
+          <div className="profile">
+            <div className="left-content">
+              <img
+                src={`${PROFILE_IMAGES_BASE_URL + data.currentUser?.image}`}
+                alt="profile"
+                className="profile-image"
+              />
+              <div className="profile-details">
+                <p className="fullname">{data.currentUser?.fullname}</p>
+                <p className="username">@{data.currentUser?.username}</p>
+              </div>
+            </div>
+            <button>
+              <ChevronDown size={20} color="#ffffff" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

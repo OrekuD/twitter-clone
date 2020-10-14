@@ -9,4 +9,3 @@ export { default as Posts } from "./Posts/Posts";
 export { default as Modal } from "./Modal/Modal";
 export { default as CreateComment } from "./CreateComment/CreateComment";
 export { default as RenderTweet } from "./RenderTweet/RenderTweet";
-export { default as Button } from "./Buttons/Button";
