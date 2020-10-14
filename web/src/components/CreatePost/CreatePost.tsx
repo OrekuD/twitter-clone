@@ -52,7 +52,7 @@ const CreatePost = () => {
       )}
       <form onSubmit={handleSubmit} className="form">
         <textarea
-          placeholder="Say something..."
+          placeholder="What's happening?"
           className="textarea"
           draggable={false}
           value={tweet}

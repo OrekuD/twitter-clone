@@ -25,6 +25,8 @@ export type Query = {
   getLikesByUser?: Maybe<Array<Like>>;
   getCommentsByUser: Array<Post>;
   search: Response;
+  getTrends: Array<Trends>;
+  getTrendsByHashtag?: Maybe<Trends>;
 };
 
 
@@ -60,6 +62,11 @@ export type QueryGetCommentsByUserArgs = {
 
 export type QuerySearchArgs = {
   searchTerm: Scalars['String'];
+};
+
+
+export type QueryGetTrendsByHashtagArgs = {
+  hashtag: Scalars['String'];
 };
 
 export type SinglePostResponse = {
@@ -99,6 +106,7 @@ export type Comment = {
   creatorId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   creator: User;
+  likes: Array<Like>;
 };
 
 export type Like = {
@@ -133,6 +141,14 @@ export type Response = {
   users: Array<User>;
 };
 
+export type Trends = {
+  __typename?: 'Trends';
+  _id: Scalars['ID'];
+  hashtag: Scalars['String'];
+  posts: Array<Post>;
+  numberOfPosts: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: Post;
@@ -141,6 +157,7 @@ export type Mutation = {
   addUserDetails: UserResponse;
   logout: Scalars['Boolean'];
   likePost: LikeResponse;
+  likeComment: LikeResponse;
   createComment: CommentResponse;
 };
 
@@ -167,6 +184,11 @@ export type MutationAddUserDetailsArgs = {
 
 export type MutationLikePostArgs = {
   postId: Scalars['String'];
+};
+
+
+export type MutationLikeCommentArgs = {
+  commentId: Scalars['String'];
 };
 
 
@@ -443,6 +465,32 @@ export type GetPostsByUserQuery = (
   & { getPostsByUser: Array<(
     { __typename?: 'Post' }
     & PostDetailsFragment
+  )> }
+);
+
+export type GetTrendsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTrendsQuery = (
+  { __typename?: 'Query' }
+  & { getTrends: Array<(
+    { __typename?: 'Trends' }
+    & Pick<Trends, 'hashtag' | 'numberOfPosts'>
+  )> }
+);
+
+export type GetTrendsByHashtagQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTrendsByHashtagQuery = (
+  { __typename?: 'Query' }
+  & { getTrendsByHashtag?: Maybe<(
+    { __typename?: 'Trends' }
+    & Pick<Trends, 'hashtag' | 'numberOfPosts'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & PostDetailsFragment
+    )> }
   )> }
 );
 
@@ -759,6 +807,33 @@ export const GetPostsByUserDocument = gql`
 
 export function useGetPostsByUserQuery(options: Omit<Urql.UseQueryArgs<GetPostsByUserQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetPostsByUserQuery>({ query: GetPostsByUserDocument, ...options });
+};
+export const GetTrendsDocument = gql`
+    query GetTrends {
+  getTrends {
+    hashtag
+    numberOfPosts
+  }
+}
+    `;
+
+export function useGetTrendsQuery(options: Omit<Urql.UseQueryArgs<GetTrendsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTrendsQuery>({ query: GetTrendsDocument, ...options });
+};
+export const GetTrendsByHashtagDocument = gql`
+    query GetTrendsByHashtag {
+  getTrendsByHashtag(hashtag: "#100") {
+    hashtag
+    numberOfPosts
+    posts {
+      ...PostDetails
+    }
+  }
+}
+    ${PostDetailsFragmentDoc}`;
+
+export function useGetTrendsByHashtagQuery(options: Omit<Urql.UseQueryArgs<GetTrendsByHashtagQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTrendsByHashtagQuery>({ query: GetTrendsByHashtagDocument, ...options });
 };
 export const GetUserDocument = gql`
     query GetUser($username: String!) {

@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useAppContext } from "../../context/context";
 import { useGetCurrentUserDetailsQuery } from "../../generated/graphql";
 import CreateComment from "../CreateComment/CreateComment";
-import Profile from "../Profile/Profile";
+import SideMenu from "../SideMenu/SideMenu";
 import SearchTab from "../SearchTab/SearchTab";
 import "./Layout.scss";
 
@@ -42,7 +42,7 @@ const Layout: React.FC = ({ children }) => {
   return (
     <>
       <div className="layout">
-        <Profile />
+        <SideMenu />
         <div className="content-container">{children}</div>
         <SearchTab />
         <CreateComment />

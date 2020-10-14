@@ -4,86 +4,83 @@
   padding: 10px 20px;
   padding-bottom: 0;
   border-bottom: 1px solid $lightgrey;
+  display: flex;
 
-  .card-header {
+  .profile-image {
+    width: 50px;
     height: 50px;
-    display: flex;
+    border-radius: 50%;
+    background-color: rebeccapurple;
+  }
+
+  .card-content {
     width: 100%;
+    padding-left: 10px;
 
-    .image {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: rebeccapurple;
-    }
-
-    .profile-details {
-      margin-left: 10px;
-
-      .fullname {
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      .row {
+    .card-header {
+      display: flex;
+      width: 100%;
+      .user-details {
         display: flex;
-        align-items: center;
-        margin-top: 3px;
+        font-size: 14px;
+
+        .fullname {
+          font-weight: 600;
+          color: #ffffff;
+          margin-right: 5px;
+        }
 
         .username {
-          font-size: 12px;
-          color: grey;
+          color: $grey;
         }
 
         .dot {
           width: 3px;
           height: 3px;
           border-radius: 50%;
-          background-color: grey;
-          margin: 0 5px;
+          background-color: $grey;
+          margin: auto 5px;
         }
       }
+
+      .view-tweet {
+        margin-left: auto;
+      }
     }
 
-    .view-tweet {
-      margin: 15px 10px 0 auto;
+    .content {
+      display: inline;
+
+      .link {
+        color: $blue;
+      }
     }
-  }
 
-  .content {
-    display: inline;
-
-    .link {
-      color: $blue;
-    }
-  }
-
-  .icons {
-    display: flex;
-    align-items: center;
-    padding: 5px 0;
-    justify-content: flex-end;
-    z-index: 2;
-
-    .icon {
-      margin-left: 30px;
+    .icons {
       display: flex;
       align-items: center;
-      justify-content: center;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      transition: 0.3s ease-in-out background;
+      padding: 5px 0;
+      justify-content: space-between;
 
-      &:hover {
-        background-color: rgb(172, 238, 218);
-      }
+      .icon {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        transition: 0.3s ease-in-out background;
 
-      .count {
-        font-size: 12px;
-        font-weight: 600;
-        margin-left: 3px;
-        color: $grey;
+        &:hover {
+          // background-color: rgb(172, 238, 218);
+        }
+
+        .count {
+          font-size: 12px;
+          font-weight: 600;
+          margin-left: 3px;
+          color: $grey;
+        }
       }
     }
   }

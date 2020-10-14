@@ -10,9 +10,11 @@ import {
   ChatBubble,
   Share,
   ChevronDown,
+  Retweet,
 } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
 import { userLiked } from "../../utils/userLiked";
+import RenderTweet from "../RenderTweet/RenderTweet";
 import "./PostCard.scss";
 
 interface Props {
@@ -25,7 +27,7 @@ const PostCard = ({ post }: Props) => {
     _id,
     content,
     createdAt,
-    creator: { username },
+    creator: { username, fullname },
     comments,
     likes,
   } = post as Post;
@@ -58,84 +60,65 @@ const PostCard = ({ post }: Props) => {
 
   return (
     <div className="card">
-      <div className="card-header">
-        <div className="image"></div>
-        <Link to={`/${username}`}>
-          <div className="profile-details">
-            <p className="fullname">David Opoku</p>
-            <div className="row">
-              <p className="username">@{username}</p>
-              <div className="dot" />
-              <p className="username">{timeSince(new Date(createdAt))}</p>
-            </div>
+      <Link to={`/${username}`}>
+        <div className="profile-image"></div>
+      </Link>
+      <div className="card-content">
+        <div className="card-header">
+          <div className="user-details">
+            <p className="fullname">{fullname}</p>
+            <p className="username">@{username}</p>
+            <div className="dot" />
+            <p className="username">{timeSince(new Date(createdAt))}</p>
           </div>
-        </Link>
-        <div className="view-tweet">
-          <Link to={`/post/${_id}`}>
-            <ChevronDown size={12} color={grey} />
-          </Link>
+          <div className="view-tweet">
+            <Link to={`/post/${_id}`}>
+              <ChevronDown size={16} color={grey} />
+            </Link>
+          </div>
         </div>
-      </div>
-      <p className="content">
-        {content.split("\n").map((str) => {
-          if (!str) {
-            return <br key={Math.random()} />;
-          } else {
-            return str.split(" ").map((substr) => {
-              if (substr[0] === "@") {
-                return (
-                  <Link to={`/${substr.slice(1)}`} key={Math.random()}>
-                    <span className="link">{" " + substr + " "}</span>
-                  </Link>
-                );
-              } else if (substr[0] === "#") {
-                return (
-                  <span className="link" key={Math.random()}>
-                    {" " + substr + " "}
-                  </span>
-                );
+        <p className="content">
+          <RenderTweet text={content} />
+        </p>
+        <div className="icons">
+          <button className="icon" onClick={commentPost}>
+            <ChatBubble size={18} color={grey} />
+            {comments.length > 0 && <p className="count">{comments.length}</p>}
+          </button>
+          <button className="icon">
+            <Retweet size={18} color={grey} />
+          </button>
+          <button
+            className="icon"
+            onClick={async () => {
+              // Mutate array on client side just for visual feedback
+              if (userLiked(likes, userId) >= 0) {
+                likes.splice(userLiked(likes, userId), 1);
               } else {
-                return <span key={Math.random()}> {substr} </span>;
+                likes.unshift({
+                  _id: Math.random().toString(),
+                  creatorId: userId,
+                  postId: _id,
+                  creator: dummyUserDetails,
+                });
               }
-            });
-          }
-        })}
-      </p>
-      <div className="icons">
-        <button
-          className="icon"
-          onClick={async () => {
-            // Mutate array on client side just for visual feedback
-            if (userLiked(likes, userId) >= 0) {
-              likes.splice(userLiked(likes, userId), 1);
-            } else {
-              likes.unshift({
-                _id: Math.random().toString(),
-                creatorId: userId,
+              await likePost({
                 postId: _id,
-                creator: dummyUserDetails,
               });
-            }
-            await likePost({
-              postId: _id,
-            });
-          }}
-        >
-          {userLiked(likes, userId) >= 0 ? (
-            <FavouriteFilled size={18} color="#b00020" />
-          ) : (
-            <Favourite size={18} color={grey} />
-          )}
+            }}
+          >
+            {userLiked(likes, userId) >= 0 ? (
+              <FavouriteFilled size={18} color="#b00020" />
+            ) : (
+              <Favourite size={18} color={grey} />
+            )}
 
-          {likes.length > 0 && <p className="count">{likes.length}</p>}
-        </button>
-        <button className="icon" onClick={commentPost}>
-          <ChatBubble size={18} color={grey} />
-          {comments.length > 0 && <p className="count">{comments.length}</p>}
-        </button>
-        <button className="icon" onClick={share}>
-          <Share size={18} color={grey} />
-        </button>
+            {likes.length > 0 && <p className="count">{likes.length}</p>}
+          </button>
+          <button className="icon" onClick={share}>
+            <Share size={18} color={grey} />
+          </button>
+        </div>
       </div>
     </div>
   );

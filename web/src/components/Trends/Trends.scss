@@ -1,0 +1,49 @@
+@import "../../constants/colors.scss";
+
+.trends {
+  width: 90%;
+  background-color: $purple;
+  margin-top: 20px;
+  border-radius: 15px;
+
+  .top-section {
+    padding: 15px;
+    border-bottom: 1px solid $lightgrey;
+
+    p {
+      font-size: 20px;
+      color: #ffffff;
+      font-weight: 700;
+    }
+  }
+
+  button {
+    display: block;
+    text-align: left;
+    width: 100%;
+  }
+
+  .trend {
+    padding: 15px;
+    border-bottom: 1px solid $lightgrey;
+
+    .hashtag {
+      font-size: 14px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .number-of-tweets {
+      font-size: 12px;
+      color: #ffffff;
+      margin-top: 10px;
+      color: $grey;
+    }
+  }
+
+  .show-more {
+    color: $blue;
+    font-weight: 600;
+    margin: 15px;
+  }
+}

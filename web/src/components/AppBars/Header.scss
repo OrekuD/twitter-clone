@@ -1,17 +1,17 @@
 @import "../../constants/colors.scss";
 
 .header {
-  height: 70px;
+  height: 60px;
   border-bottom: 1px solid $lightgrey;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 20px;
   // background-color: red;
 
   .label {
-    margin-left: 20px;
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
   }
 }
 
