@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { dummyUserDetails } from "../../constants";
+import { Link, useHistory } from "react-router-dom";
+import { APP_URL, dummyUserDetails } from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import { Tweet, useLikeTweetMutation } from "../../generated/graphql";
@@ -37,32 +37,44 @@ const TweetCard = ({ tweet }: Props) => {
     setCommentModalState,
     setSelectedTweet,
   } = useAppContext();
+  const { push } = useHistory();
 
-  const url = "https://twitter-clone.netlify.app";
-
-  const share = async () => {
+  const share = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
     let newVariable = window.navigator as any;
     if (newVariable.share) {
       await newVariable.share({
         title: "Twitter-clone",
         text: "Check out this tweet",
-        url: `${url}/tweet/${_id}`,
+        url: `${APP_URL}/${username}/status/${_id}`,
       });
     } else {
       alert("share not supported");
     }
   };
 
-  const commentTweet = () => {
+  const commentTweet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
     setSelectedTweet(tweet);
     setCommentModalState(true);
   };
 
   return (
-    <div className="card">
-      <Link to={`/${username}`}>
-        <div className="profile-image"></div>
-      </Link>
+    <div
+      className="card"
+      onClick={() => {
+        // event.stopPropagation() doesn't seem to work with the Link component from
+        // react router, hence this implementation
+        push(`/${username}/status/${_id}`);
+      }}
+    >
+      <div
+        className="profile-image"
+        onClick={(e) => {
+          e.stopPropagation();
+          push(`/${username}`);
+        }}
+      ></div>
       <div className="card-content">
         <div className="card-header">
           <div className="user-details">
@@ -72,53 +84,60 @@ const TweetCard = ({ tweet }: Props) => {
             <p className="username">{timeSince(new Date(createdAt))}</p>
           </div>
           <div className="view-tweet">
-            <Link to={`/tweet/${_id}`}>
-              <ChevronDown size={16} color={grey} />
-            </Link>
+            <ChevronDown size={16} color={grey} />
           </div>
         </div>
-        <p className="content">
-          <RenderTweet text={content} />
-        </p>
+        <RenderTweet text={content} />
         <div className="icons">
-          <button className="icon" onClick={commentTweet}>
-            <ChatBubble size={18} color={grey} />
-            {comments.length > 0 && <p className="count">{comments.length}</p>}
-          </button>
-          <button className="icon">
-            <Retweet size={18} color={grey} />
-          </button>
-          <button
-            className="icon"
-            onClick={async () => {
-              // Mutate array on client side just for visual feedback
-              if (userLiked(likes, userId) >= 0) {
-                likes.splice(userLiked(likes, userId), 1);
-              } else {
-                likes.unshift({
-                  _id: Math.random().toString(),
-                  creatorId: userId,
+          <div className="icon-container">
+            <button className="icon" onClick={commentTweet}>
+              <ChatBubble size={18} color={grey} />
+              {comments.length > 0 && (
+                <p className="count">{comments.length}</p>
+              )}
+            </button>
+          </div>
+          <div className="icon-container">
+            <button className="icon">
+              <Retweet size={18} color={grey} />
+            </button>
+          </div>
+          <div className="icon-container">
+            <button
+              className="icon"
+              onClick={async (e) => {
+                e.stopPropagation();
+                // Mutate array on client side just for visual feedback
+                if (userLiked(likes, userId) >= 0) {
+                  likes.splice(userLiked(likes, userId), 1);
+                } else {
+                  likes.unshift({
+                    _id: Math.random().toString(),
+                    creatorId: userId,
+                    tweetId: _id,
+                    creator: dummyUserDetails,
+                  });
+                }
+                await likeTweet({
                   tweetId: _id,
-                  creator: dummyUserDetails,
+                  isComment: false,
                 });
-              }
-              await likeTweet({
-                tweetId: _id,
-                isComment: false,
-              });
-            }}
-          >
-            {userLiked(likes, userId) >= 0 ? (
-              <FavouriteFilled size={18} color="#b00020" />
-            ) : (
-              <Favourite size={18} color={grey} />
-            )}
+              }}
+            >
+              {userLiked(likes, userId) >= 0 ? (
+                <FavouriteFilled size={18} color="#b00020" />
+              ) : (
+                <Favourite size={18} color={grey} />
+              )}
 
-            {likes.length > 0 && <p className="count">{likes.length}</p>}
-          </button>
-          <button className="icon" onClick={share}>
-            <Share size={18} color={grey} />
-          </button>
+              {likes.length > 0 && <p className="count">{likes.length}</p>}
+            </button>
+          </div>
+          <div className="icon-container">
+            <button className="icon" onClick={share}>
+              <Share size={18} color={grey} />
+            </button>
+          </div>
         </div>
       </div>
     </div>

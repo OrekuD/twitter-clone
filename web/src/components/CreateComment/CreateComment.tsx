@@ -1,5 +1,5 @@
 import React from "react";
-import { PROFILE_IMAGES_BASE_URL } from "../../constants";
+import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { blue } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import { Cancel } from "../../Svgs";
@@ -81,7 +81,7 @@ const CreateComment = () => {
               alt="profile"
               className="profile-image"
             />
-            <div className="tweet-content">
+            <div className="tweet-details">
               <div className="user-details">
                 <p className="fullname">{fullname}</p>
                 <p className="username">@{username}</p>

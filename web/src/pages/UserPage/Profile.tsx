@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { User } from "../../generated/graphql";
 import { Calendar, Location } from "../../Svgs";
-import { joinedAt } from "../../utils/joinedAt";
+import { joinedAt } from "../../utils/dateFormatters";
 
 interface Props {
   user: User;
@@ -47,12 +47,12 @@ const Profile = ({ user }: Props) => {
         <div className="links">
           {location && (
             <div className="row">
-              <Location color="grey" size={14} />
+              <Location color="grey" size={18} />
               <p>{location}</p>
             </div>
           )}
           <div className="row">
-            <Calendar color="grey" size={14} />
+            <Calendar color="grey" size={18} />
             <p>{joinedAt(createdAt)}</p>
           </div>
         </div>

@@ -22,7 +22,7 @@ const Tweets = ({ tweets }: Props) => {
     content = (
       <>
         {tweets.map((tweet, index) => (
-          <TweetCard tweet={tweet} />
+          <TweetCard tweet={tweet} key={index} />
         ))}
       </>
     );

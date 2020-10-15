@@ -13,6 +13,8 @@ import {
 import argon2 from "argon2";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
+import { FollowingModel } from "../Models/Following";
+import { FollowersModel } from "../Models/Followers";
 
 @ObjectType()
 class UserError {
@@ -107,9 +109,12 @@ export class UserResolver {
       createdAt: Date.now(),
       bio: "",
       location: "",
+      followers: [],
+      following: [],
       image: "/dummy.jpg",
     });
     await newUser.save();
+
     request.session.userId = newUser.id;
     return { user: newUser };
   }
@@ -172,6 +177,32 @@ export class UserResolver {
     return { user: updatedUser! };
   }
 
+  @Mutation(() => Boolean)
+  async followUser(@Arg("userId") userId: string, @Ctx() { request }: Context) {
+    const user = await UserModel.findOne({ _id: userId });
+    if (!user) {
+      return false;
+    }
+
+    // First, add the current user to the requested user's followers list
+    await UserModel.updateOne(
+      { _id: userId },
+      {
+        $push: { followers: [request.session.userId] as any },
+      }
+    );
+
+    // Then, add the new user to the current user's following list
+    await UserModel.updateOne(
+      { _id: request.session.userId },
+      {
+        $push: { following: [userId] as any },
+      }
+    );
+
+    return true;
+  }
+
   @Query(() => UserResponse)
   async getUserDetails(@Arg("userId") userId: string) {
     const user = await UserModel.findOne({ _id: userId });
@@ -221,5 +252,10 @@ export class UserResolver {
       }
       return true;
     });
+  }
+
+  @Query(() => [User])
+  async getAllUsers() {
+    return await UserModel.find();
   }
 }

@@ -4,7 +4,7 @@ import "./CreateTweet.scss";
 import { useCreateTweetMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { PROFILE_IMAGES_BASE_URL } from "../../constants";
+import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 
 const schema = Yup.object().shape({
   tweet: Yup.string()
@@ -29,11 +29,7 @@ const CreateTweet = () => {
   } = useFormik({
     initialValues: { tweet: "" },
     validationSchema: schema,
-    onSubmit: async (values, { resetForm, setFieldError }) => {
-      if (values.tweet.split("").length === 0) {
-        setFieldError("tweet", "Tweet must exceed 1 character");
-        return;
-      }
+    onSubmit: async (values, { resetForm }) => {
       await createTweet({
         content: values.tweet,
       });

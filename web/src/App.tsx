@@ -11,7 +11,7 @@ function App() {
     <>
       {!isLoggedIn && <Redirect from="/" to="/user/login" />}
       <Route path="/" exact component={Home} />
-      <Route path="/tweet/:tweetId" exact component={Tweet} />
+      <Route path="/:username/status/:tweetId" exact component={Tweet} />
       <Route path="/user/register" exact component={Register} />
       <Route path="/user/login" exact component={Login} />
       <Route path="/user/edit-details" exact component={EditDetails} />

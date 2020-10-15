@@ -13,7 +13,7 @@ const StackHeader = ({ label }: Props) => {
   return (
     <header className="stack-header">
       <button onClick={history.goBack}>
-        <Arrow size={18} color={blue} />
+        <Arrow size={24} color={blue} />
       </button>
       {label && <p className="label">{label}</p>}
     </header>

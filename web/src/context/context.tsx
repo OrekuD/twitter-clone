@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { dummyUserDetails } from "../constants";
+import { dummyUserDetails } from "../constants/constants";
 import { Tweet, useGetCurrentUserDetailsQuery } from "../generated/graphql";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { AppContext, User } from "../types";
@@ -25,6 +25,10 @@ const Provider: React.FC = ({ children }) => {
   useEffect(() => {
     getUserDetails();
   }, [getUserDetails]);
+
+  useEffect(() => {
+    setIsLoggedIn(isLoggedIn);
+  }, []);
 
   useEffect(() => {
     if (data?.currentUser) {

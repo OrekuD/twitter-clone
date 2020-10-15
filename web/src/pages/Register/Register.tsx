@@ -83,7 +83,7 @@ const Register = () => {
           </div>
         </div>
         <div className="group">
-          <label htmlFor="fullname">Fullname</label>
+          <label htmlFor="fullname">Full Name</label>
           <div className="input">
             <input
               type="text"
@@ -138,7 +138,7 @@ const Register = () => {
             Submit
           </button>
           <p>
-            Already have an account? <Link to="/login">Log in</Link>
+            Already have an account? <Link to="/user/login">Log in</Link>
           </p>
         </div>
       </form>

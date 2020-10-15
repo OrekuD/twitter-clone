@@ -11,7 +11,6 @@ import connectMongo from "connect-mongo";
 import { CommentResolver } from "./Resolvers/CommentResolver";
 import { SearchResolver } from "./Resolvers/SearchResolver";
 import { TrendsResolver } from "./Resolvers/TrendsResolver";
-
 const PORT = process.env.PORT || 4000;
 
 const main = async () => {
@@ -51,6 +50,7 @@ const main = async () => {
       CommentResolver,
       SearchResolver,
       TrendsResolver,
+      // FollowResolver,
     ],
     validate: false,
   });
