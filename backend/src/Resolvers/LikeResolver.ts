@@ -49,12 +49,12 @@ export class LikeResolver {
     }
 
     const hasUserAlreadyLiked = tweet.likes.findIndex(
-      (like) => like?.creatorId === userId // TODO: fix this
+      (like) => (like as Like).creatorId === userId
     );
 
     if (hasUserAlreadyLiked >= 0) {
       const updatedLikes = tweet.likes.filter(
-        (like) => like?.creatorId !== userId // TODO: fix this
+        (like) => (like as Like).creatorId !== userId
       );
 
       if (isComment) {
@@ -70,7 +70,7 @@ export class LikeResolver {
       }
 
       await LikeModel.deleteOne({
-        _id: tweet.likes[hasUserAlreadyLiked]?.id, // TODO: fix this
+        _id: (tweet.likes[hasUserAlreadyLiked] as Like)._id,
       });
 
       return { state: true, message: "Unlike successfull" };

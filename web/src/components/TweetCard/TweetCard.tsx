@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { APP_URL, dummyUserDetails } from "../../constants/constants";
+import { APP_URL } from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import { Tweet, useLikeTweetMutation } from "../../generated/graphql";
@@ -13,12 +13,12 @@ import {
   Retweet,
 } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
-import { userLiked } from "../../utils/userLiked";
+import { userHasLiked } from "../../utils/userHasLiked";
 import RenderTweet from "../RenderTweet/RenderTweet";
 import "./TweetCard.scss";
 
 interface Props {
-  tweet: any; // TODO: fix this
+  tweet: Tweet;
   nolink?: boolean;
 }
 
@@ -30,7 +30,7 @@ const TweetCard = ({ tweet }: Props) => {
     creator: { username, fullname },
     comments,
     likes,
-  } = tweet as Tweet;
+  } = tweet;
   const [, likeTweet] = useLikeTweetMutation();
   const {
     userDetails: { _id: userId },
@@ -88,10 +88,12 @@ const TweetCard = ({ tweet }: Props) => {
           </div>
         </div>
         <RenderTweet text={content} />
-        <div className="icons">
+        <div className="tweet-actions">
           <div className="icon-container">
             <button className="icon" onClick={commentTweet}>
-              <ChatBubble size={18} color={grey} />
+              <div className="svg">
+                <ChatBubble size={20} />
+              </div>
               {comments.length > 0 && (
                 <p className="count">{comments.length}</p>
               )}
@@ -99,43 +101,52 @@ const TweetCard = ({ tweet }: Props) => {
           </div>
           <div className="icon-container">
             <button className="icon">
-              <Retweet size={18} color={grey} />
+              <div className="svg">
+                <Retweet size={20} />
+              </div>
+              <p className="count">12</p>
             </button>
           </div>
           <div className="icon-container">
             <button
               className="icon"
-              onClick={async (e) => {
+              onClick={(e) => {
                 e.stopPropagation();
-                // Mutate array on client side just for visual feedback
-                // if (userLiked(likes, userId) >= 0) {
-                //   likes.splice(userLiked(likes, userId), 1);
-                // } else {
-                //   likes.unshift({
-                //     _id: Math.random().toString(),
-                //     creatorId: userId,
-                //     tweetId: _id,
-                //     creator: dummyUserDetails,
-                //   });
-                // }
-                await likeTweet({
+                likeTweet({
                   tweetId: _id,
                   isComment: false,
                 });
               }}
             >
-              {userLiked(likes, userId) >= 0 ? (
-                <FavouriteFilled size={18} color="#b00020" />
-              ) : (
-                <Favourite size={18} color={grey} />
+              <div className="svg">
+                <>
+                  {userHasLiked(likes, userId) >= 0 ? (
+                    <FavouriteFilled size={18} color="#b00020" />
+                  ) : (
+                    <Favourite size={20} />
+                  )}
+                </>
+              </div>
+              {likes.length > 0 && (
+                <p
+                  className="count"
+                  style={{
+                    color:
+                      userHasLiked(likes, userId) >= 0
+                        ? "rgb(197, 36, 88)"
+                        : grey,
+                  }}
+                >
+                  {likes.length}
+                </p>
               )}
-
-              {likes.length > 0 && <p className="count">{likes.length}</p>}
             </button>
           </div>
           <div className="icon-container">
             <button className="icon" onClick={share}>
-              <Share size={18} color={grey} />
+              <div className="svg">
+                <Share size={20} />
+              </div>
             </button>
           </div>
         </div>

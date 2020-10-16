@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { Layout, Spinner, StackHeader, RenderTweet } from "../../components";
-import {
-  APP_URL,
-  dummyUserDetails,
-  PROFILE_IMAGES_BASE_URL,
-} from "../../constants/constants";
+import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import {
@@ -22,7 +18,7 @@ import {
   Share,
 } from "../../Svgs";
 import { formatDate } from "../../utils/dateFormatters";
-import { userLiked } from "../../utils/userLiked";
+import { userHasLiked } from "../../utils/userHasLiked";
 import "./Tweet.scss";
 
 const TweetPage = () => {
@@ -39,9 +35,6 @@ const TweetPage = () => {
 
   useEffect(() => {
     getTweet();
-    if (data?.getTweet.tweet) {
-      console.log("--------", data.getTweet.tweet.likes);
-    }
   }, [getTweet, params]);
 
   if (!data) {
@@ -111,31 +104,63 @@ const TweetPage = () => {
               <span>{likes.length}</span> Likes
             </p>
           </div>
-          <div className="buttons">
-            <button className="icon" onClick={commentTweet}>
-              <ChatBubble size={20} color={grey} />
-            </button>
-            <button className="icon">
-              <Retweet size={20} color={grey} />
-            </button>
-            <button
-              className="icon"
-              onClick={async () => {
-                await likeTweet({
-                  tweetId: _id,
-                  isComment: false,
-                });
-              }}
-            >
-              {userLiked(likes, userId) >= 0 ? (
-                <FavouriteFilled size={20} color="#b00020" />
-              ) : (
-                <Favourite size={20} color={grey} />
-              )}
-            </button>
-            <button className="icon" onClick={share}>
-              <Share size={20} color={grey} />
-            </button>
+          <div className="tweet-actions">
+            <div className="icon-container">
+              <button className="icon" onClick={commentTweet}>
+                <div className="svg">
+                  <ChatBubble size={20} />
+                </div>
+              </button>
+            </div>
+            <div className="icon-container">
+              <button className="icon" onClick={commentTweet}>
+                <div className="svg">
+                  <Retweet size={20} />
+                </div>
+              </button>
+            </div>
+            <div className="icon-container">
+              <button
+                className="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  likeTweet({
+                    tweetId: _id,
+                    isComment: false,
+                  });
+                }}
+              >
+                <div className="svg">
+                  <>
+                    {userHasLiked(likes, userId) >= 0 ? (
+                      <FavouriteFilled size={18} color="#b00020" />
+                    ) : (
+                      <Favourite size={20} />
+                    )}
+                  </>
+                </div>
+                {likes.length > 0 && (
+                  <p
+                    className="count"
+                    style={{
+                      color:
+                        userHasLiked(likes, userId) >= 0
+                          ? "rgb(197, 36, 88)"
+                          : grey,
+                    }}
+                  >
+                    {likes.length}
+                  </p>
+                )}
+              </button>
+            </div>
+            <div className="icon-container">
+              <button className="icon" onClick={share}>
+                <div className="svg">
+                  <Share size={20} />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       )}

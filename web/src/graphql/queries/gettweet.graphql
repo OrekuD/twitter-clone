@@ -18,6 +18,7 @@ query GetTweet($id: String!) {
       }
       likes {
         _id
+        creatorId
         creator {
           ...UserPartialDetails
         }

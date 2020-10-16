@@ -499,7 +499,7 @@ export type GetTweetQuery = (
         ) }
       )>, likes: Array<(
         { __typename?: 'Like' }
-        & Pick<Like, '_id'>
+        & Pick<Like, '_id' | 'creatorId'>
         & { creator: (
           { __typename?: 'User' }
           & UserPartialDetailsFragment
@@ -851,6 +851,7 @@ export const GetTweetDocument = gql`
       }
       likes {
         _id
+        creatorId
         creator {
           ...UserPartialDetails
         }

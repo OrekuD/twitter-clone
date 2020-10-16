@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
 import App from "./App";
 import { Provider as ContextProvider } from "./context/context";
+import { LikeTweetMutationVariables } from "./generated/graphql";
 
 const client = createClient({
   url: "http://localhost:4000/graphql",
@@ -16,11 +17,15 @@ const client = createClient({
     cacheExchange({
       updates: {
         Mutation: {
-          createTweet: (result, args, cache) => {
+          createTweet: (_, __, cache) => {
             cache.invalidate("Query", "getAllTweets");
           },
-          likeTweet: (result, args, cache) => {
+          likeTweet: (_, args, cache) => {
+            const { tweetId } = args as LikeTweetMutationVariables;
             cache.invalidate("Query", "getAllTweets");
+            cache.invalidate("Query", "getTweet", {
+              id: tweetId,
+            });
           },
         },
       },

@@ -61,36 +61,5 @@
         color: $blue;
       }
     }
-
-    .icons {
-      display: flex;
-      align-items: center;
-      padding: 5px 0;
-      justify-content: space-between;
-
-      .icon-container {
-        flex: 1;
-
-        .icon {
-          display: flex;
-          align-items: center;
-          width: 35px;
-          height: 35px;
-          border-radius: 50%;
-          transition: 0.3s ease-in-out background;
-
-          &:hover {
-            background-color: rgb(172, 238, 218);
-          }
-
-          .count {
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 3px;
-            color: $grey;
-          }
-        }
-      }
-    }
   }
 }

@@ -8,6 +8,7 @@
 
 .tweet-page {
   padding: 15px;
+  padding-bottom: 0;
   border-bottom: 1px solid $lightgrey;
 
   .profile {
@@ -88,10 +89,13 @@
     }
   }
 
-  .buttons {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    padding-top: 15px;
+  .tweet-actions {
+    padding: 5px 0;
+    margin-left: 0px;
+
+    .icon-container {
+      display: flex;
+      justify-content: center;
+    }
   }
 }
