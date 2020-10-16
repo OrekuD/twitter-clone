@@ -7,7 +7,7 @@ const Trends = () => {
 
   useEffect(() => {
     getTrends();
-  }, [data, getTrends]);
+  }, []);
 
   if (!data) {
     return null;

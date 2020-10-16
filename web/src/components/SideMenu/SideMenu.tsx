@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAppContext } from "../../context/context";
 import "./SideMenu.scss";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   ChevronDown,
   HashtagIcon,
@@ -25,7 +25,7 @@ const menu = [
   },
   {
     name: "Profile",
-    path: "/profile",
+    path: "",
     Icon: ProfileIcon,
   },
 ];
@@ -36,7 +36,7 @@ const SideMenu = () => {
 
   useEffect(() => {
     getCurrentUser();
-  }, [data, getCurrentUser, isLoggedIn]);
+  }, [getCurrentUser, isLoggedIn]);
 
   return (
     <div className="side-menu">
@@ -48,7 +48,7 @@ const SideMenu = () => {
           <div className="links">
             {menu.map(({ Icon, name, path }, index) => (
               <NavLink
-                to={path}
+                to={path || `/${data?.currentUser?.username}`}
                 activeClassName="active-link"
                 exact
                 key={index}

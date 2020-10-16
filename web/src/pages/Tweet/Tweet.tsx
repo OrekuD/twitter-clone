@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import { Layout, Spinner, StackHeader, RenderTweet } from "../../components";
 import {
   APP_URL,
@@ -81,11 +81,13 @@ const TweetPage = () => {
         <div className="tweet-page">
           <div className="profile">
             <div className="left-content">
-              <img
-                src={`${PROFILE_IMAGES_BASE_URL + image}`}
-                alt="profile"
-                className="profile-image"
-              />
+              <Link to={`/${username}`}>
+                <img
+                  src={`${PROFILE_IMAGES_BASE_URL + image}`}
+                  alt="profile"
+                  className="profile-image"
+                />
+              </Link>
               <div className="profile-details">
                 <p className="fullname">{fullname}</p>
                 <p className="username">@{username}</p>
@@ -119,19 +121,6 @@ const TweetPage = () => {
             <button
               className="icon"
               onClick={async () => {
-                // Mutate array on client side just for visual feedback
-                if (userLiked(likes, userId) >= 0) {
-                  // console.log("--------", likes);
-                  likes.splice(userLiked(likes, userId), 1);
-                } else {
-                  // console.log(likes);
-                  likes.unshift({
-                    _id: Math.random().toString(),
-                    creatorId: userId,
-                    tweetId: _id,
-                    creator: dummyUserDetails,
-                  });
-                }
                 await likeTweet({
                   tweetId: _id,
                   isComment: false,

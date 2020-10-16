@@ -3,4 +3,5 @@ fragment UserPartialDetails on User {
   username
   image
   fullname
+  bio
 }

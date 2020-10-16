@@ -13,8 +13,6 @@ import {
 import argon2 from "argon2";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
-import { FollowingModel } from "../Models/Following";
-import { FollowersModel } from "../Models/Followers";
 
 @ObjectType()
 class UserError {

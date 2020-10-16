@@ -1,8 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { dummyUserDetails } from "../constants/constants";
-import { Tweet, useGetCurrentUserDetailsQuery } from "../generated/graphql";
+import {
+  Tweet,
+  useGetCurrentUserDetailsQuery,
+  UserFullDetailsFragment,
+} from "../generated/graphql";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { AppContext, User } from "../types";
+import { AppContext } from "../types";
 
 const Context = createContext<AppContext>({
   isLoggedIn: false,
@@ -17,7 +21,9 @@ const Context = createContext<AppContext>({
 
 const Provider: React.FC = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isLoggedIn", false);
-  const [userDetails, setUserDetails] = useState<User>(dummyUserDetails);
+  const [userDetails, setUserDetails] = useState<UserFullDetailsFragment>(
+    dummyUserDetails
+  );
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
@@ -40,6 +46,9 @@ const Provider: React.FC = ({ children }) => {
         image,
         email,
         username,
+        followers,
+        following,
+        createdAt,
       } = data.currentUser;
       setUserDetails({
         _id,
@@ -49,6 +58,9 @@ const Provider: React.FC = ({ children }) => {
         image,
         email,
         username,
+        createdAt,
+        followers,
+        following,
       });
     }
   }, [data]);
@@ -57,16 +69,19 @@ const Provider: React.FC = ({ children }) => {
     setShowCommentModal(state);
   };
 
-  const addUserDetails = (details: Partial<User>) => {
+  const addUserDetails = (details: Partial<UserFullDetailsFragment>) => {
     setUserDetails((prevValue) => {
       return {
         _id: prevValue._id,
+        image: prevValue.image,
+        followers: prevValue.followers,
+        following: prevValue.following,
+        createdAt: prevValue.createdAt,
         bio: details.bio || prevValue.bio,
         email: details.email || prevValue.email,
         fullname: details.fullname || prevValue.fullname,
         location: details.location || prevValue.location,
         username: details.username || prevValue.username,
-        image: prevValue.image,
       };
     });
   };

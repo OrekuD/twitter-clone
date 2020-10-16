@@ -1,7 +1,9 @@
+import { User } from "../generated/graphql";
+
 export const PROFILE_IMAGES_BASE_URL = "http://localhost:4000/profile_images";
 export const APP_URL = "https://twitter-clone.netlify.app";
 
-export const dummyUserDetails = {
+export const dummyUserDetails: User = {
   image: "",
   fullname: "",
   username: "",
@@ -10,4 +12,6 @@ export const dummyUserDetails = {
   email: "",
   _id: "",
   createdAt: "",
+  followers: [],
+  following: [],
 };

@@ -17,11 +17,12 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   getTweet: SingleTweetResponse;
-  getAllTweets: Array<Tweet>;
+  getAllTweets: AllTweetResponse;
   getTweetsByUser: Array<Tweet>;
   getUserDetails: UserResponse;
   getUser: UserResponse;
   currentUser?: Maybe<User>;
+  getAllUsers: Array<User>;
   getLikesByUser?: Maybe<Array<Like>>;
   getCommentsByUser: Array<Tweet>;
   search: Response;
@@ -96,6 +97,8 @@ export type User = {
   location: Scalars['String'];
   image: Scalars['String'];
   fullname: Scalars['String'];
+  following: Array<User>;
+  followers: Array<User>;
 };
 
 export type Comment = {
@@ -121,6 +124,12 @@ export type TweetError = {
   __typename?: 'TweetError';
   message: Scalars['String'];
   field: Scalars['String'];
+};
+
+export type AllTweetResponse = {
+  __typename?: 'AllTweetResponse';
+  tweets: Array<Tweet>;
+  error: TweetError;
 };
 
 export type UserResponse = {
@@ -155,6 +164,7 @@ export type Mutation = {
   createAccount: UserResponse;
   login: UserResponse;
   addUserDetails: UserResponse;
+  followUser: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   likeTweet: LikeResponse;
   createComment: CommentResponse;
@@ -178,6 +188,11 @@ export type MutationLoginArgs = {
 
 export type MutationAddUserDetailsArgs = {
   input: DetailsInput;
+};
+
+
+export type MutationFollowUserArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -252,11 +267,18 @@ export type TweetDetailsFragment = (
 export type UserFullDetailsFragment = (
   { __typename?: 'User' }
   & Pick<User, '_id' | 'username' | 'email' | 'bio' | 'createdAt' | 'location' | 'image' | 'fullname'>
+  & { followers: Array<(
+    { __typename?: 'User' }
+    & UserPartialDetailsFragment
+  )>, following: Array<(
+    { __typename?: 'User' }
+    & UserPartialDetailsFragment
+  )> }
 );
 
 export type UserPartialDetailsFragment = (
   { __typename?: 'User' }
-  & Pick<User, '_id' | 'username' | 'image' | 'fullname'>
+  & Pick<User, '_id' | 'username' | 'image' | 'fullname' | 'bio'>
 );
 
 export type AddUserDetailsMutationVariables = Exact<{
@@ -384,10 +406,13 @@ export type AllTweetsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AllTweetsQuery = (
   { __typename?: 'Query' }
-  & { getAllTweets: Array<(
-    { __typename?: 'Tweet' }
-    & TweetDetailsFragment
-  )> }
+  & { getAllTweets: (
+    { __typename?: 'AllTweetResponse' }
+    & { tweets: Array<(
+      { __typename?: 'Tweet' }
+      & TweetDetailsFragment
+    )> }
+  ) }
 );
 
 export type GetCommentsByUserQueryVariables = Exact<{
@@ -431,7 +456,7 @@ export type GetTrendsQuery = (
   { __typename?: 'Query' }
   & { getTrends: Array<(
     { __typename?: 'Trends' }
-    & Pick<Trends, 'hashtag' | 'numberOfTweets'>
+    & Pick<Trends, 'hashtag' | 'numberOfTweets' | '_id'>
   )> }
 );
 
@@ -442,7 +467,7 @@ export type GetTrendsByHashtagQuery = (
   { __typename?: 'Query' }
   & { getTrendsByHashtag?: Maybe<(
     { __typename?: 'Trends' }
-    & Pick<Trends, 'hashtag' | 'numberOfTweets'>
+    & Pick<Trends, '_id' | 'hashtag' | 'numberOfTweets'>
     & { tweets: Array<(
       { __typename?: 'Tweet' }
       & TweetDetailsFragment
@@ -571,6 +596,7 @@ export const UserPartialDetailsFragmentDoc = gql`
   username
   image
   fullname
+  bio
 }
     `;
 export const TweetDetailsFragmentDoc = gql`
@@ -600,8 +626,14 @@ export const UserFullDetailsFragmentDoc = gql`
   location
   image
   fullname
+  followers {
+    ...UserPartialDetails
+  }
+  following {
+    ...UserPartialDetails
+  }
 }
-    `;
+    ${UserPartialDetailsFragmentDoc}`;
 export const AddUserDetailsDocument = gql`
     mutation AddUserDetails($username: String!, $bio: String!, $location: String!, $email: String!, $fullname: String!) {
   addUserDetails(input: {username: $username, bio: $bio, location: $location, email: $email, fullname: $fullname}) {
@@ -725,7 +757,9 @@ export function useLoginMutation() {
 export const AllTweetsDocument = gql`
     query AllTweets {
   getAllTweets {
-    ...TweetDetails
+    tweets {
+      ...TweetDetails
+    }
   }
 }
     ${TweetDetailsFragmentDoc}`;
@@ -772,6 +806,7 @@ export const GetTrendsDocument = gql`
   getTrends {
     hashtag
     numberOfTweets
+    _id
   }
 }
     `;
@@ -782,6 +817,7 @@ export function useGetTrendsQuery(options: Omit<Urql.UseQueryArgs<GetTrendsQuery
 export const GetTrendsByHashtagDocument = gql`
     query GetTrendsByHashtag {
   getTrendsByHashtag(hashtag: "#100") {
+    _id
     hashtag
     numberOfTweets
     tweets {

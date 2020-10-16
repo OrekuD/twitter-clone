@@ -1,20 +1,34 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { User } from "../../generated/graphql";
+import { Link, useRouteMatch } from "react-router-dom";
+import { UserFullDetailsFragment } from "../../generated/graphql";
 import { Calendar, Location } from "../../Svgs";
+// import { User } from "../../types";
 import { joinedAt } from "../../utils/dateFormatters";
 
 interface Props {
-  user: User;
+  user: UserFullDetailsFragment;
 }
 
 const Profile = ({ user }: Props) => {
-  const { bio, createdAt, username, fullname, location } = user;
+  const { params } = useRouteMatch<{ username: string }>();
+  const {
+    bio,
+    createdAt,
+    username,
+    fullname,
+    location,
+    followers,
+    following,
+  } = user;
   return (
     <div className="profile">
       <div className="top-section">
         <div className="profile-image"></div>
-        <button className="ripple-btn">Follow</button>
+        {params.username === username ? (
+          <button className="ripple-btn">Edit Profile</button>
+        ) : (
+          <button className="ripple-btn">Follow</button>
+        )}
       </div>
       <div className="profile-details">
         <p className="fullname">{fullname}</p>
@@ -58,11 +72,11 @@ const Profile = ({ user }: Props) => {
         </div>
         <div className="bottom-section">
           <p className="follow-text">
-            <span>455 </span>
+            <span>{following.length} </span>
             Following
           </p>
           <p className="follow-text">
-            <span>344 </span>
+            <span>{followers.length} </span>
             Followers
           </p>
         </div>

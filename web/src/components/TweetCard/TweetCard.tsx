@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { APP_URL, dummyUserDetails } from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
@@ -108,16 +108,16 @@ const TweetCard = ({ tweet }: Props) => {
               onClick={async (e) => {
                 e.stopPropagation();
                 // Mutate array on client side just for visual feedback
-                if (userLiked(likes, userId) >= 0) {
-                  likes.splice(userLiked(likes, userId), 1);
-                } else {
-                  likes.unshift({
-                    _id: Math.random().toString(),
-                    creatorId: userId,
-                    tweetId: _id,
-                    creator: dummyUserDetails,
-                  });
-                }
+                // if (userLiked(likes, userId) >= 0) {
+                //   likes.splice(userLiked(likes, userId), 1);
+                // } else {
+                //   likes.unshift({
+                //     _id: Math.random().toString(),
+                //     creatorId: userId,
+                //     tweetId: _id,
+                //     creator: dummyUserDetails,
+                //   });
+                // }
                 await likeTweet({
                   tweetId: _id,
                   isComment: false,

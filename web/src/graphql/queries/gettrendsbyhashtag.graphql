@@ -1,5 +1,6 @@
 query GetTrendsByHashtag {
   getTrendsByHashtag(hashtag: "#100") {
+    _id
     hashtag
     numberOfTweets
     tweets {

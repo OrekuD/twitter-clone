@@ -24,6 +24,15 @@ class TweetError {
 }
 
 @ObjectType()
+class AllTweetResponse {
+  @Field(() => [Tweet])
+  tweets?: Tweet[];
+
+  @Field()
+  error?: TweetError;
+}
+
+@ObjectType()
 class SingleTweetResponse {
   @Field(() => Tweet, { nullable: true })
   tweet?: Tweet;
@@ -46,9 +55,12 @@ export class TweetsResolver {
     return { tweet };
   }
 
-  @Query(() => [Tweet])
+  @Query(() => AllTweetResponse)
   async getAllTweets() {
-    return await TweetModel.find().sort({ createdAt: "desc" });
+    const tweets = await TweetModel.find().sort({ createdAt: "desc" });
+    return {
+      tweets,
+    };
   }
 
   @Query(() => [Tweet])

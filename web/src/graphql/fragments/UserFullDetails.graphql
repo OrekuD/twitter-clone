@@ -7,4 +7,10 @@ fragment UserFullDetails on User {
   location
   image
   fullname
+  followers {
+    ...UserPartialDetails
+  }
+  following {
+    ...UserPartialDetails
+  }
 }

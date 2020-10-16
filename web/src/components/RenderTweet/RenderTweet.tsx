@@ -8,7 +8,6 @@ interface Props {
 }
 
 const RenderTweet = ({ text, isBio }: Props) => {
-  console.log(text.split("\n"));
   return (
     <p className="tweet-content">
       {text.split("\n").map((str) => {
