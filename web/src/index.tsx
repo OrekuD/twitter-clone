@@ -18,7 +18,14 @@ const client = createClient({
     cacheExchange({
       updates: {
         Mutation: {
+          login: (_, __, cache) => {
+            cache.invalidate("Query", "currentUser");
+          },
           createTweet: (_, __, cache) => {
+            cache.invalidate("Query", "getAllTweets");
+            cache.invalidate("Query", "getTrends");
+          },
+          createReTweet: (_, __, cache) => {
             cache.invalidate("Query", "getAllTweets");
             cache.invalidate("Query", "getTrends");
           },
@@ -28,20 +35,20 @@ const client = createClient({
             cache.invalidate("Query", "getTweet", {
               id: tweetId,
             });
-            const data = cache.readFragment(
-              gql`
-                fragment _ on Tweet {
-                  _id
-                  likes
-                }
-              `,
-              {
-                _id: "5f8a96c838611c11e4d0f5b2",
-              } as any
-            );
+            // const data = cache.readFragment(
+            //   gql`
+            //     fragment _ on Tweet {
+            //       _id
+            //       likes
+            //     }
+            //   `,
+            //   {
+            //     _id: "5f8a96c838611c11e4d0f5b2",
+            //   } as any
+            // );
 
-            console.log(data);
-            console.log(tweetId);
+            // console.log(data);
+            // console.log(tweetId);
           },
         },
       },

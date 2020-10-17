@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.scss";
 import { EditDetails, Home, Login, Tweet, Register, UserPage } from "./pages";
-// import "rsuite/dist/styles/rsuite-default.css";
 import { Redirect, Route } from "react-router-dom";
 import { useAppContext } from "./context/context";
 

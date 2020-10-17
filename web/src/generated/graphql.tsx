@@ -17,7 +17,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   getTweet: SingleTweetResponse;
-  getAllTweets: AllTweetResponse;
+  getAllTweets: Array<Tweet>;
   getTweetsByUser: Array<Tweet>;
   getUserDetails: UserResponse;
   getUser: UserResponse;
@@ -80,10 +80,12 @@ export type Tweet = {
   __typename?: 'Tweet';
   _id: Scalars['ID'];
   content: Scalars['String'];
+  isRetweet: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   creator: User;
   comments: Array<Comment>;
   likes: Array<Like>;
+  retweets: Array<User>;
 };
 
 
@@ -126,12 +128,6 @@ export type TweetError = {
   field: Scalars['String'];
 };
 
-export type AllTweetResponse = {
-  __typename?: 'AllTweetResponse';
-  tweets: Array<Tweet>;
-  error: TweetError;
-};
-
 export type UserResponse = {
   __typename?: 'UserResponse';
   user?: Maybe<User>;
@@ -161,6 +157,7 @@ export type Trends = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
+  createReTweet: SingleTweetResponse;
   createAccount: UserResponse;
   login: UserResponse;
   addUserDetails: UserResponse;
@@ -173,6 +170,11 @@ export type Mutation = {
 
 export type MutationCreateTweetArgs = {
   content: Scalars['String'];
+};
+
+
+export type MutationCreateReTweetArgs = {
+  tweetId: Scalars['String'];
 };
 
 
@@ -251,13 +253,16 @@ export type CommentInput = {
 
 export type TweetDetailsFragment = (
   { __typename?: 'Tweet' }
-  & Pick<Tweet, '_id' | 'content' | 'createdAt'>
+  & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'isRetweet'>
   & { creator: (
     { __typename?: 'User' }
     & UserPartialDetailsFragment
   ), likes: Array<(
     { __typename?: 'Like' }
     & Pick<Like, '_id' | 'creatorId'>
+  )>, retweets: Array<(
+    { __typename?: 'User' }
+    & UserPartialDetailsFragment
   )>, comments: Array<(
     { __typename?: 'Comment' }
     & Pick<Comment, '_id'>
@@ -350,6 +355,29 @@ export type CreateCommentMutation = (
   ) }
 );
 
+export type CreateReTweetMutationVariables = Exact<{
+  tweetId: Scalars['String'];
+}>;
+
+
+export type CreateReTweetMutation = (
+  { __typename?: 'Mutation' }
+  & { createReTweet: (
+    { __typename?: 'SingleTweetResponse' }
+    & { tweet?: Maybe<(
+      { __typename?: 'Tweet' }
+      & Pick<Tweet, 'content' | '_id' | 'createdAt'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | 'bio' | '_id'>
+      ) }
+    )>, error?: Maybe<(
+      { __typename?: 'TweetError' }
+      & Pick<TweetError, 'message' | 'field'>
+    )> }
+  ) }
+);
+
 export type CreateTweetMutationVariables = Exact<{
   content: Scalars['String'];
 }>;
@@ -406,13 +434,10 @@ export type AllTweetsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AllTweetsQuery = (
   { __typename?: 'Query' }
-  & { getAllTweets: (
-    { __typename?: 'AllTweetResponse' }
-    & { tweets: Array<(
-      { __typename?: 'Tweet' }
-      & TweetDetailsFragment
-    )> }
-  ) }
+  & { getAllTweets: Array<(
+    { __typename?: 'Tweet' }
+    & TweetDetailsFragment
+  )> }
 );
 
 export type GetCommentsByUserQueryVariables = Exact<{
@@ -604,12 +629,16 @@ export const TweetDetailsFragmentDoc = gql`
   _id
   content
   createdAt
+  isRetweet
   creator {
     ...UserPartialDetails
   }
   likes {
     _id
     creatorId
+  }
+  retweets {
+    ...UserPartialDetails
   }
   comments {
     _id
@@ -700,6 +729,30 @@ export const CreateCommentDocument = gql`
 export function useCreateCommentMutation() {
   return Urql.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument);
 };
+export const CreateReTweetDocument = gql`
+    mutation CreateReTweet($tweetId: String!) {
+  createReTweet(tweetId: $tweetId) {
+    tweet {
+      content
+      _id
+      createdAt
+      creator {
+        username
+        bio
+        _id
+      }
+    }
+    error {
+      message
+      field
+    }
+  }
+}
+    `;
+
+export function useCreateReTweetMutation() {
+  return Urql.useMutation<CreateReTweetMutation, CreateReTweetMutationVariables>(CreateReTweetDocument);
+};
 export const CreateTweetDocument = gql`
     mutation CreateTweet($content: String!) {
   createTweet(content: $content) {
@@ -757,9 +810,7 @@ export function useLoginMutation() {
 export const AllTweetsDocument = gql`
     query AllTweets {
   getAllTweets {
-    tweets {
-      ...TweetDetails
-    }
+    ...TweetDetails
   }
 }
     ${TweetDetailsFragmentDoc}`;

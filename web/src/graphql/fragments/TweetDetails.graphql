@@ -2,12 +2,16 @@ fragment TweetDetails on Tweet {
   _id
   content
   createdAt
+  isRetweet
   creator {
     ...UserPartialDetails
   }
   likes {
     _id
     creatorId
+  }
+  retweets {
+    ...UserPartialDetails
   }
   comments {
     _id

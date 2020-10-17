@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useAppContext } from "../../context/context";
 import "./SideMenu.scss";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { NavLink } from "react-router-dom";
@@ -36,12 +35,11 @@ const menu = [
 
 const SideMenu = () => {
   const [{ data }, getCurrentUser] = useGetCurrentUserDetailsQuery();
-  const { isLoggedIn } = useAppContext();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     getCurrentUser();
-  }, [getCurrentUser, isLoggedIn]);
+  }, []);
 
   return (
     <>

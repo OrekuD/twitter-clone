@@ -27,15 +27,6 @@ class TweetError {
 }
 
 @ObjectType()
-class AllTweetResponse {
-  @Field(() => [Tweet])
-  tweets?: Tweet[];
-
-  @Field()
-  error?: TweetError;
-}
-
-@ObjectType()
 class SingleTweetResponse {
   @Field(() => Tweet, { nullable: true })
   tweet?: Tweet;
@@ -58,12 +49,9 @@ export class TweetsResolver {
     return { tweet };
   }
 
-  @Query(() => AllTweetResponse)
+  @Query(() => [Tweet])
   async getAllTweets() {
-    const tweets = await TweetModel.find().sort({ createdAt: "desc" });
-    return {
-      tweets,
-    };
+    return await TweetModel.find().sort({ createdAt: "desc" });
   }
 
   @Query(() => [Tweet])
@@ -128,11 +116,11 @@ export class TweetsResolver {
         },
       };
     }
-    const { comments, content, creator, likes, retweets, createdAt } = tweet!;
+    const { comments, content, creator, likes, retweets } = tweet!;
     const retweet = await TweetModel.create({
       content,
       creator: (creator as User)._id,
-      createdAt,
+      createdAt: Date.now(),
       isRetweet: true,
       comments: comments.map((comment) => (comment as Comment)._id),
       likes: likes.map((like) => (like as Like)._id),
@@ -141,6 +129,14 @@ export class TweetsResolver {
         ...retweets.map((retweet) => (retweet as User)._id),
       ],
     });
+    await TweetModel.updateOne(
+      {
+        _id: tweetId,
+      },
+      {
+        $push: { retweets: [request.session.userId] as any },
+      }
+    );
     await retweet.save();
     const hashtags = extractHashtags(content);
     if (hashtags.length > 0) {

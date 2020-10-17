@@ -14,7 +14,7 @@ const Home = () => {
     <Layout>
       <Header label="Home" />
       <CreateTweet />
-      <Tweets tweets={data?.getAllTweets.tweets as Tweet[]} />
+      <Tweets tweets={data?.getAllTweets as Tweet[]} />
     </Layout>
   );
 };
