@@ -69,8 +69,11 @@ const CreateComment = () => {
       onClose={() => setCommentModalState(false)}
     >
       <div className="create-comment">
-        <div className="top-section">
-          <button onClick={() => setCommentModalState(false)}>
+        <div className="modal-header">
+          <button
+            className="close-btn"
+            onClick={() => setCommentModalState(false)}
+          >
             <Cancel size={24} color={blue} />
           </button>
         </div>

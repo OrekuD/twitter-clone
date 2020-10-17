@@ -13,6 +13,9 @@ import { Tweet, TweetModel } from "../Models/Tweet";
 import { Context } from "../types";
 import { extractHashtags } from "../Util/extractHashtags";
 import { TrendsModel } from "../Models/Trends";
+import { User } from "../Models/User";
+import { Like } from "../Models/Like";
+import { Comment } from "../Models/Comment";
 
 @ObjectType()
 class TweetError {
@@ -80,8 +83,10 @@ export class TweetsResolver {
       content,
       creator: request.session.userId,
       createdAt: Date.now(),
+      isRetweet: false,
       comments: [],
       likes: [],
+      retweets: [],
     });
     await tweet.save();
     const hashtags = extractHashtags(content);
@@ -106,5 +111,58 @@ export class TweetsResolver {
       });
     }
     return tweet;
+  }
+
+  @Mutation(() => SingleTweetResponse)
+  @UseMiddleware(Auth)
+  async createReTweet(
+    @Arg("tweetId") tweetId: string,
+    @Ctx() { request }: Context
+  ): Promise<SingleTweetResponse> {
+    const tweet = await TweetModel.findOne({ _id: tweetId });
+    if (!tweet) {
+      return {
+        error: {
+          field: "tweet",
+          message: "Tweet is unavailable",
+        },
+      };
+    }
+    const { comments, content, creator, likes, retweets, createdAt } = tweet!;
+    const retweet = await TweetModel.create({
+      content,
+      creator: (creator as User)._id,
+      createdAt,
+      isRetweet: true,
+      comments: comments.map((comment) => (comment as Comment)._id),
+      likes: likes.map((like) => (like as Like)._id),
+      retweets: [
+        request.session.userId,
+        ...retweets.map((retweet) => (retweet as User)._id),
+      ],
+    });
+    await retweet.save();
+    const hashtags = extractHashtags(content);
+    if (hashtags.length > 0) {
+      hashtags.forEach(async (hashtag) => {
+        const trend = await TrendsModel.findOne({ hashtag });
+        if (!trend) {
+          await TrendsModel.create({
+            hashtag,
+            numberOfTweets: 1,
+            tweets: [retweet.id],
+          });
+        } else {
+          await TrendsModel.updateOne(
+            { _id: trend.id! },
+            {
+              $push: { Tweets: [retweet.id] as any },
+              numberOfTweets: trend.numberOfTweets + 1,
+            }
+          );
+        }
+      });
+    }
+    return { tweet: retweet };
   }
 }

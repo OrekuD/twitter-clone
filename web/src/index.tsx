@@ -6,6 +6,7 @@ import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
 import App from "./App";
 import { Provider as ContextProvider } from "./context/context";
 import { LikeTweetMutationVariables } from "./generated/graphql";
+import gql from "graphql-tag";
 
 const client = createClient({
   url: "http://localhost:4000/graphql",
@@ -19,6 +20,7 @@ const client = createClient({
         Mutation: {
           createTweet: (_, __, cache) => {
             cache.invalidate("Query", "getAllTweets");
+            cache.invalidate("Query", "getTrends");
           },
           likeTweet: (_, args, cache) => {
             const { tweetId } = args as LikeTweetMutationVariables;
@@ -26,6 +28,20 @@ const client = createClient({
             cache.invalidate("Query", "getTweet", {
               id: tweetId,
             });
+            const data = cache.readFragment(
+              gql`
+                fragment _ on Tweet {
+                  _id
+                  likes
+                }
+              `,
+              {
+                _id: "5f8a96c838611c11e4d0f5b2",
+              } as any
+            );
+
+            console.log(data);
+            console.log(tweetId);
           },
         },
       },

@@ -16,6 +16,7 @@ import { timeSince } from "../../utils/timeSince";
 import { userHasLiked } from "../../utils/userHasLiked";
 import RenderTweet from "../RenderTweet/RenderTweet";
 import "./TweetCard.scss";
+import { abbreviateNumber } from "../../utils/abreviateNumber";
 
 interface Props {
   tweet: Tweet;
@@ -104,7 +105,7 @@ const TweetCard = ({ tweet }: Props) => {
               <div className="svg">
                 <Retweet size={20} />
               </div>
-              <p className="count">12</p>
+              <p className="count">{abbreviateNumber(1299)}</p>
             </button>
           </div>
           <div className="icon-container">

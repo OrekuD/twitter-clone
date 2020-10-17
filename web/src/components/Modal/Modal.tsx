@@ -28,7 +28,7 @@ const Modal: React.FC<Props> = ({ isVisible, children, onClose }) => {
             },
           }}
           className="modal-backdrop"
-          // onClick={onClose}
+          onClick={onClose}
         >
           <motion.div
             initial={{
@@ -44,6 +44,7 @@ const Modal: React.FC<Props> = ({ isVisible, children, onClose }) => {
               translateY: 50,
             }}
             className="modal-content"
+            onClick={(e) => e.stopPropagation()}
           >
             {children}
           </motion.div>

@@ -1,3 +1,5 @@
+@import "../../constants/colors.scss";
+
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -13,6 +15,26 @@
     width: clamp(340px, 60%, 650px);
     background-color: #15202b;
     border-radius: 10px;
-    // padding: 20px;
+
+    .modal-header {
+      height: 50px;
+      border-bottom: 1px solid $lightgrey;
+      padding-left: 15px;
+      display: flex;
+      align-items: center;
+
+      .close-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        transition: 0.3s ease-in-out background;
+
+        &:hover {
+          background-color: rgba(29, 161, 243, 0.1);
+        }
+      }
+    }
   }
 }

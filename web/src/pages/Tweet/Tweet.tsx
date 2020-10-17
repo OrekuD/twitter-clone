@@ -38,7 +38,14 @@ const TweetPage = () => {
   }, [getTweet, params]);
 
   if (!data) {
-    return null;
+    return (
+      <Layout>
+        <StackHeader label="Tweet" />
+        <div className="loading-screen">
+          <Spinner />
+        </div>
+      </Layout>
+    );
   }
 
   const { _id, content, createdAt, likes, comments, creator } = data?.getTweet
@@ -46,7 +53,7 @@ const TweetPage = () => {
   const { image, fullname, username, _id: creatorId } = creator;
 
   const commentTweet = () => {
-    setSelectedTweet(data.getTweet.tweet as Tweet);
+    setSelectedTweet(data?.getTweet.tweet as Tweet);
     setCommentModalState(true);
   };
 
@@ -66,104 +73,98 @@ const TweetPage = () => {
   return (
     <Layout>
       <StackHeader label="Tweet" />
-      {!data ? (
-        <div className="loading-screen">
-          <Spinner />
+      <div className="tweet-page">
+        <div className="profile">
+          <div className="left-content">
+            <Link to={`/${username}`}>
+              <img
+                src={`${PROFILE_IMAGES_BASE_URL + image}`}
+                alt="profile"
+                className="profile-image"
+              />
+            </Link>
+            <div className="profile-details">
+              <p className="fullname">{fullname}</p>
+              <p className="username">@{username}</p>
+            </div>
+          </div>
+          <ChevronDown size={20} color={grey} />
         </div>
-      ) : (
-        <div className="tweet-page">
-          <div className="profile">
-            <div className="left-content">
-              <Link to={`/${username}`}>
-                <img
-                  src={`${PROFILE_IMAGES_BASE_URL + image}`}
-                  alt="profile"
-                  className="profile-image"
-                />
-              </Link>
-              <div className="profile-details">
-                <p className="fullname">{fullname}</p>
-                <p className="username">@{username}</p>
+        <RenderTweet text={content} />
+        <div className="tweet-page-details">
+          <p>{new Date(createdAt).getDate()}</p>
+          <div className="dot" />
+          <p>{formatDate(createdAt)}</p>
+          <div className="dot" />
+          <p>Twitter Web App</p>
+        </div>
+        <div className="tweet-stats">
+          <p>
+            <span>100</span> Retweets
+          </p>
+          <p>
+            <span>{likes.length}</span> Likes
+          </p>
+        </div>
+        <div className="tweet-actions">
+          <div className="icon-container">
+            <button className="icon" onClick={commentTweet}>
+              <div className="svg">
+                <ChatBubble size={20} />
               </div>
-            </div>
-            <ChevronDown size={20} color={grey} />
+            </button>
           </div>
-          <RenderTweet text={content} />
-          <div className="tweet-page-details">
-            <p>{new Date(createdAt).getDate()}</p>
-            <div className="dot" />
-            <p>{formatDate(createdAt)}</p>
-            <div className="dot" />
-            <p>Twitter Web App</p>
+          <div className="icon-container">
+            <button className="icon" onClick={commentTweet}>
+              <div className="svg">
+                <Retweet size={20} />
+              </div>
+            </button>
           </div>
-          <div className="tweet-stats">
-            <p>
-              <span>100</span> Retweets
-            </p>
-            <p>
-              <span>{likes.length}</span> Likes
-            </p>
+          <div className="icon-container">
+            <button
+              className="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                likeTweet({
+                  tweetId: _id,
+                  isComment: false,
+                });
+              }}
+            >
+              <div className="svg">
+                <>
+                  {userHasLiked(likes, userId) >= 0 ? (
+                    <FavouriteFilled size={18} color="#b00020" />
+                  ) : (
+                    <Favourite size={20} />
+                  )}
+                </>
+              </div>
+              {likes.length > 0 && (
+                <p
+                  className="count"
+                  style={{
+                    color:
+                      userHasLiked(likes, userId) >= 0
+                        ? "rgb(197, 36, 88)"
+                        : grey,
+                  }}
+                >
+                  {likes.length}
+                </p>
+              )}
+            </button>
           </div>
-          <div className="tweet-actions">
-            <div className="icon-container">
-              <button className="icon" onClick={commentTweet}>
-                <div className="svg">
-                  <ChatBubble size={20} />
-                </div>
-              </button>
-            </div>
-            <div className="icon-container">
-              <button className="icon" onClick={commentTweet}>
-                <div className="svg">
-                  <Retweet size={20} />
-                </div>
-              </button>
-            </div>
-            <div className="icon-container">
-              <button
-                className="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  likeTweet({
-                    tweetId: _id,
-                    isComment: false,
-                  });
-                }}
-              >
-                <div className="svg">
-                  <>
-                    {userHasLiked(likes, userId) >= 0 ? (
-                      <FavouriteFilled size={18} color="#b00020" />
-                    ) : (
-                      <Favourite size={20} />
-                    )}
-                  </>
-                </div>
-                {likes.length > 0 && (
-                  <p
-                    className="count"
-                    style={{
-                      color:
-                        userHasLiked(likes, userId) >= 0
-                          ? "rgb(197, 36, 88)"
-                          : grey,
-                    }}
-                  >
-                    {likes.length}
-                  </p>
-                )}
-              </button>
-            </div>
-            <div className="icon-container">
-              <button className="icon" onClick={share}>
-                <div className="svg">
-                  <Share size={20} />
-                </div>
-              </button>
-            </div>
+          <div className="icon-container">
+            <button className="icon" onClick={share}>
+              <div className="svg">
+                <Share size={20} />
+              </div>
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </Layout>
   );
 };

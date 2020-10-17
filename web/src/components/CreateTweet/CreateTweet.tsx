@@ -13,7 +13,11 @@ const schema = Yup.object().shape({
     .required(),
 });
 
-const CreateTweet = () => {
+interface Props {
+  setIsVisible?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CreateTweet = ({ setIsVisible }: Props) => {
   const {
     userDetails: { image },
   } = useAppContext();
@@ -29,11 +33,17 @@ const CreateTweet = () => {
   } = useFormik({
     initialValues: { tweet: "" },
     validationSchema: schema,
+    initialErrors: { tweet: "Tweet must exceed 1 character" },
     onSubmit: async (values, { resetForm }) => {
       await createTweet({
         content: values.tweet,
       });
       resetForm();
+      if (setIsVisible) {
+        setTimeout(() => {
+          setIsVisible(false);
+        }, 500);
+      }
     },
   });
 
@@ -58,11 +68,7 @@ const CreateTweet = () => {
             color: errors.tweet && touched.tweet ? "#b00020" : "#ffffff",
           }}
         />
-        <button
-          className="ripple-btn"
-          type="submit"
-          style={{ opacity: errors.tweet || !touched.tweet ? 0.5 : 1 }}
-        >
+        <button className="ripple-btn" type="submit" disabled={!!errors.tweet}>
           Tweet
         </button>
       </form>

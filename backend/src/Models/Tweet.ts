@@ -22,6 +22,10 @@ export class Tweet {
   content: string;
 
   @prop()
+  @Field()
+  isRetweet: boolean;
+
+  @prop()
   @Field(() => Date)
   createdAt: Date;
 
@@ -36,6 +40,10 @@ export class Tweet {
   @prop({ ref: () => Like, autopopulate: true })
   @Field(() => [Like])
   likes: Ref<Like>[];
+
+  @prop({ ref: () => User, autopopulate: true })
+  @Field(() => [User])
+  retweets: Ref<User>[];
 }
 
 export const TweetModel = getModelForClass(Tweet);
