@@ -4,15 +4,14 @@ import "./RenderTweet.scss";
 
 interface Props {
   text: string;
-  isBio?: boolean;
 }
 
-const RenderTweet = ({ text, isBio }: Props) => {
+const RenderTweet = ({ text }: Props) => {
   return (
     <p className="tweet-content">
       {text.split("\n").map((str) => {
         if (!str) {
-          return isBio ? " " : <br key={Math.random()} />;
+          return <br key={Math.random()} />;
         } else {
           return str.split(" ").map((substr) => {
             if (substr[0] === "@") {

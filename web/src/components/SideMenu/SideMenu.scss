@@ -63,7 +63,7 @@
     .ripple-btn {
       height: 45px;
       border-radius: 22.5px;
-      width: 90%;
+      width: clamp(100px, 90%, 300px);
     }
 
     .profile {

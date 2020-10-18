@@ -176,6 +176,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(Auth)
   async followUser(@Arg("userId") userId: string, @Ctx() { request }: Context) {
     const user = await UserModel.findOne({ _id: userId });
     if (!user) {
@@ -201,6 +202,36 @@ export class UserResolver {
     return true;
   }
 
+  @Mutation(() => Boolean)
+  @UseMiddleware(Auth)
+  async unFollowUser(
+    @Arg("userId") userId: string,
+    @Ctx() { request }: Context
+  ) {
+    const user = await UserModel.findOne({ _id: userId });
+    if (!user) {
+      return false;
+    }
+
+    // First, remove the current user to the requested user's followers list
+    await UserModel.updateOne(
+      { _id: userId },
+      {
+        $pull: { followers: [request.session.userId] as any },
+      }
+    );
+
+    // Then, remove the new user to the current user's following list
+    await UserModel.updateOne(
+      { _id: request.session.userId },
+      {
+        $pull: { following: [userId] as any },
+      }
+    );
+
+    return true;
+  }
+
   @Query(() => UserResponse)
   async getUserDetails(@Arg("userId") userId: string) {
     const user = await UserModel.findOne({ _id: userId });
@@ -217,7 +248,7 @@ export class UserResolver {
   }
 
   @Query(() => UserResponse)
-  async getUser(@Arg("username") username: string) {
+  async getUserByUsername(@Arg("username") username: string) {
     const user = await UserModel.findOne({ username: username });
 
     if (!user) {
@@ -254,6 +285,6 @@ export class UserResolver {
 
   @Query(() => [User])
   async getAllUsers() {
-    return await UserModel.find();
+    return UserModel.find();
   }
 }

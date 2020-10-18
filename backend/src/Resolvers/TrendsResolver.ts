@@ -5,13 +5,13 @@ import { Arg, Query, Resolver } from "type-graphql";
 export class TrendsResolver {
   @Query(() => [Trends])
   async getTrends() {
-    return await TrendsModel.find().sort({
+    return TrendsModel.find().sort({
       numberOfTweets: "desc",
     });
   }
 
   @Query(() => Trends, { nullable: true })
-  async getTrendsByHashtag(@Arg("hashtag") hashtag: string) {
-    return await TrendsModel.findOne({ hashtag });
+  async getTweetsByHashtag(@Arg("hashtag") hashtag: string) {
+    return TrendsModel.findOne({ hashtag });
   }
 }

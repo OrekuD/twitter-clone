@@ -1,14 +1,17 @@
 @import "../../constants/colors.scss";
 
-.trends {
-  width: 90%;
-  background-color: $purple;
-  margin-top: 20px;
-  border-radius: 15px;
+.explore-page {
+  padding-top: 20px;
 
-  .top-section {
+  .search-input-container {
+    margin: 0 auto;
+  }
+
+  .explore-page-title {
     padding: 15px;
+    border-top: 1px solid $lightgrey;
     border-bottom: 1px solid $lightgrey;
+    margin-top: 20px;
 
     p {
       font-size: 20px;
@@ -21,6 +24,11 @@
     display: block;
     text-align: left;
     width: 100%;
+    transition: background 0.3s ease-in-out;
+
+    &:hover {
+      background-color: $lighterpurple;
+    }
   }
 
   .trend {
@@ -39,12 +47,5 @@
       margin-top: 10px;
       color: $grey;
     }
-  }
-
-  .show-more {
-    color: $blue;
-    font-weight: 600;
-    font-size: 16px;
-    margin: 15px;
   }
 }

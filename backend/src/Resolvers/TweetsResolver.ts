@@ -13,7 +13,7 @@ import { Tweet, TweetModel } from "../Models/Tweet";
 import { Context } from "../types";
 import { extractHashtags } from "../Util/extractHashtags";
 import { TrendsModel } from "../Models/Trends";
-import { User } from "../Models/User";
+import { User, UserModel } from "../Models/User";
 import { Like } from "../Models/Like";
 import { Comment } from "../Models/Comment";
 
@@ -51,12 +51,12 @@ export class TweetsResolver {
 
   @Query(() => [Tweet])
   async getAllTweets() {
-    return await TweetModel.find().sort({ createdAt: "desc" });
+    return TweetModel.find().sort({ createdAt: "desc" });
   }
 
   @Query(() => [Tweet])
   async getTweetsByUser(@Arg("userId") userId: string) {
-    return await TweetModel.find({ creator: userId }).sort({
+    return TweetModel.find({ creator: userId }).sort({
       createdAt: "desc",
     });
   }
@@ -160,5 +160,27 @@ export class TweetsResolver {
       });
     }
     return { tweet: retweet };
+  }
+
+  @Query(() => [Tweet])
+  @UseMiddleware(Auth)
+  async getCurrentUserTimeline(@Ctx() { request }: Context) {
+    return TweetModel.find({ creator: request.session.userId }).sort({
+      createdAt: "desc",
+    });
+  }
+
+  @Query(() => [Tweet])
+  async getUserTimeline(
+    @Arg("userId") userId: string,
+    @Ctx() { request }: Context
+  ) {
+    // const { userId } = request.session;
+    // const user = await UserModel.findOne({ _id: id });
+    // const following = user?.following;
+    // console.log(following);
+    return TweetModel.find({ creator: id }).sort({
+      createdAt: "desc",
+    });
   }
 }

@@ -112,6 +112,7 @@ const TweetCard = ({ tweet }: Props) => {
             </div>
           </div>
           <RenderTweet text={content} />
+          {/* <pre className="ssss">{content}</pre> */}
           <div className="tweet-actions">
             <div className="icon-container">
               <button className="icon" onClick={commentTweet}>

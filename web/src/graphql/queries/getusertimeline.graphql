@@ -1,0 +1,5 @@
+query GetUserTimeline($userId: String!) {
+  getUserTimeline(userId: $userId) {
+    ...TweetDetails
+  }
+}

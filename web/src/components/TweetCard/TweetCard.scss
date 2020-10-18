@@ -11,13 +11,15 @@
     cursor: pointer;
   }
 
+  .ssss {
+    color: yellow;
+  }
+
   .retweeted {
-    // height: 20px;
     display: flex;
     align-items: center;
     padding-left: 35px;
     padding-bottom: 5px;
-    // background-color: yellow;
 
     p {
       font-size: 12px;

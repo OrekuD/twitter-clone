@@ -12,25 +12,25 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+}
 
-    .search-input-container {
-      display: flex;
-      align-items: center;
-      width: 90%;
-      height: 45px;
-      background-color: #253341;
-      border-radius: 22.5px;
-      padding: 0 20px;
+.search-input-container {
+  display: flex;
+  align-items: center;
+  width: 90%;
+  height: 45px;
+  background-color: #253341;
+  border-radius: 22.5px;
+  padding: 0 20px;
 
-      input {
-        width: 100%;
-        margin-left: 10px;
-        font-size: 16px;
+  input {
+    width: 100%;
+    margin-left: 10px;
+    font-size: 16px;
 
-        &::placeholder {
-          color: $grey;
-        }
-      }
+    &::placeholder {
+      color: $grey;
     }
   }
 }

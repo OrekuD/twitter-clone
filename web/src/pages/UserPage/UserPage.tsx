@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import { Layout, Tweets, Spinner, StackHeader } from "../../components";
 import {
   Tweet,
   useGetCommentsByUserQuery,
   useGetTweetsByUserQuery,
-  useGetUserQuery,
+  useGetUserByUsernameQuery,
 } from "../../generated/graphql";
 import Profile from "./Profile";
 import "./UserPage.scss";
 
 const UserPage = () => {
-  const { pathname } = useLocation();
+  const { params } = useRouteMatch<{ username: string }>();
   const [activeIndex, setActiveIndex] = useState(0);
   const [tweets, setTweets] = useState<Tweet[]>([]);
 
-  const [{ data }, getUser] = useGetUserQuery({
-    variables: { username: pathname.slice(1) },
+  const [{ data }, getUser] = useGetUserByUsernameQuery({
+    variables: { username: params.username },
   });
 
   useEffect(() => {
     getUser();
-  }, [getUser, pathname]);
+  }, [getUser, params]);
 
   const [{ data: tweetsByUser }, getTweetsByUser] = useGetTweetsByUserQuery({
     variables: {
-      userId: data?.getUser.user?._id!,
+      userId: data?.getUserByUsername.user?._id!,
     },
   });
 
@@ -34,7 +34,7 @@ const UserPage = () => {
     getCommentsByUser,
   ] = useGetCommentsByUserQuery({
     variables: {
-      userId: data?.getUser.user?._id!,
+      userId: data?.getUserByUsername.user?._id!,
     },
   });
 
@@ -56,10 +56,14 @@ const UserPage = () => {
 
   const tabs = ["Tweets", "Replies", "Likes"];
 
-  if (data?.getUser.error) {
+  if (params.username === "explore") {
+    return null;
+  }
+
+  if (data?.getUserByUsername.error) {
     return (
       <Layout>
-        <StackHeader label={pathname.slice(1)} />
+        <StackHeader label={params.username} />
         <div className="no-user">
           <p>User is unavailable </p>
         </div>
@@ -69,14 +73,16 @@ const UserPage = () => {
 
   return (
     <Layout>
-      <StackHeader label={pathname.slice(1)} />
+      <StackHeader label={params.username} />
       {!data ? (
         <div className="loading-screen">
           <Spinner />
         </div>
       ) : (
         <div className="user-page">
-          {data.getUser.user && <Profile user={data.getUser.user} />}
+          {data.getUserByUsername.user && (
+            <Profile user={data.getUserByUsername.user} />
+          )}
           <div className="tabs">
             {tabs.map((tab, index) => (
               <button

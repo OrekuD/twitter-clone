@@ -19,15 +19,17 @@ export type Query = {
   getTweet: SingleTweetResponse;
   getAllTweets: Array<Tweet>;
   getTweetsByUser: Array<Tweet>;
+  getCurrentUserTimeline: Array<Tweet>;
+  getUserTimeline: Array<Tweet>;
   getUserDetails: UserResponse;
-  getUser: UserResponse;
+  getUserByUsername: UserResponse;
   currentUser?: Maybe<User>;
   getAllUsers: Array<User>;
   getLikesByUser?: Maybe<Array<Like>>;
   getCommentsByUser: Array<Tweet>;
   search: Response;
   getTrends: Array<Trends>;
-  getTrendsByHashtag?: Maybe<Trends>;
+  getTweetsByHashtag?: Maybe<Trends>;
 };
 
 
@@ -41,12 +43,17 @@ export type QueryGetTweetsByUserArgs = {
 };
 
 
+export type QueryGetUserTimelineArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type QueryGetUserDetailsArgs = {
   userId: Scalars['String'];
 };
 
 
-export type QueryGetUserArgs = {
+export type QueryGetUserByUsernameArgs = {
   username: Scalars['String'];
 };
 
@@ -66,7 +73,7 @@ export type QuerySearchArgs = {
 };
 
 
-export type QueryGetTrendsByHashtagArgs = {
+export type QueryGetTweetsByHashtagArgs = {
   hashtag: Scalars['String'];
 };
 
@@ -162,6 +169,7 @@ export type Mutation = {
   login: UserResponse;
   addUserDetails: UserResponse;
   followUser: Scalars['Boolean'];
+  unFollowUser: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   likeTweet: LikeResponse;
   createComment: CommentResponse;
@@ -194,6 +202,11 @@ export type MutationAddUserDetailsArgs = {
 
 
 export type MutationFollowUserArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type MutationUnFollowUserArgs = {
   userId: Scalars['String'];
 };
 
@@ -474,6 +487,17 @@ export type GetCurrentUserDetailsQuery = (
   )> }
 );
 
+export type GetCurrentUserTimelineQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentUserTimelineQuery = (
+  { __typename?: 'Query' }
+  & { getCurrentUserTimeline: Array<(
+    { __typename?: 'Tweet' }
+    & TweetDetailsFragment
+  )> }
+);
+
 export type GetTrendsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -485,14 +509,14 @@ export type GetTrendsQuery = (
   )> }
 );
 
-export type GetTrendsByHashtagQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetTweetsByHashtagQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTrendsByHashtagQuery = (
+export type GetTweetsByHashtagQuery = (
   { __typename?: 'Query' }
-  & { getTrendsByHashtag?: Maybe<(
+  & { getTweetsByHashtag?: Maybe<(
     { __typename?: 'Trends' }
-    & Pick<Trends, '_id' | 'hashtag' | 'numberOfTweets'>
+    & Pick<Trends, '_id' | 'hashtag'>
     & { tweets: Array<(
       { __typename?: 'Tweet' }
       & TweetDetailsFragment
@@ -547,14 +571,14 @@ export type GetTweetsByUserQuery = (
   )> }
 );
 
-export type GetUserQueryVariables = Exact<{
+export type GetUserByUsernameQueryVariables = Exact<{
   username: Scalars['String'];
 }>;
 
 
-export type GetUserQuery = (
+export type GetUserByUsernameQuery = (
   { __typename?: 'Query' }
-  & { getUser: (
+  & { getUserByUsername: (
     { __typename?: 'UserResponse' }
     & { user?: Maybe<(
       { __typename?: 'User' }
@@ -580,6 +604,19 @@ export type GetUserDetailsQuery = (
       & UserFullDetailsFragment
     )> }
   ) }
+);
+
+export type GetUserTimelineQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type GetUserTimelineQuery = (
+  { __typename?: 'Query' }
+  & { getUserTimeline: Array<(
+    { __typename?: 'Tweet' }
+    & TweetDetailsFragment
+  )> }
 );
 
 export type SearchQueryVariables = Exact<{
@@ -852,6 +889,17 @@ export const GetCurrentUserDetailsDocument = gql`
 export function useGetCurrentUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserDetailsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCurrentUserDetailsQuery>({ query: GetCurrentUserDetailsDocument, ...options });
 };
+export const GetCurrentUserTimelineDocument = gql`
+    query GetCurrentUserTimeline {
+  getCurrentUserTimeline {
+    ...TweetDetails
+  }
+}
+    ${TweetDetailsFragmentDoc}`;
+
+export function useGetCurrentUserTimelineQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserTimelineQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetCurrentUserTimelineQuery>({ query: GetCurrentUserTimelineDocument, ...options });
+};
 export const GetTrendsDocument = gql`
     query GetTrends {
   getTrends {
@@ -865,12 +913,11 @@ export const GetTrendsDocument = gql`
 export function useGetTrendsQuery(options: Omit<Urql.UseQueryArgs<GetTrendsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetTrendsQuery>({ query: GetTrendsDocument, ...options });
 };
-export const GetTrendsByHashtagDocument = gql`
-    query GetTrendsByHashtag {
-  getTrendsByHashtag(hashtag: "#100") {
+export const GetTweetsByHashtagDocument = gql`
+    query GetTweetsByHashtag {
+  getTweetsByHashtag(hashtag: "#100") {
     _id
     hashtag
-    numberOfTweets
     tweets {
       ...TweetDetails
     }
@@ -878,8 +925,8 @@ export const GetTrendsByHashtagDocument = gql`
 }
     ${TweetDetailsFragmentDoc}`;
 
-export function useGetTrendsByHashtagQuery(options: Omit<Urql.UseQueryArgs<GetTrendsByHashtagQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetTrendsByHashtagQuery>({ query: GetTrendsByHashtagDocument, ...options });
+export function useGetTweetsByHashtagQuery(options: Omit<Urql.UseQueryArgs<GetTweetsByHashtagQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTweetsByHashtagQuery>({ query: GetTweetsByHashtagDocument, ...options });
 };
 export const GetTweetDocument = gql`
     query GetTweet($id: String!) {
@@ -926,9 +973,9 @@ export const GetTweetsByUserDocument = gql`
 export function useGetTweetsByUserQuery(options: Omit<Urql.UseQueryArgs<GetTweetsByUserQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetTweetsByUserQuery>({ query: GetTweetsByUserDocument, ...options });
 };
-export const GetUserDocument = gql`
-    query GetUser($username: String!) {
-  getUser(username: $username) {
+export const GetUserByUsernameDocument = gql`
+    query GetUserByUsername($username: String!) {
+  getUserByUsername(username: $username) {
     user {
       ...UserFullDetails
     }
@@ -940,8 +987,8 @@ export const GetUserDocument = gql`
 }
     ${UserFullDetailsFragmentDoc}`;
 
-export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetUserQuery>({ query: GetUserDocument, ...options });
+export function useGetUserByUsernameQuery(options: Omit<Urql.UseQueryArgs<GetUserByUsernameQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserByUsernameQuery>({ query: GetUserByUsernameDocument, ...options });
 };
 export const GetUserDetailsDocument = gql`
     query GetUserDetails($id: String!) {
@@ -955,6 +1002,17 @@ export const GetUserDetailsDocument = gql`
 
 export function useGetUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetUserDetailsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUserDetailsQuery>({ query: GetUserDetailsDocument, ...options });
+};
+export const GetUserTimelineDocument = gql`
+    query GetUserTimeline($userId: String!) {
+  getUserTimeline(userId: $userId) {
+    ...TweetDetails
+  }
+}
+    ${TweetDetailsFragmentDoc}`;
+
+export function useGetUserTimelineQuery(options: Omit<Urql.UseQueryArgs<GetUserTimelineQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserTimelineQuery>({ query: GetUserTimelineDocument, ...options });
 };
 export const SearchDocument = gql`
     query Search($searchTerm: String!) {
