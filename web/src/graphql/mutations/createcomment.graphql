@@ -1,15 +1,16 @@
 mutation CreateComment($content: String!, $tweetId: String!) {
   createComment(input: { content: $content, tweetId: $tweetId }) {
-    comment {
+    tweet {
       content
       _id
-      tweetId
+      parentId
       creator {
         username
       }
     }
     error {
       message
+      field
     }
   }
 }

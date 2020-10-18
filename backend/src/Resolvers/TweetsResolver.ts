@@ -8,14 +8,14 @@ import {
   Field,
   Ctx,
   UseMiddleware,
+  InputType,
 } from "type-graphql";
 import { Tweet, TweetModel } from "../Models/Tweet";
 import { Context } from "../types";
 import { extractHashtags } from "../Util/extractHashtags";
 import { TrendsModel } from "../Models/Trends";
-import { User, UserModel } from "../Models/User";
+import { User } from "../Models/User";
 import { Like } from "../Models/Like";
-import { Comment } from "../Models/Comment";
 
 @ObjectType()
 class TweetError {
@@ -24,6 +24,15 @@ class TweetError {
 
   @Field()
   field: string;
+}
+
+@InputType()
+class CommentInput {
+  @Field()
+  content: string;
+
+  @Field()
+  tweetId: string;
 }
 
 @ObjectType()
@@ -55,6 +64,11 @@ export class TweetsResolver {
   }
 
   @Query(() => [Tweet])
+  async getTweetComments(@Arg("tweetId") tweetId: string) {
+    return TweetModel.find({ parentId: tweetId }).sort({ createdAt: "desc" });
+  }
+
+  @Query(() => [Tweet])
   async getTweetsByUser(@Arg("userId") userId: string) {
     return TweetModel.find({ creator: userId }).sort({
       createdAt: "desc",
@@ -72,7 +86,8 @@ export class TweetsResolver {
       creator: request.session.userId,
       createdAt: Date.now(),
       isRetweet: false,
-      comments: [],
+      commentsCount: 0,
+      parentId: null,
       likes: [],
       retweets: [],
     });
@@ -103,6 +118,44 @@ export class TweetsResolver {
 
   @Mutation(() => SingleTweetResponse)
   @UseMiddleware(Auth)
+  async createComment(
+    @Arg("input") input: CommentInput,
+    @Ctx() { request }: Context
+  ): Promise<SingleTweetResponse> {
+    const { content, tweetId } = input;
+    const { userId } = request.session;
+    const tweet = await TweetModel.findOne({ _id: tweetId });
+    if (!tweet) {
+      return {
+        error: {
+          message: "Tweet is unavailable",
+          field: "tweet",
+        },
+      };
+    }
+
+    const comment = await TweetModel.create({
+      parentId: tweetId,
+      content,
+      creator: userId,
+      createdAt: Date.now(),
+      commentsCount: 0,
+      isRetweet: false,
+      likes: [],
+      retweets: [],
+    });
+    await comment.save();
+
+    await TweetModel.updateOne(
+      { _id: tweetId },
+      { commentsCount: tweet.commentsCount + 1 }
+    );
+
+    return { tweet: comment };
+  }
+
+  @Mutation(() => SingleTweetResponse)
+  @UseMiddleware(Auth)
   async createReTweet(
     @Arg("tweetId") tweetId: string,
     @Ctx() { request }: Context
@@ -116,13 +169,21 @@ export class TweetsResolver {
         },
       };
     }
-    const { comments, content, creator, likes, retweets } = tweet!;
+    const {
+      commentsCount,
+      content,
+      creator,
+      likes,
+      retweets,
+      parentId,
+    } = tweet!;
     const retweet = await TweetModel.create({
       content,
       creator: (creator as User)._id,
       createdAt: Date.now(),
       isRetweet: true,
-      comments: comments.map((comment) => (comment as Comment)._id),
+      commentsCount,
+      parentId,
       likes: likes.map((like) => (like as Like)._id),
       retweets: [
         request.session.userId,
@@ -171,15 +232,12 @@ export class TweetsResolver {
   }
 
   @Query(() => [Tweet])
-  async getUserTimeline(
-    @Arg("userId") userId: string,
-    @Ctx() { request }: Context
-  ) {
+  async getUserTimeline(@Arg("userId") userId: string) {
     // const { userId } = request.session;
     // const user = await UserModel.findOne({ _id: id });
     // const following = user?.following;
     // console.log(following);
-    return TweetModel.find({ creator: id }).sort({
+    return TweetModel.find({ creator: userId }).sort({
       createdAt: "desc",
     });
   }

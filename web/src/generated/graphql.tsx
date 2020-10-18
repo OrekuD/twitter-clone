@@ -18,6 +18,7 @@ export type Query = {
   __typename?: 'Query';
   getTweet: SingleTweetResponse;
   getAllTweets: Array<Tweet>;
+  getTweetComments: Array<Tweet>;
   getTweetsByUser: Array<Tweet>;
   getCurrentUserTimeline: Array<Tweet>;
   getUserTimeline: Array<Tweet>;
@@ -26,7 +27,6 @@ export type Query = {
   currentUser?: Maybe<User>;
   getAllUsers: Array<User>;
   getLikesByUser?: Maybe<Array<Like>>;
-  getCommentsByUser: Array<Tweet>;
   search: Response;
   getTrends: Array<Trends>;
   getTweetsByHashtag?: Maybe<Trends>;
@@ -35,6 +35,11 @@ export type Query = {
 
 export type QueryGetTweetArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryGetTweetCommentsArgs = {
+  tweetId: Scalars['String'];
 };
 
 
@@ -63,11 +68,6 @@ export type QueryGetLikesByUserArgs = {
 };
 
 
-export type QueryGetCommentsByUserArgs = {
-  userId: Scalars['String'];
-};
-
-
 export type QuerySearchArgs = {
   searchTerm: Scalars['String'];
 };
@@ -86,11 +86,12 @@ export type SingleTweetResponse = {
 export type Tweet = {
   __typename?: 'Tweet';
   _id: Scalars['ID'];
+  parentId?: Maybe<Scalars['String']>;
   content: Scalars['String'];
   isRetweet: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
+  commentsCount: Scalars['Float'];
   creator: User;
-  comments: Array<Comment>;
   likes: Array<Like>;
   retweets: Array<User>;
 };
@@ -108,17 +109,6 @@ export type User = {
   fullname: Scalars['String'];
   following: Array<User>;
   followers: Array<User>;
-};
-
-export type Comment = {
-  __typename?: 'Comment';
-  _id: Scalars['ID'];
-  content: Scalars['String'];
-  tweetId: Scalars['String'];
-  creatorId: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  creator: User;
-  likes: Array<Like>;
 };
 
 export type Like = {
@@ -164,6 +154,7 @@ export type Trends = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
+  createComment: SingleTweetResponse;
   createReTweet: SingleTweetResponse;
   createAccount: UserResponse;
   login: UserResponse;
@@ -172,12 +163,16 @@ export type Mutation = {
   unFollowUser: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   likeTweet: LikeResponse;
-  createComment: CommentResponse;
 };
 
 
 export type MutationCreateTweetArgs = {
   content: Scalars['String'];
+};
+
+
+export type MutationCreateCommentArgs = {
+  input: CommentInput;
 };
 
 
@@ -216,9 +211,9 @@ export type MutationLikeTweetArgs = {
   tweetId: Scalars['String'];
 };
 
-
-export type MutationCreateCommentArgs = {
-  input: CommentInput;
+export type CommentInput = {
+  content: Scalars['String'];
+  tweetId: Scalars['String'];
 };
 
 export type RegisterInput = {
@@ -247,26 +242,9 @@ export type LikeResponse = {
   message: Scalars['String'];
 };
 
-export type CommentResponse = {
-  __typename?: 'CommentResponse';
-  comment?: Maybe<Comment>;
-  error?: Maybe<CommentError>;
-};
-
-export type CommentError = {
-  __typename?: 'CommentError';
-  message: Scalars['String'];
-  field: Scalars['String'];
-};
-
-export type CommentInput = {
-  content: Scalars['String'];
-  tweetId: Scalars['String'];
-};
-
 export type TweetDetailsFragment = (
   { __typename?: 'Tweet' }
-  & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'isRetweet'>
+  & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'isRetweet' | 'commentsCount'>
   & { creator: (
     { __typename?: 'User' }
     & UserPartialDetailsFragment
@@ -276,9 +254,6 @@ export type TweetDetailsFragment = (
   )>, retweets: Array<(
     { __typename?: 'User' }
     & UserPartialDetailsFragment
-  )>, comments: Array<(
-    { __typename?: 'Comment' }
-    & Pick<Comment, '_id'>
   )> }
 );
 
@@ -353,17 +328,17 @@ export type CreateCommentMutationVariables = Exact<{
 export type CreateCommentMutation = (
   { __typename?: 'Mutation' }
   & { createComment: (
-    { __typename?: 'CommentResponse' }
-    & { comment?: Maybe<(
-      { __typename?: 'Comment' }
-      & Pick<Comment, 'content' | '_id' | 'tweetId'>
+    { __typename?: 'SingleTweetResponse' }
+    & { tweet?: Maybe<(
+      { __typename?: 'Tweet' }
+      & Pick<Tweet, 'content' | '_id' | 'parentId'>
       & { creator: (
         { __typename?: 'User' }
         & Pick<User, 'username'>
       ) }
     )>, error?: Maybe<(
-      { __typename?: 'CommentError' }
-      & Pick<CommentError, 'message'>
+      { __typename?: 'TweetError' }
+      & Pick<TweetError, 'message' | 'field'>
     )> }
   ) }
 );
@@ -453,29 +428,6 @@ export type AllTweetsQuery = (
   )> }
 );
 
-export type GetCommentsByUserQueryVariables = Exact<{
-  userId: Scalars['String'];
-}>;
-
-
-export type GetCommentsByUserQuery = (
-  { __typename?: 'Query' }
-  & { getCommentsByUser: Array<(
-    { __typename?: 'Tweet' }
-    & Pick<Tweet, '_id' | 'content' | 'createdAt'>
-    & { creator: (
-      { __typename?: 'User' }
-      & UserPartialDetailsFragment
-    ), likes: Array<(
-      { __typename?: 'Like' }
-      & Pick<Like, '_id' | 'creatorId'>
-    )>, comments: Array<(
-      { __typename?: 'Comment' }
-      & Pick<Comment, '_id'>
-    )> }
-  )> }
-);
-
 export type GetCurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -535,18 +487,11 @@ export type GetTweetQuery = (
     { __typename?: 'SingleTweetResponse' }
     & { tweet?: Maybe<(
       { __typename?: 'Tweet' }
-      & Pick<Tweet, '_id' | 'content' | 'createdAt'>
+      & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'commentsCount'>
       & { creator: (
         { __typename?: 'User' }
         & UserPartialDetailsFragment
-      ), comments: Array<(
-        { __typename?: 'Comment' }
-        & Pick<Comment, '_id' | 'content' | 'creatorId' | 'createdAt'>
-        & { creator: (
-          { __typename?: 'User' }
-          & UserPartialDetailsFragment
-        ) }
-      )>, likes: Array<(
+      ), likes: Array<(
         { __typename?: 'Like' }
         & Pick<Like, '_id' | 'creatorId'>
         & { creator: (
@@ -556,6 +501,30 @@ export type GetTweetQuery = (
       )> }
     )> }
   ) }
+);
+
+export type GetTweetCommentsQueryVariables = Exact<{
+  tweetId: Scalars['String'];
+}>;
+
+
+export type GetTweetCommentsQuery = (
+  { __typename?: 'Query' }
+  & { getTweetComments: Array<(
+    { __typename?: 'Tweet' }
+    & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'commentsCount'>
+    & { creator: (
+      { __typename?: 'User' }
+      & UserPartialDetailsFragment
+    ), likes: Array<(
+      { __typename?: 'Like' }
+      & Pick<Like, '_id' | 'creatorId'>
+      & { creator: (
+        { __typename?: 'User' }
+        & UserPartialDetailsFragment
+      ) }
+    )> }
+  )> }
 );
 
 export type GetTweetsByUserQueryVariables = Exact<{
@@ -630,14 +599,11 @@ export type SearchQuery = (
     { __typename?: 'Response' }
     & { tweets: Array<(
       { __typename?: 'Tweet' }
-      & Pick<Tweet, 'content' | '_id' | 'createdAt'>
+      & Pick<Tweet, 'content' | '_id' | 'createdAt' | 'commentsCount'>
       & { creator: (
         { __typename?: 'User' }
         & UserPartialDetailsFragment
-      ), comments: Array<(
-        { __typename?: 'Comment' }
-        & Pick<Comment, '_id'>
-      )>, likes: Array<(
+      ), likes: Array<(
         { __typename?: 'Like' }
         & Pick<Like, '_id' | 'creatorId'>
         & { creator: (
@@ -677,9 +643,7 @@ export const TweetDetailsFragmentDoc = gql`
   retweets {
     ...UserPartialDetails
   }
-  comments {
-    _id
-  }
+  commentsCount
 }
     ${UserPartialDetailsFragmentDoc}`;
 export const UserFullDetailsFragmentDoc = gql`
@@ -748,16 +712,17 @@ export function useCreateAccountMutation() {
 export const CreateCommentDocument = gql`
     mutation CreateComment($content: String!, $tweetId: String!) {
   createComment(input: {content: $content, tweetId: $tweetId}) {
-    comment {
+    tweet {
       content
       _id
-      tweetId
+      parentId
       creator {
         username
       }
     }
     error {
       message
+      field
     }
   }
 }
@@ -855,29 +820,6 @@ export const AllTweetsDocument = gql`
 export function useAllTweetsQuery(options: Omit<Urql.UseQueryArgs<AllTweetsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AllTweetsQuery>({ query: AllTweetsDocument, ...options });
 };
-export const GetCommentsByUserDocument = gql`
-    query GetCommentsByUser($userId: String!) {
-  getCommentsByUser(userId: $userId) {
-    _id
-    content
-    createdAt
-    creator {
-      ...UserPartialDetails
-    }
-    likes {
-      _id
-      creatorId
-    }
-    comments {
-      _id
-    }
-  }
-}
-    ${UserPartialDetailsFragmentDoc}`;
-
-export function useGetCommentsByUserQuery(options: Omit<Urql.UseQueryArgs<GetCommentsByUserQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetCommentsByUserQuery>({ query: GetCommentsByUserDocument, ...options });
-};
 export const GetCurrentUserDetailsDocument = gql`
     query GetCurrentUserDetails {
   currentUser {
@@ -938,15 +880,7 @@ export const GetTweetDocument = gql`
       creator {
         ...UserPartialDetails
       }
-      comments {
-        _id
-        content
-        creatorId
-        createdAt
-        creator {
-          ...UserPartialDetails
-        }
-      }
+      commentsCount
       likes {
         _id
         creatorId
@@ -961,6 +895,30 @@ export const GetTweetDocument = gql`
 
 export function useGetTweetQuery(options: Omit<Urql.UseQueryArgs<GetTweetQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetTweetQuery>({ query: GetTweetDocument, ...options });
+};
+export const GetTweetCommentsDocument = gql`
+    query GetTweetComments($tweetId: String!) {
+  getTweetComments(tweetId: $tweetId) {
+    _id
+    content
+    createdAt
+    creator {
+      ...UserPartialDetails
+    }
+    commentsCount
+    likes {
+      _id
+      creatorId
+      creator {
+        ...UserPartialDetails
+      }
+    }
+  }
+}
+    ${UserPartialDetailsFragmentDoc}`;
+
+export function useGetTweetCommentsQuery(options: Omit<Urql.UseQueryArgs<GetTweetCommentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTweetCommentsQuery>({ query: GetTweetCommentsDocument, ...options });
 };
 export const GetTweetsByUserDocument = gql`
     query GetTweetsByUser($userId: String!) {
@@ -1024,9 +982,7 @@ export const SearchDocument = gql`
       creator {
         ...UserPartialDetails
       }
-      comments {
-        _id
-      }
+      commentsCount
       likes {
         _id
         creatorId

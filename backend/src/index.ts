@@ -8,7 +8,7 @@ import cors from "cors";
 import { LikeResolver } from "./Resolvers/LikeResolver";
 import session from "express-session";
 import connectMongo from "connect-mongo";
-import { CommentResolver } from "./Resolvers/CommentResolver";
+// import { CommentResolver } from "./Resolvers/CommentResolver";
 import { SearchResolver } from "./Resolvers/SearchResolver";
 import { TrendsResolver } from "./Resolvers/TrendsResolver";
 const PORT = process.env.PORT || 4000;
@@ -47,7 +47,7 @@ const main = async () => {
       TweetsResolver,
       UserResolver,
       LikeResolver,
-      CommentResolver,
+      // CommentResolver,
       SearchResolver,
       TrendsResolver,
       // FollowResolver,

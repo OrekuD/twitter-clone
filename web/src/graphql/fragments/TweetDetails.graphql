@@ -13,7 +13,5 @@ fragment TweetDetails on Tweet {
   retweets {
     ...UserPartialDetails
   }
-  comments {
-    _id
-  }
+  commentsCount
 }

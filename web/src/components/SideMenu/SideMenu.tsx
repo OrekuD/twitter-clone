@@ -23,7 +23,7 @@ const menu = [
   },
   {
     name: "Explore",
-    path: "/explore",
+    path: "/trends",
     Icon: HashtagIcon,
   },
   {

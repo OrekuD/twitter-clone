@@ -7,9 +7,7 @@ query Search($searchTerm: String!) {
       creator {
         ...UserPartialDetails
       }
-      comments {
-        _id
-      }
+      commentsCount
       likes {
         _id
         creatorId

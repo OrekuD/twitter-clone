@@ -3,7 +3,6 @@ import { useLocation, useRouteMatch } from "react-router-dom";
 import { Layout, Tweets, Spinner, StackHeader } from "../../components";
 import {
   Tweet,
-  useGetCommentsByUserQuery,
   useGetTweetsByUserQuery,
   useGetUserByUsernameQuery,
 } from "../../generated/graphql";
@@ -29,15 +28,6 @@ const UserPage = () => {
     },
   });
 
-  const [
-    { data: commentsByUser },
-    getCommentsByUser,
-  ] = useGetCommentsByUserQuery({
-    variables: {
-      userId: data?.getUserByUsername.user?._id!,
-    },
-  });
-
   useEffect(() => {
     if (activeIndex === 0) {
       getTweetsByUser();
@@ -45,12 +35,6 @@ const UserPage = () => {
         setTweets(tweetsByUser?.getTweetsByUser as Tweet[]);
       }
     } else if (activeIndex === 1) {
-      // console.log("--------");
-      getCommentsByUser();
-      if (commentsByUser) {
-        setTweets([]);
-        // setTweets(commentsByUser?.getCommentsByUser as Comment[]);
-      }
     }
   }, [activeIndex, getTweetsByUser]);
 

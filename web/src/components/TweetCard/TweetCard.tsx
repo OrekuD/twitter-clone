@@ -34,7 +34,7 @@ const TweetCard = ({ tweet }: Props) => {
     content,
     createdAt,
     creator: { username, fullname },
-    comments,
+    commentsCount,
     likes,
     retweets,
     isRetweet,
@@ -119,8 +119,8 @@ const TweetCard = ({ tweet }: Props) => {
                 <div className="svg">
                   <ChatBubble size={20} />
                 </div>
-                {comments.length > 0 && (
-                  <p className="count">{abbreviateNumber(comments.length)}</p>
+                {commentsCount > 0 && (
+                  <p className="count">{abbreviateNumber(commentsCount)}</p>
                 )}
               </button>
             </div>

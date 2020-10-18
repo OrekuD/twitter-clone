@@ -48,8 +48,8 @@ const TweetPage = () => {
     );
   }
 
-  const { _id, content, createdAt, likes, comments, creator } = data?.getTweet
-    .tweet as Tweet;
+  const { _id, content, createdAt, likes, commentsCount, creator } = data
+    ?.getTweet.tweet as Tweet;
   const { image, fullname, username, _id: creatorId } = creator;
 
   const commentTweet = () => {

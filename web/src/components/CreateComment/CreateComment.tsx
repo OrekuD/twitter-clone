@@ -37,11 +37,8 @@ const CreateComment = () => {
   } = useFormik({
     initialValues: { comment: "" },
     validationSchema: schema,
-    onSubmit: async (values, { resetForm, setFieldError }) => {
-      if (values.comment.split("").length === 0) {
-        setFieldError("comment", "Comment must exceed 1 character");
-        return;
-      }
+    initialErrors: { comment: "Comment must exceed 1 character" },
+    onSubmit: async (values, { resetForm }) => {
       await createComment({
         content: values.comment,
         tweetId: _id,
@@ -107,16 +104,16 @@ const CreateComment = () => {
               <textarea
                 className="textarea"
                 placeholder="Tweet your reply"
+                draggable={false}
                 value={comment}
                 onChange={handleChange("comment")}
                 onBlur={handleBlur("comment")}
-              ></textarea>
-              <button
-                className="ripple-btn"
                 style={{
-                  opacity: errors.comment || !touched.comment ? 0.5 : 1,
+                  color:
+                    errors.comment && touched.comment ? "#b00020" : "#ffffff",
                 }}
-              >
+              ></textarea>
+              <button className="ripple-btn" disabled={!!errors.comment}>
                 Reply
               </button>
             </form>
