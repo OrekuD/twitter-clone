@@ -1,20 +1,7 @@
 query GetTweet($id: String!) {
   getTweet(id: $id) {
     tweet {
-      _id
-      content
-      createdAt
-      creator {
-        ...UserPartialDetails
-      }
-      commentsCount
-      likes {
-        _id
-        creatorId
-        creator {
-          ...UserPartialDetails
-        }
-      }
+      ...TweetDetails
     }
   }
 }

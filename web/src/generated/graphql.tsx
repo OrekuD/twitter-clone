@@ -487,18 +487,7 @@ export type GetTweetQuery = (
     { __typename?: 'SingleTweetResponse' }
     & { tweet?: Maybe<(
       { __typename?: 'Tweet' }
-      & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'commentsCount'>
-      & { creator: (
-        { __typename?: 'User' }
-        & UserPartialDetailsFragment
-      ), likes: Array<(
-        { __typename?: 'Like' }
-        & Pick<Like, '_id' | 'creatorId'>
-        & { creator: (
-          { __typename?: 'User' }
-          & UserPartialDetailsFragment
-        ) }
-      )> }
+      & TweetDetailsFragment
     )> }
   ) }
 );
@@ -512,18 +501,7 @@ export type GetTweetCommentsQuery = (
   { __typename?: 'Query' }
   & { getTweetComments: Array<(
     { __typename?: 'Tweet' }
-    & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'commentsCount'>
-    & { creator: (
-      { __typename?: 'User' }
-      & UserPartialDetailsFragment
-    ), likes: Array<(
-      { __typename?: 'Like' }
-      & Pick<Like, '_id' | 'creatorId'>
-      & { creator: (
-        { __typename?: 'User' }
-        & UserPartialDetailsFragment
-      ) }
-    )> }
+    & TweetDetailsFragment
   )> }
 );
 
@@ -874,24 +852,11 @@ export const GetTweetDocument = gql`
     query GetTweet($id: String!) {
   getTweet(id: $id) {
     tweet {
-      _id
-      content
-      createdAt
-      creator {
-        ...UserPartialDetails
-      }
-      commentsCount
-      likes {
-        _id
-        creatorId
-        creator {
-          ...UserPartialDetails
-        }
-      }
+      ...TweetDetails
     }
   }
 }
-    ${UserPartialDetailsFragmentDoc}`;
+    ${TweetDetailsFragmentDoc}`;
 
 export function useGetTweetQuery(options: Omit<Urql.UseQueryArgs<GetTweetQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetTweetQuery>({ query: GetTweetDocument, ...options });
@@ -899,23 +864,10 @@ export function useGetTweetQuery(options: Omit<Urql.UseQueryArgs<GetTweetQueryVa
 export const GetTweetCommentsDocument = gql`
     query GetTweetComments($tweetId: String!) {
   getTweetComments(tweetId: $tweetId) {
-    _id
-    content
-    createdAt
-    creator {
-      ...UserPartialDetails
-    }
-    commentsCount
-    likes {
-      _id
-      creatorId
-      creator {
-        ...UserPartialDetails
-      }
-    }
+    ...TweetDetails
   }
 }
-    ${UserPartialDetailsFragmentDoc}`;
+    ${TweetDetailsFragmentDoc}`;
 
 export function useGetTweetCommentsQuery(options: Omit<Urql.UseQueryArgs<GetTweetCommentsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetTweetCommentsQuery>({ query: GetTweetCommentsDocument, ...options });

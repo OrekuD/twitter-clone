@@ -217,7 +217,11 @@ export class UserResolver {
     await UserModel.updateOne(
       { _id: userId },
       {
-        $pull: { followers: [request.session.userId] as any },
+        $set: {
+          followers: user.followers.filter(
+            (follower) => follower === request.session.userId
+          ) as any,
+        },
       }
     );
 

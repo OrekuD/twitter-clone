@@ -7,7 +7,6 @@ import "./SearchTab.scss";
 
 const SearchTab = () => {
   const { path } = useRouteMatch();
-  console.log("------", path);
   if (path === "/explore") {
     return <div className="search-tab" />;
   }

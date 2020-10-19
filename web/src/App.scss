@@ -47,6 +47,12 @@ textarea {
   }
 }
 
+.loading-screen {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
 .form-container {
   display: flex;
   flex-direction: column;

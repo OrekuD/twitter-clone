@@ -1,13 +1,21 @@
 import React, { useEffect } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
-import { Layout, Spinner, StackHeader, RenderTweet } from "../../components";
+import {
+  Layout,
+  Spinner,
+  StackHeader,
+  RenderTweet,
+  Tweets,
+} from "../../components";
 import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import {
   Tweet,
+  useGetTweetCommentsQuery,
   useGetTweetQuery,
   useLikeTweetMutation,
+  useCreateReTweetMutation,
 } from "../../generated/graphql";
 import {
   ChatBubble,
@@ -20,6 +28,7 @@ import {
 import { formatDate } from "../../utils/dateFormatters";
 import { userHasLiked } from "../../utils/userHasLiked";
 import "./Tweet.scss";
+import { abbreviateNumber } from "../../utils/abreviateNumber";
 
 const TweetPage = () => {
   const {
@@ -31,10 +40,15 @@ const TweetPage = () => {
   const [{ data }, getTweet] = useGetTweetQuery({
     variables: { id: params.tweetId },
   });
+  const [{ data: commentsData }, getComments] = useGetTweetCommentsQuery({
+    variables: { tweetId: params.tweetId },
+  });
   const [, likeTweet] = useLikeTweetMutation();
+  const [, createRetweet] = useCreateReTweetMutation();
 
   useEffect(() => {
     getTweet();
+    getComments();
   }, [getTweet, params]);
 
   if (!data) {
@@ -48,8 +62,15 @@ const TweetPage = () => {
     );
   }
 
-  const { _id, content, createdAt, likes, commentsCount, creator } = data
-    ?.getTweet.tweet as Tweet;
+  const {
+    _id,
+    content,
+    createdAt,
+    likes,
+    commentsCount,
+    creator,
+    retweets,
+  } = data?.getTweet.tweet as Tweet;
   const { image, fullname, username, _id: creatorId } = creator;
 
   const commentTweet = () => {
@@ -100,10 +121,10 @@ const TweetPage = () => {
         </div>
         <div className="tweet-stats">
           <p>
-            <span>100</span> Retweets
+            <span>{abbreviateNumber(retweets.length)}</span> Retweets
           </p>
           <p>
-            <span>{likes.length}</span> Likes
+            <span>{abbreviateNumber(likes.length)}</span> Likes
           </p>
         </div>
         <div className="tweet-actions">
@@ -115,7 +136,14 @@ const TweetPage = () => {
             </button>
           </div>
           <div className="icon-container">
-            <button className="icon" onClick={commentTweet}>
+            <button
+              className="icon"
+              onClick={() => {
+                createRetweet({
+                  tweetId: _id,
+                });
+              }}
+            >
               <div className="svg">
                 <Retweet size={20} />
               </div>
@@ -128,7 +156,6 @@ const TweetPage = () => {
                 e.stopPropagation();
                 likeTweet({
                   tweetId: _id,
-                  isComment: false,
                 });
               }}
             >
@@ -165,6 +192,10 @@ const TweetPage = () => {
           </div>
         </div>
       </div>
+      <Tweets
+        tweets={commentsData?.getTweetComments as Tweet[]}
+        replyingTo={username}
+      />
     </Layout>
   );
 };

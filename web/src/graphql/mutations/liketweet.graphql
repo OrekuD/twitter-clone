@@ -1,5 +1,5 @@
-mutation LikeTweet($tweetId: String!, $isComment: Boolean!) {
-  likeTweet(tweetId: $tweetId, isComment: $isComment) {
+mutation LikeTweet($tweetId: String!) {
+  likeTweet(tweetId: $tweetId) {
     state
     message
   }

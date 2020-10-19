@@ -26,9 +26,10 @@ import { userHasRetweeted } from "../../utils/userHasRetweeted";
 interface Props {
   tweet: Tweet;
   nolink?: boolean;
+  replyingTo?: string;
 }
 
-const TweetCard = ({ tweet }: Props) => {
+const TweetCard = ({ tweet, replyingTo }: Props) => {
   const {
     _id,
     content,
@@ -67,11 +68,6 @@ const TweetCard = ({ tweet }: Props) => {
     setSelectedTweet(tweet);
     setCommentModalState(true);
   };
-
-  useEffect(() => {
-    console.log(retweets);
-  }, []);
-
   return (
     <div
       className="card-container"
@@ -111,8 +107,12 @@ const TweetCard = ({ tweet }: Props) => {
               <ChevronDown size={16} color={grey} />
             </div>
           </div>
+          {replyingTo && (
+            <p className="replying-to">
+              Replying to <span>{replyingTo}</span>
+            </p>
+          )}
           <RenderTweet text={content} />
-          {/* <pre className="ssss">{content}</pre> */}
           <div className="tweet-actions">
             <div className="icon-container">
               <button className="icon" onClick={commentTweet}>
@@ -166,7 +166,6 @@ const TweetCard = ({ tweet }: Props) => {
                   e.stopPropagation();
                   likeTweet({
                     tweetId: _id,
-                    isComment: false,
                   });
                 }}
               >

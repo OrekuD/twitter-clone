@@ -1,18 +1,5 @@
 query GetTweetComments($tweetId: String!) {
   getTweetComments(tweetId: $tweetId) {
-    _id
-    content
-    createdAt
-    creator {
-      ...UserPartialDetails
-    }
-    commentsCount
-    likes {
-      _id
-      creatorId
-      creator {
-        ...UserPartialDetails
-      }
-    }
+    ...TweetDetails
   }
 }

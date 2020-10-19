@@ -5,7 +5,10 @@ import { BrowserRouter } from "react-router-dom";
 import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
 import App from "./App";
 import { Provider as ContextProvider } from "./context/context";
-import { LikeTweetMutationVariables } from "./generated/graphql";
+import {
+  CreateCommentMutationVariables,
+  LikeTweetMutationVariables,
+} from "./generated/graphql";
 
 const client = createClient({
   url: "http://localhost:4000/graphql",
@@ -31,9 +34,15 @@ const client = createClient({
             // cache.invalidate("Query", "getCurrentUserTimeline");
             cache.invalidate("Query", "getTrends");
           },
+          createComment: (_, args, cache) => {
+            const { tweetId } = args as CreateCommentMutationVariables;
+            cache.invalidate("Query", "getTweet", {
+              id: tweetId,
+            });
+          },
           likeTweet: (_, args, cache) => {
             const { tweetId } = args as LikeTweetMutationVariables;
-            cache.invalidate("Query", "getCurrentUserTimeline");
+            cache.invalidate("Query", "getCurrentUserTimeline"); // Do it in better way??
             cache.invalidate("Query", "getTweet", {
               id: tweetId,
             });

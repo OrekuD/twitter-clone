@@ -3,8 +3,9 @@ import { useLocation, useRouteMatch } from "react-router-dom";
 import { Layout, Tweets, Spinner, StackHeader } from "../../components";
 import {
   Tweet,
-  useGetTweetsByUserQuery,
+  useGetCurrentUserTimelineQuery,
   useGetUserByUsernameQuery,
+  useGetUserTimelineQuery,
 } from "../../generated/graphql";
 import Profile from "./Profile";
 import "./UserPage.scss";
@@ -12,7 +13,6 @@ import "./UserPage.scss";
 const UserPage = () => {
   const { params } = useRouteMatch<{ username: string }>();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [tweets, setTweets] = useState<Tweet[]>([]);
 
   const [{ data }, getUser] = useGetUserByUsernameQuery({
     variables: { username: params.username },
@@ -22,26 +22,27 @@ const UserPage = () => {
     getUser();
   }, [getUser, params]);
 
-  const [{ data: tweetsByUser }, getTweetsByUser] = useGetTweetsByUserQuery({
+  const [{ data: userTimeline }, getTimeline] = useGetUserTimelineQuery({
     variables: {
       userId: data?.getUserByUsername.user?._id!,
     },
   });
 
   useEffect(() => {
-    if (activeIndex === 0) {
-      getTweetsByUser();
-      if (tweetsByUser) {
-        setTweets(tweetsByUser?.getTweetsByUser as Tweet[]);
-      }
-    } else if (activeIndex === 1) {
-    }
-  }, [activeIndex, getTweetsByUser]);
+    data && getTimeline();
+  }, [data, getTimeline]);
 
   const tabs = ["Tweets", "Replies", "Likes"];
 
-  if (params.username === "explore") {
-    return null;
+  if (params.username === "trends") {
+    // to prevent from using "trends" as a username in fetching details
+    return (
+      <Layout>
+        <div className="loading-screen">
+          <Spinner />
+        </div>
+      </Layout>
+    );
   }
 
   if (data?.getUserByUsername.error) {
@@ -78,7 +79,7 @@ const UserPage = () => {
               </button>
             ))}
           </div>
-          <Tweets tweets={tweets} />
+          <Tweets tweets={userTimeline?.getUserTimeline as Tweet[]} />
         </div>
       )}
     </Layout>
