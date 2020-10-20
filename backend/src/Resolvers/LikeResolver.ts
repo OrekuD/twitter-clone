@@ -4,15 +4,17 @@ import {
   Arg,
   Ctx,
   Field,
+  FieldResolver,
   Mutation,
   ObjectType,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
-import { CommentModel } from "../Models/Comment";
+import { User, UserModel } from "../Models/User";
 
 @ObjectType()
 class LikeResponse {
@@ -23,7 +25,7 @@ class LikeResponse {
   message: string;
 }
 
-@Resolver()
+@Resolver(Like)
 export class LikeResolver {
   @Mutation(() => LikeResponse)
   @UseMiddleware(Auth)
@@ -32,7 +34,7 @@ export class LikeResolver {
     @Ctx() { request }: Context
   ) {
     const { userId } = request.session;
-    const tweet = await CommentModel.findOne({ _id: tweetId });
+    const tweet = await TweetModel.findOne({ _id: tweetId });
 
     if (!tweet) {
       return {
@@ -41,38 +43,22 @@ export class LikeResolver {
       };
     }
 
-    const hasUserAlreadyLiked = tweet.likes.findIndex(
-      (like) => (like as Like).creatorId === userId
-    );
+    const userAlreadyLiked = tweet.likes
+      .flat(Infinity)
+      .findIndex((like) => like === userId);
 
-    if (hasUserAlreadyLiked >= 0) {
-      const updatedLikes = tweet.likes.filter(
-        (like) => (like as Like).creatorId !== userId
-      );
+    if (userAlreadyLiked >= 0) {
+      const updatedLikes = tweet.likes.filter((like) => like !== userId);
 
       await TweetModel.updateOne(
         { _id: tweetId },
         { $set: { likes: updatedLikes } }
       );
 
-      await LikeModel.deleteOne({
-        _id: (tweet.likes[hasUserAlreadyLiked] as Like)._id,
-      });
-
       return { state: true, message: "Unlike successfull" };
     }
 
-    const like = await LikeModel.create({
-      creator: userId,
-      tweetId,
-      creatorId: userId,
-    });
-    await like.save();
-
-    await TweetModel.updateOne(
-      { _id: tweetId },
-      { $push: { likes: [like.id] as any } }
-    );
+    await TweetModel.updateOne({ _id: tweetId }, { $push: { likes: userId } });
 
     return { state: true, message: "Like successfull" };
   }
@@ -81,5 +67,10 @@ export class LikeResolver {
   async getLikesByUser(@Arg("userId") userId: string) {
     const likes = await LikeModel.find({ creatorId: userId });
     return likes;
+  }
+
+  @FieldResolver(() => User)
+  async creator(@Root() like: Like) {
+    return UserModel.findOne({ _id: (like._doc as Like).creatorId });
   }
 }

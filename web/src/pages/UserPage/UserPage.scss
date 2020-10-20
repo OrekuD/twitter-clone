@@ -83,26 +83,6 @@
       }
     }
   }
-
-  .tabs {
-    height: 60px;
-    display: flex;
-    // background-color: red;
-    margin-bottom: 10px;
-
-    .tab {
-      flex: 1;
-      display: grid;
-      place-items: center;
-      border-bottom: 1px solid $grey;
-      font-size: 16px;
-      font-weight: 600;
-      color: $grey;
-    }
-    .active {
-      border-bottom: 2px solid $blue;
-    }
-  }
 }
 
 .no-user {

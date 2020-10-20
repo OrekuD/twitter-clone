@@ -11,9 +11,11 @@ import connectMongo from "connect-mongo";
 // import { CommentResolver } from "./Resolvers/CommentResolver";
 import { SearchResolver } from "./Resolvers/SearchResolver";
 import { TrendsResolver } from "./Resolvers/TrendsResolver";
-const PORT = process.env.PORT || 4000;
+import { setLogLevel, LogLevels } from "@typegoose/typegoose";
 
 const main = async () => {
+  const PORT = process.env.PORT || 4000;
+  setLogLevel(LogLevels.TRACE);
   await mongoose.connect("mongodb://localhost:27017/twitter-clone", {
     useNewUrlParser: true,
     useUnifiedTopology: true,

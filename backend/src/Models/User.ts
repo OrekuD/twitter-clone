@@ -3,12 +3,12 @@ import {
   prop,
   mongoose,
   Ref,
-  plugin,
+  // plugin,
 } from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import autopopulate from "mongoose-autopopulate";
+// import autopopulate from "mongoose-autopopulate";
 
-@plugin(autopopulate as any)
+// @plugin(autopopulate as any)
 @ObjectType()
 export class User {
   @Field(() => ID)
@@ -45,13 +45,15 @@ export class User {
   @prop()
   fullname: string;
 
-  @prop({ ref: () => User, autopopulate: true })
+  @prop()
   @Field(() => [User])
   following: Ref<User>[];
 
-  @prop({ ref: () => User, autopopulate: true })
+  @prop()
   @Field(() => [User])
   followers: Ref<User>[];
+
+  _doc?: any;
 }
 
 export const UserModel = getModelForClass(User);

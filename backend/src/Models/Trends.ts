@@ -1,15 +1,7 @@
-import {
-  getModelForClass,
-  mongoose,
-  plugin,
-  prop,
-  Ref,
-} from "@typegoose/typegoose";
+import { getModelForClass, mongoose, prop, Ref } from "@typegoose/typegoose";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Tweet } from "./Tweet";
-import autopopulate from "mongoose-autopopulate";
 
-@plugin(autopopulate as any)
 @ObjectType()
 export class Trends {
   @Field(() => ID)
@@ -19,13 +11,15 @@ export class Trends {
   @prop()
   hashtag: string;
 
-  @prop({ ref: () => Tweet, autopopulate: true })
+  @prop()
   @Field(() => [Tweet])
   tweets: Ref<Tweet>[];
 
   @Field()
   @prop()
   numberOfTweets: number;
+
+  _doc?: any;
 }
 
 export const TrendsModel = getModelForClass(Trends);

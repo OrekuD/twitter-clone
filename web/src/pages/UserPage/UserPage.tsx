@@ -33,9 +33,10 @@ const UserPage = () => {
   }, [data, getTimeline]);
 
   const tabs = ["Tweets", "Replies", "Likes"];
+  const excludedRoutes = ["explore", "search"];
 
-  if (params.username === "trends") {
-    // to prevent from using "trends" as a username in fetching details
+  // to prevent from using certain routes as a username in fetching detailss
+  if (excludedRoutes.includes(params.username)) {
     return (
       <Layout>
         <div className="loading-screen">

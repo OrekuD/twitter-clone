@@ -8,6 +8,7 @@ import {
   Register,
   UserPage,
   Explore,
+  SearchResults,
 } from "./pages";
 import { Redirect, Route } from "react-router-dom";
 import { useAppContext } from "./context/context";
@@ -18,7 +19,8 @@ function App() {
     <>
       {!isLoggedIn && <Redirect from="/" to="/user/login" />}
       <Route path="/" exact component={Home} />
-      <Route path="/trends" exact component={Explore} />
+      <Route path="/explore" exact component={Explore} />
+      <Route path="/search/:hashtag" exact component={SearchResults} />
       <Route path="/:username/status/:tweetId" exact component={Tweet} />
       <Route path="/user/register" exact component={Register} />
       <Route path="/user/login" exact component={Login} />

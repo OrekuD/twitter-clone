@@ -3,14 +3,13 @@ import {
   getModelForClass,
   mongoose,
   Ref,
-  plugin,
+  // plugin,
 } from "@typegoose/typegoose";
 import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
-import autopopulate from "mongoose-autopopulate";
-import { Like } from "./Like";
+// import autopopulate from "mongoose-autopopulate";
 
-@plugin(autopopulate as any)
+// @plugin(autopopulate as any)
 @ObjectType()
 export class Tweet {
   @Field(() => ID)
@@ -36,17 +35,23 @@ export class Tweet {
   @Field()
   commentsCount: number;
 
-  @prop({ ref: () => User, autopopulate: true })
+  // @prop({ ref: () => User, autopopulate: true })
+  // @Field(() => User)
+  // creator: Ref<User>;
+
+  @prop()
   @Field(() => User)
   creator: Ref<User>;
 
-  @prop({ ref: () => Like, autopopulate: true })
-  @Field(() => [Like])
-  likes: Ref<Like>[];
+  @prop()
+  @Field(() => [User])
+  likes: Ref<User>[];
 
-  @prop({ ref: () => User, autopopulate: true })
+  @prop()
   @Field(() => [User])
   retweets: Ref<User>[];
+
+  _doc?: any;
 }
 
 export const TweetModel = getModelForClass(Tweet);

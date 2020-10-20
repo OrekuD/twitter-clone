@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useRouteMatch } from "react-router-dom";
+import { useAppContext } from "../../context/context";
 import { UserFullDetailsFragment } from "../../generated/graphql";
 import { Calendar, Location } from "../../Svgs";
 // import { User } from "../../types";
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const Profile = ({ user }: Props) => {
-  const { params } = useRouteMatch<{ username: string }>();
+  const { userDetails } = useAppContext();
   const {
     bio,
     createdAt,
@@ -24,7 +25,7 @@ const Profile = ({ user }: Props) => {
     <div className="profile">
       <div className="top-section">
         <div className="profile-image"></div>
-        {params.username === username ? (
+        {userDetails.username === username ? (
           <button className="ripple-btn">Edit Profile</button>
         ) : (
           <button className="ripple-btn">Follow</button>

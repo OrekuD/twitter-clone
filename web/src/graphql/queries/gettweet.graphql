@@ -3,5 +3,9 @@ query GetTweet($id: String!) {
     tweet {
       ...TweetDetails
     }
+    error {
+      message
+      field
+    }
   }
 }

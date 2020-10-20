@@ -1,4 +1,4 @@
-import { Like } from "../generated/graphql";
+import { User } from "../generated/graphql";
 
-export const userHasLiked = (likes: Like[], userId: string) =>
-  likes.findIndex((like) => like.creatorId === userId);
+export const userHasLiked = (likes: User[], userId: string) =>
+  likes.findIndex((like) => like._id === userId);

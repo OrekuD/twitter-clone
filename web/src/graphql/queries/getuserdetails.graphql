@@ -3,5 +3,9 @@ query GetUserDetails($id: String!) {
     user {
       ...UserFullDetails
     }
+    error {
+      message
+      field
+    }
   }
 }

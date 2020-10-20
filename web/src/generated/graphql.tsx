@@ -92,8 +92,10 @@ export type Tweet = {
   createdAt: Scalars['DateTime'];
   commentsCount: Scalars['Float'];
   creator: User;
-  likes: Array<Like>;
+  likes: Array<User>;
   retweets: Array<User>;
+  likesCount: Scalars['Int'];
+  retweetsCount: Scalars['Int'];
 };
 
 
@@ -109,14 +111,6 @@ export type User = {
   fullname: Scalars['String'];
   following: Array<User>;
   followers: Array<User>;
-};
-
-export type Like = {
-  __typename?: 'Like';
-  _id: Scalars['ID'];
-  tweetId: Scalars['String'];
-  creator: User;
-  creatorId: Scalars['String'];
 };
 
 export type TweetError = {
@@ -135,6 +129,14 @@ export type UserError = {
   __typename?: 'UserError';
   message: Scalars['String'];
   field: Scalars['String'];
+};
+
+export type Like = {
+  __typename?: 'Like';
+  _id: Scalars['ID'];
+  tweetId: Scalars['String'];
+  creator: User;
+  creatorId: Scalars['String'];
 };
 
 export type Response = {
@@ -207,7 +209,6 @@ export type MutationUnFollowUserArgs = {
 
 
 export type MutationLikeTweetArgs = {
-  isComment: Scalars['Boolean'];
   tweetId: Scalars['String'];
 };
 
@@ -249,8 +250,8 @@ export type TweetDetailsFragment = (
     { __typename?: 'User' }
     & UserPartialDetailsFragment
   ), likes: Array<(
-    { __typename?: 'Like' }
-    & Pick<Like, '_id' | 'creatorId'>
+    { __typename?: 'User' }
+    & UserPartialDetailsFragment
   )>, retweets: Array<(
     { __typename?: 'User' }
     & UserPartialDetailsFragment
@@ -383,9 +384,18 @@ export type CreateTweetMutation = (
   ) }
 );
 
+export type FollowerUserMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type FollowerUserMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'followUser'>
+);
+
 export type LikeTweetMutationVariables = Exact<{
   tweetId: Scalars['String'];
-  isComment: Scalars['Boolean'];
 }>;
 
 
@@ -415,6 +425,16 @@ export type LoginMutation = (
       & Pick<UserError, 'message' | 'field'>
     )> }
   ) }
+);
+
+export type UnFollowerUserMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type UnFollowerUserMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'unFollowUser'>
 );
 
 export type AllTweetsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -488,6 +508,9 @@ export type GetTweetQuery = (
     & { tweet?: Maybe<(
       { __typename?: 'Tweet' }
       & TweetDetailsFragment
+    )>, error?: Maybe<(
+      { __typename?: 'TweetError' }
+      & Pick<TweetError, 'message' | 'field'>
     )> }
   ) }
 );
@@ -549,6 +572,9 @@ export type GetUserDetailsQuery = (
     & { user?: Maybe<(
       { __typename?: 'User' }
       & UserFullDetailsFragment
+    )>, error?: Maybe<(
+      { __typename?: 'UserError' }
+      & Pick<UserError, 'message' | 'field'>
     )> }
   ) }
 );
@@ -577,18 +603,7 @@ export type SearchQuery = (
     { __typename?: 'Response' }
     & { tweets: Array<(
       { __typename?: 'Tweet' }
-      & Pick<Tweet, 'content' | '_id' | 'createdAt' | 'commentsCount'>
-      & { creator: (
-        { __typename?: 'User' }
-        & UserPartialDetailsFragment
-      ), likes: Array<(
-        { __typename?: 'Like' }
-        & Pick<Like, '_id' | 'creatorId'>
-        & { creator: (
-          { __typename?: 'User' }
-          & UserPartialDetailsFragment
-        ) }
-      )> }
+      & TweetDetailsFragment
     )>, users: Array<(
       { __typename?: 'User' }
       & UserPartialDetailsFragment
@@ -615,8 +630,7 @@ export const TweetDetailsFragmentDoc = gql`
     ...UserPartialDetails
   }
   likes {
-    _id
-    creatorId
+    ...UserPartialDetails
   }
   retweets {
     ...UserPartialDetails
@@ -751,9 +765,18 @@ export const CreateTweetDocument = gql`
 export function useCreateTweetMutation() {
   return Urql.useMutation<CreateTweetMutation, CreateTweetMutationVariables>(CreateTweetDocument);
 };
+export const FollowerUserDocument = gql`
+    mutation FollowerUser($userId: String!) {
+  followUser(userId: $userId)
+}
+    `;
+
+export function useFollowerUserMutation() {
+  return Urql.useMutation<FollowerUserMutation, FollowerUserMutationVariables>(FollowerUserDocument);
+};
 export const LikeTweetDocument = gql`
-    mutation LikeTweet($tweetId: String!, $isComment: Boolean!) {
-  likeTweet(tweetId: $tweetId, isComment: $isComment) {
+    mutation LikeTweet($tweetId: String!) {
+  likeTweet(tweetId: $tweetId) {
     state
     message
   }
@@ -786,6 +809,15 @@ export const LoginDocument = gql`
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const UnFollowerUserDocument = gql`
+    mutation UnFollowerUser($userId: String!) {
+  unFollowUser(userId: $userId)
+}
+    `;
+
+export function useUnFollowerUserMutation() {
+  return Urql.useMutation<UnFollowerUserMutation, UnFollowerUserMutationVariables>(UnFollowerUserDocument);
 };
 export const AllTweetsDocument = gql`
     query AllTweets {
@@ -854,6 +886,10 @@ export const GetTweetDocument = gql`
     tweet {
       ...TweetDetails
     }
+    error {
+      message
+      field
+    }
   }
 }
     ${TweetDetailsFragmentDoc}`;
@@ -906,6 +942,10 @@ export const GetUserDetailsDocument = gql`
     user {
       ...UserFullDetails
     }
+    error {
+      message
+      field
+    }
   }
 }
     ${UserFullDetailsFragmentDoc}`;
@@ -928,27 +968,15 @@ export const SearchDocument = gql`
     query Search($searchTerm: String!) {
   search(searchTerm: $searchTerm) {
     tweets {
-      content
-      _id
-      createdAt
-      creator {
-        ...UserPartialDetails
-      }
-      commentsCount
-      likes {
-        _id
-        creatorId
-        creator {
-          ...UserPartialDetails
-        }
-      }
+      ...TweetDetails
     }
     users {
       ...UserPartialDetails
     }
   }
 }
-    ${UserPartialDetailsFragmentDoc}`;
+    ${TweetDetailsFragmentDoc}
+${UserPartialDetailsFragmentDoc}`;
 
 export function useSearchQuery(options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<SearchQuery>({ query: SearchDocument, ...options });

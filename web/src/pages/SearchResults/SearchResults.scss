@@ -1,0 +1,15 @@
+@import "../../constants/colors.scss";
+
+.search-results-page {
+  padding-top: 20px;
+
+  .top-section {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+
+    .search-input-container {
+      margin: 0 auto;
+    }
+  }
+}

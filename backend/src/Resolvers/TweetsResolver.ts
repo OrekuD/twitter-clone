@@ -9,13 +9,16 @@ import {
   Ctx,
   UseMiddleware,
   InputType,
+  FieldResolver,
+  Root,
+  Int,
 } from "type-graphql";
 import { Tweet, TweetModel } from "../Models/Tweet";
 import { Context } from "../types";
 import { extractHashtags } from "../Util/extractHashtags";
 import { TrendsModel } from "../Models/Trends";
-import { User } from "../Models/User";
-import { Like } from "../Models/Like";
+import { User, UserModel } from "../Models/User";
+import { mongoose } from "@typegoose/typegoose";
 
 @ObjectType()
 class TweetError {
@@ -44,7 +47,7 @@ class SingleTweetResponse {
   error?: TweetError;
 }
 
-@Resolver()
+@Resolver(Tweet)
 export class TweetsResolver {
   @Query(() => SingleTweetResponse, { nullable: false })
   async getTweet(@Arg("id") id: string) {
@@ -59,17 +62,17 @@ export class TweetsResolver {
   }
 
   @Query(() => [Tweet])
-  async getAllTweets() {
+  getAllTweets() {
     return TweetModel.find().sort({ createdAt: "desc" });
   }
 
   @Query(() => [Tweet])
-  async getTweetComments(@Arg("tweetId") tweetId: string) {
+  getTweetComments(@Arg("tweetId") tweetId: string) {
     return TweetModel.find({ parentId: tweetId }).sort({ createdAt: "desc" });
   }
 
   @Query(() => [Tweet])
-  async getTweetsByUser(@Arg("userId") userId: string) {
+  getTweetsByUser(@Arg("userId") userId: string) {
     return TweetModel.find({ creator: userId }).sort({
       createdAt: "desc",
     });
@@ -176,50 +179,32 @@ export class TweetsResolver {
       likes,
       retweets,
       parentId,
+      createdAt,
     } = tweet!;
+    // console.log(
+    //   "----------------- 1",
+    //   likes.map((like) => (like as Like)._id)
+    // );
     const retweet = await TweetModel.create({
       content,
-      creator: (creator as User)._id,
-      createdAt: Date.now(),
+      creator: creator as mongoose.Types.ObjectId,
+      createdAt,
       isRetweet: true,
       commentsCount,
       parentId,
-      likes: likes.map((like) => (like as Like)._id),
-      retweets: [
-        request.session.userId,
-        ...retweets.map((retweet) => (retweet as User)._id),
-      ],
+      likes,
+      retweets: [request.session.userId, ...retweets],
     });
     await TweetModel.updateOne(
       {
         _id: tweetId,
       },
       {
-        $push: { retweets: [request.session.userId] as any },
+        $push: { retweets: request.session.userId },
       }
     );
     await retweet.save();
-    const hashtags = extractHashtags(content);
-    if (hashtags.length > 0) {
-      hashtags.forEach(async (hashtag) => {
-        const trend = await TrendsModel.findOne({ hashtag });
-        if (!trend) {
-          await TrendsModel.create({
-            hashtag,
-            numberOfTweets: 1,
-            tweets: [retweet.id],
-          });
-        } else {
-          await TrendsModel.updateOne(
-            { _id: trend.id! },
-            {
-              $push: { Tweets: [retweet.id] as any },
-              numberOfTweets: trend.numberOfTweets + 1,
-            }
-          );
-        }
-      });
-    }
+
     return { tweet: retweet };
   }
 
@@ -240,5 +225,31 @@ export class TweetsResolver {
     return TweetModel.find({ creator: userId }).sort({
       createdAt: "desc",
     });
+  }
+
+  // Field resolvers
+  @FieldResolver(() => Int)
+  likesCount(@Root() tweet: Tweet) {
+    return tweet._doc.likes.length;
+  }
+
+  @FieldResolver(() => Int)
+  retweetsCount(@Root() tweet: Tweet) {
+    return tweet._doc.retweets.length;
+  }
+
+  @FieldResolver(() => User, { nullable: true })
+  creator(@Root() tweet: Tweet) {
+    return UserModel.findOne({ _id: (tweet._doc as Tweet).creator });
+  }
+
+  @FieldResolver(() => [User])
+  likes(@Root() tweet: Tweet) {
+    return UserModel.find({ _id: { $in: tweet._doc.likes } });
+  }
+
+  @FieldResolver(() => [User])
+  retweets(@Root() tweet: Tweet) {
+    return UserModel.find({ _id: { $in: tweet._doc.retweets } });
   }
 }

@@ -2,14 +2,14 @@ import {
   getModelForClass,
   mongoose,
   prop,
-  plugin,
+  // plugin,
   Ref,
 } from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { User } from "./User";
-import autopopulate from "mongoose-autopopulate";
+// import autopopulate from "mongoose-autopopulate";
 
-@plugin(autopopulate as any)
+// @plugin(autopopulate as any)
 @ObjectType()
 export class Like {
   @Field(() => ID)
@@ -19,13 +19,15 @@ export class Like {
   @prop()
   tweetId: string;
 
-  @prop({ ref: () => User, autopopulate: true })
+  @prop()
   @Field(() => User)
   creator: Ref<User>;
 
   @prop()
   @Field()
   creatorId: string;
+
+  _doc?: any;
 }
 
 export const LikeModel = getModelForClass(Like);

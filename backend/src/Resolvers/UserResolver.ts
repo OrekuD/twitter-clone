@@ -3,11 +3,13 @@ import {
   Arg,
   Ctx,
   Field,
+  FieldResolver,
   InputType,
   Mutation,
   ObjectType,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql";
 import argon2 from "argon2";
@@ -74,7 +76,7 @@ class UserResponse {
   error?: UserError;
 }
 
-@Resolver()
+@Resolver(User)
 export class UserResolver {
   @Mutation(() => UserResponse)
   async createAccount(
@@ -187,7 +189,7 @@ export class UserResolver {
     await UserModel.updateOne(
       { _id: userId },
       {
-        $push: { followers: [request.session.userId] as any },
+        $push: { followers: request.session.userId },
       }
     );
 
@@ -195,7 +197,7 @@ export class UserResolver {
     await UserModel.updateOne(
       { _id: request.session.userId },
       {
-        $push: { following: [userId] as any },
+        $push: { following: userId as any },
       }
     );
 
@@ -220,7 +222,7 @@ export class UserResolver {
         $set: {
           followers: user.followers.filter(
             (follower) => follower === request.session.userId
-          ) as any,
+          ),
         },
       }
     );
@@ -229,7 +231,7 @@ export class UserResolver {
     await UserModel.updateOne(
       { _id: request.session.userId },
       {
-        $pull: { following: [userId] as any },
+        $pull: { following: userId as any },
       }
     );
 
@@ -290,5 +292,15 @@ export class UserResolver {
   @Query(() => [User])
   async getAllUsers() {
     return UserModel.find();
+  }
+
+  @FieldResolver(() => [User])
+  followers(@Root() user: User) {
+    return UserModel.find({ _id: { $in: user._doc.followers } });
+  }
+
+  @FieldResolver(() => [User])
+  following(@Root() user: User) {
+    return UserModel.find({ _id: { $in: user._doc.following } });
   }
 }
