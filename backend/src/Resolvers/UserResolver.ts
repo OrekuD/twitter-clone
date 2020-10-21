@@ -15,6 +15,7 @@ import {
 import argon2 from "argon2";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
+import { mongoose } from "@typegoose/typegoose";
 
 @ObjectType()
 class UserError {
@@ -189,7 +190,9 @@ export class UserResolver {
     await UserModel.updateOne(
       { _id: userId },
       {
-        $push: { followers: request.session.userId },
+        $push: {
+          followers: new mongoose.Types.ObjectId(request.session.userId),
+        },
       }
     );
 
@@ -197,7 +200,7 @@ export class UserResolver {
     await UserModel.updateOne(
       { _id: request.session.userId },
       {
-        $push: { following: userId as any },
+        $push: { following: new mongoose.Types.ObjectId(userId) },
       }
     );
 
@@ -215,23 +218,21 @@ export class UserResolver {
       return false;
     }
 
-    // First, remove the current user to the requested user's followers list
+    // First, remove the current user from the requested user's followers list
     await UserModel.updateOne(
       { _id: userId },
       {
-        $set: {
-          followers: user.followers.filter(
-            (follower) => follower === request.session.userId
-          ),
+        $pull: {
+          followers: new mongoose.Types.ObjectId(request.session.userId),
         },
       }
     );
 
-    // Then, remove the new user to the current user's following list
+    // Then, remove the requested user from the current user's following list
     await UserModel.updateOne(
       { _id: request.session.userId },
       {
-        $pull: { following: userId as any },
+        $pull: { following: new mongoose.Types.ObjectId(userId) },
       }
     );
 

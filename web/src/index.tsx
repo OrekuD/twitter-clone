@@ -7,6 +7,7 @@ import App from "./App";
 import { Provider as ContextProvider } from "./context/context";
 import {
   CreateCommentMutationVariables,
+  FollowerUserMutationVariables,
   LikeTweetMutationVariables,
 } from "./generated/graphql";
 
@@ -39,6 +40,10 @@ const client = createClient({
             cache.invalidate("Query", "getTweet", {
               id: tweetId,
             });
+          },
+          followerUser: (_, args, cache) => {
+            // const { userId } = args as FollowerUserMutationVariables;
+            cache.invalidate("Query", "getUserByUsername");
           },
           likeTweet: (_, args, cache) => {
             const { tweetId } = args as LikeTweetMutationVariables;

@@ -1,16 +1,23 @@
 import React from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { useAppContext } from "../../context/context";
-import { UserFullDetailsFragment } from "../../generated/graphql";
+import {
+  useFollowerUserMutation,
+  UserFullDetailsFragment,
+  useUnFollowerUserMutation,
+} from "../../generated/graphql";
 import { Calendar, Location } from "../../Svgs";
 // import { User } from "../../types";
 import { joinedAt } from "../../utils/dateFormatters";
+import { isFollowing } from "../../utils/isFollowing";
 
 interface Props {
   user: UserFullDetailsFragment;
 }
 
 const Profile = ({ user }: Props) => {
+  const [, followerUser] = useFollowerUserMutation();
+  const [, unFollowerUser] = useUnFollowerUserMutation();
   const { userDetails } = useAppContext();
   const {
     bio,
@@ -20,6 +27,7 @@ const Profile = ({ user }: Props) => {
     location,
     followers,
     following,
+    _id,
   } = user;
   return (
     <div className="profile">
@@ -27,8 +35,26 @@ const Profile = ({ user }: Props) => {
         <div className="profile-image"></div>
         {userDetails.username === username ? (
           <button className="ripple-btn">Edit Profile</button>
+        ) : isFollowing(followers, userDetails._id) >= 0 ? (
+          <button
+            className="ripple-btn"
+            onClick={async () => {
+              const res = await unFollowerUser({ userId: _id });
+              alert(res.data?.unFollowUser);
+            }}
+          >
+            Unfollow
+          </button>
         ) : (
-          <button className="ripple-btn">Follow</button>
+          <button
+            className="ripple-btn"
+            onClick={async () => {
+              const res = await followerUser({ userId: _id });
+              alert(res.data?.followUser);
+            }}
+          >
+            Follow
+          </button>
         )}
       </div>
       <div className="profile-details">
