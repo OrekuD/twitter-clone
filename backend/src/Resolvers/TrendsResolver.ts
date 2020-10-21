@@ -5,19 +5,19 @@ import { Tweet, TweetModel } from "../Models/Tweet";
 @Resolver(Trends)
 export class TrendsResolver {
   @Query(() => [Trends])
-  async getTrends() {
+  getTrends() {
     return TrendsModel.find().sort({
       numberOfTweets: "desc",
     });
   }
 
   @Query(() => Trends, { nullable: true })
-  async getTweetsByHashtag(@Arg("hashtag") hashtag: string) {
+  getTweetsByHashtag(@Arg("hashtag") hashtag: string) {
     return TrendsModel.findOne({ hashtag });
   }
 
   @FieldResolver(() => Tweet)
-  async tweets(@Root() trend: Trends) {
+  tweets(@Root() trend: Trends) {
     return TweetModel.find({ _id: { $in: trend._doc.tweets } });
   }
 }

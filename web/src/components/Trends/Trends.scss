@@ -26,6 +26,11 @@
   .trend {
     padding: 15px;
     border-bottom: 1px solid $lightgrey;
+    transition: background 0.3s ease-in-out;
+
+    &:hover {
+      background-color: #253341;
+    }
 
     .hashtag {
       font-size: 14px;
@@ -45,6 +50,13 @@
     color: $blue;
     font-weight: 600;
     font-size: 16px;
-    margin: 15px;
+    padding: 15px;
+    transition: background 0.3s ease-in-out;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+
+    &:hover {
+      background-color: #253341;
+    }
   }
 }

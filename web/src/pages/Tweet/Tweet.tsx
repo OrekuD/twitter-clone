@@ -62,16 +62,9 @@ const TweetPage = () => {
     );
   }
 
-  const {
-    _id,
-    content,
-    createdAt,
-    likes,
-    commentsCount,
-    creator,
-    retweets,
-  } = data?.getTweet.tweet as Tweet;
-  const { image, fullname, username, _id: creatorId } = creator;
+  const { _id, content, createdAt, likes, creator, retweets } = data?.getTweet
+    .tweet as Tweet;
+  const { image, fullname, username } = creator;
 
   const commentTweet = () => {
     setSelectedTweet(data?.getTweet.tweet as Tweet);

@@ -15,10 +15,12 @@ import {
 } from "type-graphql";
 import { Tweet, TweetModel } from "../Models/Tweet";
 import { Context } from "../types";
-import { extractHashtags } from "../Util/extractHashtags";
+import { extractHashtags } from "../Utils/extractHashtags";
 import { TrendsModel } from "../Models/Trends";
 import { User, UserModel } from "../Models/User";
 import { mongoose } from "@typegoose/typegoose";
+import { LikeModel } from "../Models/Like";
+import { userLoader } from "../Utils/dataLoaders";
 
 @ObjectType()
 class TweetError {
@@ -222,6 +224,7 @@ export class TweetsResolver {
     // const user = await UserModel.findOne({ _id: id });
     // const following = user?.following;
     // console.log(following);
+    // better way of creating a timeline
     return TweetModel.find({ creator: userId }).sort({
       createdAt: "desc",
     });
@@ -240,12 +243,12 @@ export class TweetsResolver {
 
   @FieldResolver(() => User, { nullable: true })
   creator(@Root() tweet: Tweet) {
-    return UserModel.findOne({ _id: (tweet._doc as Tweet).creator });
+    return userLoader().load(tweet._doc.creator);
   }
 
   @FieldResolver(() => [User])
   likes(@Root() tweet: Tweet) {
-    return UserModel.find({ _id: { $in: tweet._doc.likes } });
+    return LikeModel.find({ _id: { $in: tweet._doc.likes } });
   }
 
   @FieldResolver(() => [User])

@@ -8,7 +8,6 @@ import cors from "cors";
 import { LikeResolver } from "./Resolvers/LikeResolver";
 import session from "express-session";
 import connectMongo from "connect-mongo";
-// import { CommentResolver } from "./Resolvers/CommentResolver";
 import { SearchResolver } from "./Resolvers/SearchResolver";
 import { TrendsResolver } from "./Resolvers/TrendsResolver";
 import { setLogLevel, LogLevels } from "@typegoose/typegoose";
@@ -49,10 +48,8 @@ const main = async () => {
       TweetsResolver,
       UserResolver,
       LikeResolver,
-      // CommentResolver,
       SearchResolver,
       TrendsResolver,
-      // FollowResolver,
     ],
     validate: false,
   });

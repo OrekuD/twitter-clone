@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { APP_URL } from "../../constants/constants";
 import { grey } from "../../constants/colors";
@@ -40,7 +40,7 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
     retweets,
     isRetweet,
   } = tweet;
-  const [, likeTweet] = useLikeTweetMutation();
+  const [, like] = useLikeTweetMutation();
   const [, createRetweet] = useCreateReTweetMutation();
   const {
     userDetails: { _id: userId },
@@ -68,6 +68,24 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
     setSelectedTweet(tweet);
     setCommentModalState(true);
   };
+
+  const likeTweet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    // Mutate likes array on client side just to show user an immediate visual feedback
+    if (userHasLiked(likes, userId) >= 0) {
+      likes.splice(userHasLiked(likes, userId), 1);
+    } else {
+      likes.unshift({
+        creatorId: userId,
+      } as any);
+    }
+
+    // Call like mutation
+    like({
+      tweetId: _id,
+    });
+  };
+
   return (
     <div
       className="card-container"
@@ -160,15 +178,7 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
               </button>
             </div>
             <div className="icon-container">
-              <button
-                className="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  likeTweet({
-                    tweetId: _id,
-                  });
-                }}
-              >
+              <button className="icon" onClick={likeTweet}>
                 <div className="svg">
                   <>
                     {userHasLiked(likes, userId) >= 0 ? (

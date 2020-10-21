@@ -1,15 +1,8 @@
-import {
-  prop,
-  getModelForClass,
-  mongoose,
-  Ref,
-  // plugin,
-} from "@typegoose/typegoose";
+import { prop, getModelForClass, mongoose, Ref } from "@typegoose/typegoose";
 import { ObjectType, Field, ID } from "type-graphql";
+import { Like } from "./Like";
 import { User } from "./User";
-// import autopopulate from "mongoose-autopopulate";
 
-// @plugin(autopopulate as any)
 @ObjectType()
 export class Tweet {
   @Field(() => ID)
@@ -44,8 +37,8 @@ export class Tweet {
   creator: Ref<User>;
 
   @prop()
-  @Field(() => [User])
-  likes: Ref<User>[];
+  @Field(() => [Like])
+  likes: Ref<Like>[];
 
   @prop()
   @Field(() => [User])

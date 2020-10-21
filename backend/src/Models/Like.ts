@@ -1,15 +1,6 @@
-import {
-  getModelForClass,
-  mongoose,
-  prop,
-  // plugin,
-  Ref,
-} from "@typegoose/typegoose";
+import { getModelForClass, mongoose, prop } from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import { User } from "./User";
-// import autopopulate from "mongoose-autopopulate";
 
-// @plugin(autopopulate as any)
 @ObjectType()
 export class Like {
   @Field(() => ID)
@@ -20,12 +11,12 @@ export class Like {
   tweetId: string;
 
   @prop()
-  @Field(() => User)
-  creator: Ref<User>;
-
-  @prop()
   @Field()
   creatorId: string;
+
+  @prop()
+  @Field(() => Date)
+  createdAt: Date;
 
   _doc?: any;
 }

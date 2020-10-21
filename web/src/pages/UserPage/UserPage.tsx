@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { Layout, Tweets, Spinner, StackHeader } from "../../components";
 import {
   Tweet,
-  useGetCurrentUserTimelineQuery,
   useGetUserByUsernameQuery,
   useGetUserTimelineQuery,
 } from "../../generated/graphql";

@@ -57,7 +57,6 @@ textarea {
   height: 60px;
   display: flex;
   // background-color: red;
-  margin-bottom: 10px;
 
   .tab {
     flex: 1;
@@ -68,6 +67,7 @@ textarea {
     font-weight: 600;
     color: $grey;
   }
+
   .active {
     border-bottom: 2px solid $blue;
   }
@@ -316,5 +316,18 @@ textarea {
         transition: 0.3s ease-in-out background;
       }
     }
+  }
+}
+
+.back-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: 0.3s ease-in-out background;
+
+  &:hover {
+    background-color: $lightpurple;
   }
 }

@@ -27,6 +27,7 @@ export type Query = {
   currentUser?: Maybe<User>;
   getAllUsers: Array<User>;
   getLikesByUser?: Maybe<Array<Like>>;
+  allLikes?: Maybe<Array<Like>>;
   search: Response;
   getTrends: Array<Trends>;
   getTweetsByHashtag?: Maybe<Trends>;
@@ -92,7 +93,7 @@ export type Tweet = {
   createdAt: Scalars['DateTime'];
   commentsCount: Scalars['Float'];
   creator: User;
-  likes: Array<User>;
+  likes: Array<Like>;
   retweets: Array<User>;
   likesCount: Scalars['Int'];
   retweetsCount: Scalars['Int'];
@@ -113,6 +114,16 @@ export type User = {
   followers: Array<User>;
 };
 
+export type Like = {
+  __typename?: 'Like';
+  _id: Scalars['ID'];
+  tweetId: Scalars['String'];
+  creatorId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  creator: User;
+  tweet: Tweet;
+};
+
 export type TweetError = {
   __typename?: 'TweetError';
   message: Scalars['String'];
@@ -129,14 +140,6 @@ export type UserError = {
   __typename?: 'UserError';
   message: Scalars['String'];
   field: Scalars['String'];
-};
-
-export type Like = {
-  __typename?: 'Like';
-  _id: Scalars['ID'];
-  tweetId: Scalars['String'];
-  creator: User;
-  creatorId: Scalars['String'];
 };
 
 export type Response = {
@@ -250,8 +253,8 @@ export type TweetDetailsFragment = (
     { __typename?: 'User' }
     & UserPartialDetailsFragment
   ), likes: Array<(
-    { __typename?: 'User' }
-    & UserPartialDetailsFragment
+    { __typename?: 'Like' }
+    & Pick<Like, 'creatorId'>
   )>, retweets: Array<(
     { __typename?: 'User' }
     & UserPartialDetailsFragment
@@ -630,7 +633,7 @@ export const TweetDetailsFragmentDoc = gql`
     ...UserPartialDetails
   }
   likes {
-    ...UserPartialDetails
+    creatorId
   }
   retweets {
     ...UserPartialDetails

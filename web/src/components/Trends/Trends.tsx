@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useGetTrendsQuery } from "../../generated/graphql";
+import { Link } from "react-router-dom";
 import "./Trends.scss";
 
 const Trends = () => {
@@ -19,12 +20,16 @@ const Trends = () => {
         <p>Trends for you</p>
       </div>
       {data?.getTrends.slice(0, 4).map(({ hashtag, numberOfTweets }, index) => (
-        <button className="trend" key={index}>
-          <p className="hashtag">{hashtag}</p>
-          <p className="number-of-tweets">{numberOfTweets} Tweets</p>
-        </button>
+        <Link key={index} to={`/search/${hashtag.slice(1)}`}>
+          <button className="trend" key={index}>
+            <p className="hashtag">{hashtag}</p>
+            <p className="number-of-tweets">{numberOfTweets} Tweets</p>
+          </button>
+        </Link>
       ))}
-      <button className="show-more">Show more</button>
+      <Link to="/explore">
+        <button className="show-more">Show more</button>
+      </Link>
     </div>
   );
 };

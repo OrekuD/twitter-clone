@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAppContext } from "../../context/context";
 import {
   useFollowerUserMutation,
@@ -7,7 +7,6 @@ import {
   useUnFollowerUserMutation,
 } from "../../generated/graphql";
 import { Calendar, Location } from "../../Svgs";
-// import { User } from "../../types";
 import { joinedAt } from "../../utils/dateFormatters";
 import { isFollowing } from "../../utils/isFollowing";
 

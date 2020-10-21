@@ -35,7 +35,7 @@ const SearchResults = () => {
     <Layout>
       <div className="search-results-page">
         <div className="top-section">
-          <button onClick={history.goBack}>
+          <button onClick={history.goBack} className="back-icon">
             <Arrow size={24} color={blue} />
           </button>
           <div className="search-input-container">
@@ -54,7 +54,7 @@ const SearchResults = () => {
               key={index}
               onClick={() => setActiveIndex(index)}
             >
-              {name}
+              <p>{name}</p>
             </button>
           ))}
         </div>

@@ -1,5 +1,5 @@
 import { LikeModel, Like } from "../Models/Like";
-import { TweetModel } from "../Models/Tweet";
+import { Tweet, TweetModel } from "../Models/Tweet";
 import {
   Arg,
   Ctx,
@@ -15,6 +15,8 @@ import {
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
 import { User, UserModel } from "../Models/User";
+import { mongoose } from "@typegoose/typegoose";
+import { tweetLoader, userLoader } from "../Utils/dataLoaders";
 
 @ObjectType()
 class LikeResponse {
@@ -43,34 +45,58 @@ export class LikeResolver {
       };
     }
 
-    const userAlreadyLiked = tweet.likes
-      .flat(Infinity)
-      .findIndex((like) => like === userId);
+    const like = await LikeModel.findOne({ creatorId: userId, tweetId });
 
-    if (userAlreadyLiked >= 0) {
-      const updatedLikes = tweet.likes.filter((like) => like !== userId);
-
+    if (like) {
       await TweetModel.updateOne(
         { _id: tweetId },
-        { $set: { likes: updatedLikes } }
+        {
+          $pull: {
+            likes: new mongoose.Types.ObjectId(like.id),
+          },
+        }
       );
+
+      await LikeModel.deleteOne({
+        _id: like.id,
+      });
 
       return { state: true, message: "Unlike successfull" };
     }
 
-    await TweetModel.updateOne({ _id: tweetId }, { $push: { likes: userId } });
+    const newlike = await LikeModel.create({
+      tweetId,
+      creatorId: userId,
+      createdAt: Date.now(),
+    });
+
+    await TweetModel.updateOne(
+      { _id: tweetId },
+      { $push: { likes: new mongoose.Types.ObjectId(newlike.id) } }
+    );
 
     return { state: true, message: "Like successfull" };
   }
 
   @Query(() => [Like], { nullable: true })
-  async getLikesByUser(@Arg("userId") userId: string) {
-    const likes = await LikeModel.find({ creatorId: userId });
-    return likes;
+  getLikesByUser(@Arg("userId") userId: string) {
+    return LikeModel.find({ creatorId: userId });
   }
 
+  // remove this later
+  @Query(() => [Like], { nullable: true })
+  allLikes() {
+    return LikeModel.find();
+  }
+
+  // field resolvers
   @FieldResolver(() => User)
-  async creator(@Root() like: Like) {
-    return UserModel.findOne({ _id: (like._doc as Like).creatorId });
+  creator(@Root() like: Like) {
+    return userLoader().load(like._doc.creatorId);
+  }
+
+  @FieldResolver(() => Tweet)
+  tweet(@Root() like: Like) {
+    return tweetLoader().load(like._doc.tweetId);
   }
 }
