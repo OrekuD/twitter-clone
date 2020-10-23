@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
-import { Layout, Tweets, Spinner, StackHeader } from "../../components";
+import {
+  Layout,
+  Tweets,
+  Spinner,
+  StackHeader,
+  EditDetails,
+} from "../../components";
+import { useAppContext } from "../../context/context";
 import {
   Tweet,
   useGetUserByUsernameQuery,
   useGetUserTimelineQuery,
 } from "../../generated/graphql";
-import Profile from "./Profile";
+import { Profile } from "./Profile";
 import "./UserPage.scss";
 
 const UserPage = () => {
   const { params } = useRouteMatch<{ username: string }>();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const { userDetails } = useAppContext();
 
   const [{ data }, getUser] = useGetUserByUsernameQuery({
     variables: { username: params.username },
@@ -19,6 +28,7 @@ const UserPage = () => {
 
   useEffect(() => {
     getUser();
+    console.log(userDetails);
   }, [getUser, params]);
 
   const [{ data: userTimeline }, getTimeline] = useGetUserTimelineQuery({
@@ -48,7 +58,7 @@ const UserPage = () => {
   if (data?.getUserByUsername.error) {
     return (
       <Layout>
-        <StackHeader label={params.username} />
+        <StackHeader />
         <div className="no-user">
           <p>User is unavailable </p>
         </div>
@@ -59,6 +69,7 @@ const UserPage = () => {
   return (
     <Layout>
       <StackHeader label={params.username} />
+      <EditDetails isVisible={isVisible} setIsVisible={setIsVisible} />
       {!data ? (
         <div className="loading-screen">
           <Spinner />
@@ -66,7 +77,10 @@ const UserPage = () => {
       ) : (
         <div className="user-page">
           {data.getUserByUsername.user && (
-            <Profile user={data.getUserByUsername.user} />
+            <Profile
+              user={data.getUserByUsername.user}
+              setIsVisible={setIsVisible}
+            />
           )}
           <div className="tabs">
             {tabs.map((tab, index) => (

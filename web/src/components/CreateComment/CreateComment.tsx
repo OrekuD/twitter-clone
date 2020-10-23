@@ -5,7 +5,7 @@ import { useAppContext } from "../../context/context";
 import { Cancel } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
 import Modal from "../Modal/Modal";
-import RenderTweet from "../RenderTweet/RenderTweet";
+import ParseText from "../ParseText/ParseText";
 import { useCreateCommentMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -21,7 +21,7 @@ const schema = Yup.object().shape({
 const CreateComment = () => {
   const {
     selectedTweet,
-    setCommentModalState,
+    setShowCommentModal,
     showCommentModal,
     userDetails,
   } = useAppContext();
@@ -45,7 +45,7 @@ const CreateComment = () => {
       });
       resetForm();
       setTimeout(() => {
-        setCommentModalState(false);
+        setShowCommentModal(false);
       }, 500);
     },
   });
@@ -63,13 +63,13 @@ const CreateComment = () => {
   return (
     <Modal
       isVisible={showCommentModal}
-      onClose={() => setCommentModalState(false)}
+      onClose={() => setShowCommentModal(false)}
     >
       <div className="create-comment">
         <div className="modal-header">
           <button
             className="close-btn"
-            onClick={() => setCommentModalState(false)}
+            onClick={() => setShowCommentModal(false)}
           >
             <Cancel size={24} color={blue} />
           </button>
@@ -88,7 +88,7 @@ const CreateComment = () => {
                 <div className="dot" />
                 <p className="username">{timeSince(new Date(createdAt))}</p>
               </div>
-              <RenderTweet text={content} />
+              <ParseText text={content} />
               <p className="replying-to">
                 Replying to <span>@{username}</span>
               </p>
@@ -96,7 +96,7 @@ const CreateComment = () => {
           </div>
           <div className="reply">
             <img
-              src={`${PROFILE_IMAGES_BASE_URL + userDetails.image}`}
+              src={`${PROFILE_IMAGES_BASE_URL + userDetails?.image}`}
               alt="profile"
               className="profile-image"
             />

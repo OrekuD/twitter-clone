@@ -1,0 +1,9 @@
+fragment FollowDetails on User {
+  ...UserPartialDetails
+  followers {
+    ...UserPartialDetails
+  }
+  following {
+    ...UserPartialDetails
+  }
+}

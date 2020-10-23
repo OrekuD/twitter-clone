@@ -53,16 +53,10 @@ class LoginInput {
 @InputType()
 class DetailsInput {
   @Field()
-  username: string;
-
-  @Field()
   bio: string;
 
   @Field()
   location: string;
-
-  @Field()
-  email: string;
 
   @Field()
   fullname: string;
@@ -154,23 +148,10 @@ export class UserResolver {
     @Arg("input") input: DetailsInput,
     @Ctx() { request }: Context
   ): Promise<UserResponse> {
-    const { bio, location, username, email, fullname } = input;
+    const { bio, location, fullname } = input;
     const { userId } = request.session;
-    const user = await UserModel.findOne({ username });
 
-    if (user && user.id !== request.session.userId) {
-      return {
-        error: {
-          message: "Username already taken",
-          field: "username",
-        },
-      };
-    }
-
-    await UserModel.updateOne(
-      { _id: userId },
-      { bio, location, username, email, fullname }
-    );
+    await UserModel.updateOne({ _id: userId }, { bio, location, fullname });
     const updatedUser = await UserModel.findOne({
       _id: userId,
     });

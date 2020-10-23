@@ -6,13 +6,14 @@ import { blue } from "../../constants/colors";
 
 interface Props {
   label?: string;
+  goBack?: () => void;
 }
 
-const StackHeader = ({ label }: Props) => {
+const StackHeader = ({ label, goBack }: Props) => {
   const history = useHistory();
   return (
     <header className="stack-header">
-      <button onClick={history.goBack} className="back-icon">
+      <button onClick={goBack || history.goBack} className="back-icon">
         <Arrow size={24} color={blue} />
       </button>
       {label && <p className="label">{label}</p>}

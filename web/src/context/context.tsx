@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { dummyUserDetails } from "../constants/constants";
 import {
   Tweet,
   useGetCurrentUserDetailsQuery,
@@ -11,32 +10,36 @@ import { AppContext } from "../types";
 const Context = createContext<AppContext>({
   isLoggedIn: false,
   showCommentModal: false,
+  showSplashScreen: true,
   selectedTweet: null,
   setSelectedTweet: () => {},
-  setCommentModalState: () => {},
-  userDetails: dummyUserDetails,
+  setShowCommentModal: () => {},
+  setShowSplashScreen: () => {},
   setIsLoggedIn: () => {},
-  addUserDetails: () => {},
+  userDetails: null,
 });
 
 const Provider: React.FC = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isLoggedIn", false);
-  const [userDetails, setUserDetails] = useState<UserFullDetailsFragment>(
-    dummyUserDetails
-  );
+  const [
+    userDetails,
+    setUserDetails,
+  ] = useState<UserFullDetailsFragment | null>(null);
   const [showCommentModal, setShowCommentModal] = useState(false);
+  const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
-
-  useEffect(() => {
-    getUserDetails();
-  }, [getUserDetails]);
 
   useEffect(() => {
     setIsLoggedIn(isLoggedIn);
   }, []);
 
   useEffect(() => {
+    getUserDetails();
+  }, [getUserDetails]);
+
+  useEffect(() => {
+    data && setShowSplashScreen(false);
     if (data?.currentUser) {
       const {
         _id,
@@ -44,7 +47,6 @@ const Provider: React.FC = ({ children }) => {
         location,
         bio,
         image,
-        email,
         username,
         followers,
         following,
@@ -56,45 +58,24 @@ const Provider: React.FC = ({ children }) => {
         location,
         bio,
         image,
-        email,
         username,
-        createdAt,
         followers,
         following,
+        createdAt,
       });
     }
   }, [data]);
-
-  const setCommentModalState = (state: boolean) => {
-    setShowCommentModal(state);
-  };
-
-  const addUserDetails = (details: Partial<UserFullDetailsFragment>) => {
-    setUserDetails((prevValue) => {
-      return {
-        _id: prevValue._id,
-        image: prevValue.image,
-        followers: prevValue.followers,
-        following: prevValue.following,
-        createdAt: prevValue.createdAt,
-        bio: details.bio || prevValue.bio,
-        email: details.email || prevValue.email,
-        fullname: details.fullname || prevValue.fullname,
-        location: details.location || prevValue.location,
-        username: details.username || prevValue.username,
-      };
-    });
-  };
 
   const contextValue: AppContext = {
     isLoggedIn,
     userDetails,
     setIsLoggedIn,
-    addUserDetails,
     showCommentModal,
-    setCommentModalState,
+    setShowCommentModal,
     selectedTweet,
     setSelectedTweet,
+    setShowSplashScreen,
+    showSplashScreen,
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

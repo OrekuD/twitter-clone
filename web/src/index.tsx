@@ -1,21 +1,11 @@
 import React from "react";
-import { Cache, cacheExchange } from "@urql/exchange-graphcache";
+import { cacheExchange } from "@urql/exchange-graphcache";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
 import App from "./App";
 import { Provider as ContextProvider } from "./context/context";
-import {
-  CreateCommentMutationVariables,
-  LikeTweetMutationVariables,
-} from "./generated/graphql";
-
-const invalidateAllTweets = (cache: Cache) => {
-  const allFields = cache.inspectFields("Query");
-  allFields.forEach((fi) => {
-    cache.invalidate("Query", fi.fieldName);
-  });
-};
+import { invalidateAllTweets } from "./utils/invalidateAllTweets";
 
 const client = createClient({
   url: "http://localhost:4000/graphql",
@@ -25,6 +15,26 @@ const client = createClient({
   exchanges: [
     dedupExchange,
     cacheExchange({
+      optimistic: {
+        // likeTweet: (variables, cache, info) => {
+        //   const { tweetId } = variables as LikeTweetMutationVariables;
+        //   const data = cache.readFragment(
+        //     gql`
+        //       fragment _ on Tweet {
+        //         _id
+        //         hasUserLiked
+        //       }
+        //     `,
+        //     { _id: tweetId } as any
+        //   );
+        //   console.log(data?.hasUserLiked);
+        //   return {
+        //     __typename: "Tweet",
+        //     _id: tweetId,
+        //     hasUserLiked: !data?.hasUserLiked,
+        //   };
+        // },
+      },
       updates: {
         Mutation: {
           login: (_, __, cache) => {
@@ -36,8 +46,15 @@ const client = createClient({
           createTweet: (_, __, cache) => {
             invalidateAllTweets(cache);
           },
+          addUserDetails: (_, __, cache) => {
+            cache.invalidate("Query", "currentUser");
+          },
           createReTweet: (_, __, cache) => {
-            // cache.invalidate("Query", "getTrends");
+            invalidateAllTweets(cache);
+            console.log("---------", cache.inspectFields("Query"));
+          },
+          likeTweet: (_, __) => {
+            // invalidateAllTweets(cache);
           },
           createComment: (_, __, cache) => {
             invalidateAllTweets(cache);

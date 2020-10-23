@@ -18,7 +18,7 @@ import {
 } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
 import { userHasLiked } from "../../utils/userHasLiked";
-import RenderTweet from "../RenderTweet/RenderTweet";
+import ParseText from "../ParseText/ParseText";
 import "./TweetCard.scss";
 import { abbreviateNumber } from "../../utils/abreviateNumber";
 import { userHasRetweeted } from "../../utils/userHasRetweeted";
@@ -43,10 +43,11 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
   const [, like] = useLikeTweetMutation();
   const [, createRetweet] = useCreateReTweetMutation();
   const {
-    userDetails: { _id: userId },
-    setCommentModalState,
+    userDetails,
+    setShowCommentModal,
     setSelectedTweet,
   } = useAppContext();
+  const userId = userDetails?._id!;
   const { push } = useHistory();
 
   const share = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -66,10 +67,12 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
   const commentTweet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
     setSelectedTweet(tweet);
-    setCommentModalState(true);
+    setShowCommentModal(true);
   };
 
-  const likeTweet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const likeTweet = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation();
     // Mutate likes array on client side just to show user an immediate visual feedback
     if (userHasLiked(likes, userId) >= 0) {
@@ -81,14 +84,33 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
     }
 
     // Call like mutation
-    like({
+    await like({
+      tweetId: _id,
+    });
+  };
+
+  const retweet = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    // Mutate retweets array on client side just to show user an immediate visual feedback
+    if (userHasRetweeted(retweets, userId) >= 0) {
+      retweets.splice(userHasRetweeted(retweets, userId), 1);
+    } else {
+      retweets.unshift({
+        creatorId: userId,
+      } as any);
+    }
+
+    // Call retweet mutation
+    await createRetweet({
       tweetId: _id,
     });
   };
 
   return (
     <div
-      className="card-container"
+      className="tweet-card-container"
       onClick={() => {
         // event.stopPropagation() doesn't seem to work with the Link component from
         // react router, hence this implementation
@@ -101,11 +123,11 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
           {userHasRetweeted(retweets, userId) >= 0 && isRetweet ? (
             <p>You Retweeted</p>
           ) : (
-            <p>{retweets[0].username} Retweeted</p>
+            <p>{retweets[0]?.username} Retweeted</p>
           )}
         </div>
       )}
-      <div className="card">
+      <div className="tweet-card">
         <div
           className="profile-image"
           onClick={(e) => {
@@ -113,8 +135,8 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
             push(`/${username}`);
           }}
         ></div>
-        <div className="card-content">
-          <div className="card-header">
+        <div className="tweet-card-content">
+          <div className="tweet-card-header">
             <div className="user-details">
               <p className="fullname">{fullname}</p>
               <p className="username">@{username}</p>
@@ -130,7 +152,7 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
               Replying to <span>{replyingTo}</span>
             </p>
           )}
-          <RenderTweet text={content} />
+          <ParseText text={content} />
           <div className="tweet-actions">
             <div className="icon-container">
               <button className="icon" onClick={commentTweet}>
@@ -143,15 +165,7 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
               </button>
             </div>
             <div className="icon-container">
-              <button
-                className="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  createRetweet({
-                    tweetId: _id,
-                  });
-                }}
-              >
+              <button className="icon" onClick={retweet}>
                 <div className="svg">
                   <Retweet
                     size={20}

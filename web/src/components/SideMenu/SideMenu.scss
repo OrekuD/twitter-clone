@@ -68,10 +68,18 @@
 
     .profile {
       width: 100%;
-      // background-color: red;
+      padding: 0 6px;
+      height: 54px;
+      border-radius: 27px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: 0.3s background ease-in-out;
+
+      &:hover {
+        background-color: $lightpurple;
+        cursor: pointer;
+      }
 
       .left-content {
         display: flex;

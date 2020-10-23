@@ -1,14 +1,6 @@
-import {
-  getModelForClass,
-  prop,
-  mongoose,
-  Ref,
-  // plugin,
-} from "@typegoose/typegoose";
+import { getModelForClass, prop, mongoose, Ref } from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "type-graphql";
-// import autopopulate from "mongoose-autopopulate";
 
-// @plugin(autopopulate as any)
 @ObjectType()
 export class User {
   @Field(() => ID)
@@ -56,4 +48,6 @@ export class User {
   _doc?: any;
 }
 
-export const UserModel = getModelForClass(User);
+export const UserModel = getModelForClass(User, {
+  schemaOptions: { autoIndex: true },
+});

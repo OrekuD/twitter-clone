@@ -1,14 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./RenderTweet.scss";
+import "./ParseText.scss";
 
 interface Props {
   text: string;
 }
 
-const RenderTweet = ({ text }: Props) => {
+const ParseText = ({ text }: Props) => {
+  if (!text) {
+    return null;
+  }
   return (
-    <p className="tweet-content">
+    <p className="parsed-text">
       {text.split("\n").map((str) => {
         if (!str) {
           return <br key={Math.random()} />;
@@ -36,4 +39,4 @@ const RenderTweet = ({ text }: Props) => {
   );
 };
 
-export default RenderTweet;
+export default ParseText;

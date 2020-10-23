@@ -1,16 +1,15 @@
 fragment UserFullDetails on User {
   _id
   username
-  email
   bio
   createdAt
   location
   image
   fullname
   followers {
-    ...UserPartialDetails
+    ...FollowDetails
   }
   following {
-    ...UserPartialDetails
+    ...FollowDetails
   }
 }

@@ -12,9 +12,10 @@ import { isFollowing } from "../../utils/isFollowing";
 
 interface Props {
   user: UserFullDetailsFragment;
+  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Profile = ({ user }: Props) => {
+export const Profile = ({ user, setIsVisible }: Props) => {
   const [, followerUser] = useFollowerUserMutation();
   const [, unFollowerUser] = useUnFollowerUserMutation();
   const { userDetails } = useAppContext();
@@ -32,24 +33,27 @@ const Profile = ({ user }: Props) => {
     <div className="profile">
       <div className="top-section">
         <div className="profile-image"></div>
-        {userDetails.username === username ? (
-          <button className="ripple-btn">Edit Profile</button>
-        ) : isFollowing(followers, userDetails._id) >= 0 ? (
+        {userDetails?.username === username ? (
+          <button
+            className="transparent-btn"
+            onClick={() => setIsVisible(true)}
+          >
+            Edit profile
+          </button>
+        ) : isFollowing(userDetails?.following!, _id) >= 0 ? (
           <button
             className="ripple-btn"
             onClick={async () => {
-              const res = await unFollowerUser({ userId: _id });
-              alert(res.data?.unFollowUser);
+              await unFollowerUser({ userId: _id });
             }}
           >
-            Unfollow
+            Following
           </button>
         ) : (
           <button
-            className="ripple-btn"
+            className="transparent-btn"
             onClick={async () => {
-              const res = await followerUser({ userId: _id });
-              alert(res.data?.followUser);
+              await followerUser({ userId: _id });
             }}
           >
             Follow
@@ -97,18 +101,20 @@ const Profile = ({ user }: Props) => {
           </div>
         </div>
         <div className="bottom-section">
-          <p className="follow-text">
-            <span>{following.length} </span>
-            Following
-          </p>
-          <p className="follow-text">
-            <span>{followers.length} </span>
-            Followers
-          </p>
+          <Link to={`/${username}/following`}>
+            <p className="follow-text">
+              <span>{following.length} </span>
+              Following
+            </p>
+          </Link>
+          <Link to={`/${username}/followers`}>
+            <p className="follow-text">
+              <span>{followers.length} </span>
+              Followers
+            </p>
+          </Link>
         </div>
       </div>
     </div>
   );
 };
-
-export default Profile;

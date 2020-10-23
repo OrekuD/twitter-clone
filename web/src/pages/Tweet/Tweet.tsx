@@ -4,7 +4,7 @@ import {
   Layout,
   Spinner,
   StackHeader,
-  RenderTweet,
+  ParseText,
   Tweets,
 } from "../../components";
 import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
@@ -33,9 +33,10 @@ import { abbreviateNumber } from "../../utils/abreviateNumber";
 const TweetPage = () => {
   const {
     setSelectedTweet,
-    setCommentModalState,
-    userDetails: { _id: userId },
+    setShowCommentModal,
+    userDetails,
   } = useAppContext();
+  const userId = userDetails?._id!;
   const { params } = useRouteMatch<{ username: string; tweetId: string }>();
   const [{ data }, getTweet] = useGetTweetQuery({
     variables: { id: params.tweetId },
@@ -68,7 +69,7 @@ const TweetPage = () => {
 
   const commentTweet = () => {
     setSelectedTweet(data?.getTweet.tweet as Tweet);
-    setCommentModalState(true);
+    setShowCommentModal(true);
   };
 
   const share = async () => {
@@ -104,7 +105,7 @@ const TweetPage = () => {
           </div>
           <ChevronDown size={20} color={grey} />
         </div>
-        <RenderTweet text={content} />
+        <ParseText text={content} />
         <div className="tweet-page-details">
           <p>{new Date(createdAt).getDate()}</p>
           <div className="dot" />

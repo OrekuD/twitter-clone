@@ -9,9 +9,12 @@ import {
   UserPage,
   Explore,
   SearchResults,
+  Following,
+  Followers,
 } from "./pages";
 import { Redirect, Route } from "react-router-dom";
 import { useAppContext } from "./context/context";
+import { SplashScreen } from "./components";
 
 function App() {
   const { isLoggedIn } = useAppContext();
@@ -26,6 +29,9 @@ function App() {
       <Route path="/user/login" exact component={Login} />
       <Route path="/user/edit-details" exact component={EditDetails} />
       <Route path="/:username" exact component={UserPage} />
+      <Route path="/:username/following" exact component={Following} />
+      <Route path="/:username/followers" exact component={Followers} />
+      <SplashScreen />
     </>
   );
 }

@@ -18,9 +18,7 @@ interface Props {
 }
 
 const CreateTweet = ({ setIsVisible }: Props) => {
-  const {
-    userDetails: { image },
-  } = useAppContext();
+  const { userDetails } = useAppContext();
   const [, createTweet] = useCreateTweetMutation();
 
   const {
@@ -49,9 +47,9 @@ const CreateTweet = ({ setIsVisible }: Props) => {
 
   return (
     <div className="create-tweet">
-      {image && (
+      {userDetails?.image && (
         <img
-          src={`${PROFILE_IMAGES_BASE_URL + image}`}
+          src={`${PROFILE_IMAGES_BASE_URL + userDetails?.image}`}
           alt="profile"
           className="profile-image"
         />

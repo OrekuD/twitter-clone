@@ -1,18 +1,6 @@
-mutation AddUserDetails(
-  $username: String!
-  $bio: String!
-  $location: String!
-  $email: String!
-  $fullname: String!
-) {
+mutation AddUserDetails($bio: String!, $location: String!, $fullname: String!) {
   addUserDetails(
-    input: {
-      username: $username
-      bio: $bio
-      location: $location
-      email: $email
-      fullname: $fullname
-    }
+    input: { bio: $bio, location: $location, fullname: $fullname }
   ) {
     user {
       username

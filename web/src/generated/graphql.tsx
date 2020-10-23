@@ -233,10 +233,8 @@ export type LoginInput = {
 };
 
 export type DetailsInput = {
-  username: Scalars['String'];
   bio: Scalars['String'];
   location: Scalars['String'];
-  email: Scalars['String'];
   fullname: Scalars['String'];
 };
 
@@ -245,6 +243,18 @@ export type LikeResponse = {
   state: Scalars['Boolean'];
   message: Scalars['String'];
 };
+
+export type FollowDetailsFragment = (
+  { __typename?: 'User' }
+  & { followers: Array<(
+    { __typename?: 'User' }
+    & UserPartialDetailsFragment
+  )>, following: Array<(
+    { __typename?: 'User' }
+    & UserPartialDetailsFragment
+  )> }
+  & UserPartialDetailsFragment
+);
 
 export type TweetDetailsFragment = (
   { __typename?: 'Tweet' }
@@ -263,26 +273,24 @@ export type TweetDetailsFragment = (
 
 export type UserFullDetailsFragment = (
   { __typename?: 'User' }
-  & Pick<User, '_id' | 'username' | 'email' | 'bio' | 'createdAt' | 'location' | 'image' | 'fullname'>
+  & Pick<User, '_id' | 'username' | 'bio' | 'createdAt' | 'location' | 'image' | 'fullname'>
   & { followers: Array<(
     { __typename?: 'User' }
-    & UserPartialDetailsFragment
+    & FollowDetailsFragment
   )>, following: Array<(
     { __typename?: 'User' }
-    & UserPartialDetailsFragment
+    & FollowDetailsFragment
   )> }
 );
 
 export type UserPartialDetailsFragment = (
   { __typename?: 'User' }
-  & Pick<User, '_id' | 'username' | 'image' | 'fullname' | 'bio'>
+  & Pick<User, '_id' | 'username' | 'image' | 'fullname' | 'bio' | 'location' | 'createdAt'>
 );
 
 export type AddUserDetailsMutationVariables = Exact<{
-  username: Scalars['String'];
   bio: Scalars['String'];
   location: Scalars['String'];
-  email: Scalars['String'];
   fullname: Scalars['String'];
 }>;
 
@@ -621,6 +629,8 @@ export const UserPartialDetailsFragmentDoc = gql`
   image
   fullname
   bio
+  location
+  createdAt
 }
     `;
 export const TweetDetailsFragmentDoc = gql`
@@ -641,16 +651,9 @@ export const TweetDetailsFragmentDoc = gql`
   commentsCount
 }
     ${UserPartialDetailsFragmentDoc}`;
-export const UserFullDetailsFragmentDoc = gql`
-    fragment UserFullDetails on User {
-  _id
-  username
-  email
-  bio
-  createdAt
-  location
-  image
-  fullname
+export const FollowDetailsFragmentDoc = gql`
+    fragment FollowDetails on User {
+  ...UserPartialDetails
   followers {
     ...UserPartialDetails
   }
@@ -659,9 +662,26 @@ export const UserFullDetailsFragmentDoc = gql`
   }
 }
     ${UserPartialDetailsFragmentDoc}`;
+export const UserFullDetailsFragmentDoc = gql`
+    fragment UserFullDetails on User {
+  _id
+  username
+  bio
+  createdAt
+  location
+  image
+  fullname
+  followers {
+    ...FollowDetails
+  }
+  following {
+    ...FollowDetails
+  }
+}
+    ${FollowDetailsFragmentDoc}`;
 export const AddUserDetailsDocument = gql`
-    mutation AddUserDetails($username: String!, $bio: String!, $location: String!, $email: String!, $fullname: String!) {
-  addUserDetails(input: {username: $username, bio: $bio, location: $location, email: $email, fullname: $fullname}) {
+    mutation AddUserDetails($bio: String!, $location: String!, $fullname: String!) {
+  addUserDetails(input: {bio: $bio, location: $location, fullname: $fullname}) {
     user {
       username
       createdAt

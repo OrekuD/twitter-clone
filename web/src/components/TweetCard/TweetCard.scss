@@ -1,6 +1,6 @@
 @import "../../constants/colors.scss";
 
-.card-container {
+.tweet-card-container {
   padding: 10px 20px;
   padding-bottom: 0;
   border-bottom: 1px solid $lightgrey;
@@ -9,10 +9,6 @@
   &:hover {
     background-color: $lighterpurple;
     cursor: pointer;
-  }
-
-  .ssss {
-    color: yellow;
   }
 
   .retweeted {
@@ -28,7 +24,7 @@
     }
   }
 
-  .card {
+  .tweet-card {
     flex: 1;
     display: flex;
 
@@ -39,7 +35,7 @@
       background-color: rebeccapurple;
     }
 
-    .card-content {
+    .tweet-card-content {
       flex: 1;
       padding-left: 10px;
 
@@ -54,7 +50,7 @@
         }
       }
 
-      .card-header {
+      .tweet-card-header {
         display: flex;
         width: 100%;
         .user-details {
@@ -82,14 +78,6 @@
 
         .view-tweet {
           margin-left: auto;
-        }
-      }
-
-      .content {
-        display: inline;
-
-        .link {
-          color: $blue;
         }
       }
     }
