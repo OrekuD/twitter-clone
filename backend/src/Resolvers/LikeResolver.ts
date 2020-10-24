@@ -14,7 +14,7 @@ import {
 } from "type-graphql";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
-import { User, UserModel } from "../Models/User";
+import { User } from "../Models/User";
 import { mongoose } from "@typegoose/typegoose";
 import { tweetLoader, userLoader } from "../Utils/dataLoaders";
 
@@ -80,7 +80,7 @@ export class LikeResolver {
 
   @Query(() => [Like], { nullable: true })
   getLikesByUser(@Arg("userId") userId: string) {
-    return LikeModel.find({ creatorId: userId });
+    return LikeModel.find({ creatorId: userId }).sort({ createdAt: "desc" });
   }
 
   // remove this later

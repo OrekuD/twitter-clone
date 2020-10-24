@@ -51,16 +51,27 @@ const client = createClient({
           },
           createReTweet: (_, __, cache) => {
             invalidateAllTweets(cache);
-            console.log("---------", cache.inspectFields("Query"));
+            // console.log("---------", cache.inspectFields("Query"));
           },
-          likeTweet: (_, __) => {
-            // invalidateAllTweets(cache);
+          likeTweet: (_, __, cache) => {
+            invalidateAllTweets(cache);
           },
           createComment: (_, __, cache) => {
             invalidateAllTweets(cache);
           },
-          followerUser: (_, __, cache) => {
-            cache.invalidate("Query", "getUserByUsername");
+          followUser: (_, __, cache) => {
+            const allFields = cache.inspectFields("Query");
+            const field = allFields.find(
+              (field) => field.fieldName === "getUserByUsername"
+            );
+            cache.invalidate("Query", "getUserByUsername", field?.arguments!);
+          },
+          unFollowUser: (_, __, cache) => {
+            const allFields = cache.inspectFields("Query");
+            const field = allFields.find(
+              (field) => field.fieldName === "getUserByUsername"
+            );
+            cache.invalidate("Query", "getUserByUsername", field?.arguments!);
           },
         },
       },

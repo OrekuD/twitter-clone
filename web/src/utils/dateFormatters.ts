@@ -13,3 +13,10 @@ export const formatDate = (dateString: string): string => {
 
   return `${month} ${day}, ${year}`;
 };
+
+export const formatTime = (dateString: string): string => {
+  const date = new Date(dateString);
+  const time = date.toTimeString();
+
+  return `${time}`;
+};

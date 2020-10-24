@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { Layout, Spinner, StackHeader, Users } from "../../components";
-import { useAppContext } from "../../context/context";
 import {
   useGetUserByUsernameQuery,
   UserFullDetailsFragment,
@@ -10,7 +9,6 @@ import {
 const Followers = () => {
   const { params } = useRouteMatch<{ username: string }>();
   const history = useHistory();
-  const { userDetails } = useAppContext();
   const [{ data, fetching }, getUser] = useGetUserByUsernameQuery({
     variables: {
       username: params.username,
@@ -19,7 +17,6 @@ const Followers = () => {
 
   useEffect(() => {
     getUser();
-    console.log(userDetails);
   }, [params]);
 
   if (fetching) {

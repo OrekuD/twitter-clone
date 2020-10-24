@@ -4,9 +4,10 @@ import "./ParseText.scss";
 
 interface Props {
   text: string;
+  isBio?: boolean;
 }
 
-const ParseText = ({ text }: Props) => {
+const ParseText = ({ text, isBio }: Props) => {
   if (!text) {
     return null;
   }
@@ -14,7 +15,7 @@ const ParseText = ({ text }: Props) => {
     <p className="parsed-text">
       {text.split("\n").map((str) => {
         if (!str) {
-          return <br key={Math.random()} />;
+          return isBio ? " " : <br key={Math.random()} />;
         } else {
           return str.split(" ").map((substr) => {
             if (substr[0] === "@") {

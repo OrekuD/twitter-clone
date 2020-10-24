@@ -1,0 +1,7 @@
+query GetLikesByUser($userId: String!) {
+  getLikesByUser(userId: $userId) {
+    tweet {
+      ...TweetDetails
+    }
+  }
+}

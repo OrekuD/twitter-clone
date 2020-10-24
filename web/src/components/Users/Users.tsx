@@ -3,14 +3,13 @@ import { FollowDetailsFragment } from "../../generated/graphql";
 import UserCard from "../UserCard/UserCard";
 import "./Users.scss";
 
-interface Props {
-  users: FollowDetailsFragment[];
-}
-
-const Users = ({ users }: Props) => {
-  // const {}
+const Users = ({ users }: { users: FollowDetailsFragment[] }) => {
   if (users.length === 0) {
-    return <div className="no-users"></div>;
+    return (
+      <div className="no-users">
+        <p>None</p>
+      </div>
+    );
   }
 
   return (

@@ -1,5 +1,9 @@
 import React from "react";
-import { FollowDetailsFragment } from "../../generated/graphql";
+import {
+  FollowDetailsFragment,
+  useFollowUserMutation,
+  useUnFollowUserMutation,
+} from "../../generated/graphql";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import "./UserCard.scss";
 import ParseText from "../ParseText/ParseText";
@@ -12,15 +16,46 @@ interface Props {
 }
 
 const UserCard = ({ user }: Props) => {
+  const [, followUser] = useFollowUserMutation();
+  const [, unFollowUser] = useUnFollowUserMutation();
   const { _id, bio, fullname, image, username, followers, following } = user;
   const { userDetails } = useAppContext();
   const history = useHistory();
-  // console.log(userDetails._id === _id);
-  console.log({
-    myId: userDetails?._id,
-    hisId: _id,
-  });
-  console.log(userDetails);
+
+  const follow = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    // Mutate array on client side to show user an immediate visual feedback
+    if (isFollowing(followers, userDetails?._id!) >= 0) {
+      followers.splice(isFollowing(followers, userDetails?._id!), 1);
+    } else {
+      followers.unshift({
+        _id: userDetails?._id!,
+      } as any);
+    }
+
+    // Call follow user mutation
+    followUser({
+      userId: _id,
+    });
+  };
+
+  const unFollow = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    // Mutate array on client side to show user an immediate visual feedback
+    if (isFollowing(followers, userDetails?._id!) >= 0) {
+      followers.splice(isFollowing(followers, userDetails?._id!), 1);
+    } else {
+      followers.unshift({
+        creatorId: userDetails?._id!,
+      } as any);
+    }
+
+    // Call unfollow user mutation
+    unFollowUser({
+      userId: _id,
+    });
+  };
+
   return (
     <div
       className="user-card-container"
@@ -38,25 +73,22 @@ const UserCard = ({ user }: Props) => {
             <p className="username">
               @{username}{" "}
               {userDetails?._id === _id ? null : isFollowing(
-                  userDetails?.followers!,
-                  _id
-                ) ? (
+                  following,
+                  userDetails?._id!
+                ) >= 0 ? (
                 <span className="follows-you">follows you</span>
               ) : null}
             </p>
           </div>
           {userDetails?._id === _id ? null : isFollowing(
-              userDetails?.following!,
-              _id
-            ) ? (
-            <button className="ripple-btn" onClick={(e) => e.stopPropagation()}>
+              followers,
+              userDetails?._id!
+            ) >= 0 ? (
+            <button className="ripple-btn" onClick={unFollow}>
               Following
             </button>
           ) : (
-            <button
-              className="transparent-btn"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <button className="transparent-btn" onClick={follow}>
               Follow
             </button>
           )}

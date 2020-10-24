@@ -213,7 +213,15 @@ export class TweetsResolver {
   @Query(() => [Tweet])
   @UseMiddleware(Auth)
   async getCurrentUserTimeline(@Ctx() { request }: Context) {
-    return TweetModel.find({ creator: request.session.userId }).sort({
+    const { userId } = request.session;
+    const user = await UserModel.findOne({ _id: userId });
+    const ids = [userId, ...user?.following!];
+
+    return TweetModel.find({
+      creator: {
+        $in: ids.flat(Infinity).map((id) => String(id)),
+      },
+    }).sort({
       createdAt: "desc",
     });
   }

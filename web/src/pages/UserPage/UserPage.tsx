@@ -7,42 +7,31 @@ import {
   StackHeader,
   EditDetails,
 } from "../../components";
-import { useAppContext } from "../../context/context";
 import {
   Tweet,
   useGetUserByUsernameQuery,
   useGetUserTimelineQuery,
 } from "../../generated/graphql";
+import { LikesTab } from "./LikesTab";
 import { Profile } from "./Profile";
+import { TweetsTab } from "./TweetsTab";
 import "./UserPage.scss";
 
 const UserPage = () => {
   const { params } = useRouteMatch<{ username: string }>();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const { userDetails } = useAppContext();
+
+  const excludedRoutes = ["explore", "search"];
 
   const [{ data }, getUser] = useGetUserByUsernameQuery({
+    pause: true,
     variables: { username: params.username },
   });
 
   useEffect(() => {
     getUser();
-    console.log(userDetails);
   }, [getUser, params]);
-
-  const [{ data: userTimeline }, getTimeline] = useGetUserTimelineQuery({
-    variables: {
-      userId: data?.getUserByUsername.user?._id!,
-    },
-  });
-
-  useEffect(() => {
-    data && getTimeline();
-  }, [data, getTimeline]);
-
-  const tabs = ["Tweets", "Replies", "Likes"];
-  const excludedRoutes = ["explore", "search"];
 
   // to prevent from using certain routes as a username in fetching detailss
   if (excludedRoutes.includes(params.username)) {
@@ -65,6 +54,21 @@ const UserPage = () => {
       </Layout>
     );
   }
+
+  const tabs = [
+    {
+      name: "Tweets",
+      component: <TweetsTab userId={data?.getUserByUsername.user?._id!} />,
+    },
+    {
+      name: "Tweets & replies",
+      component: <TweetsTab userId={data?.getUserByUsername.user?._id!} />,
+    },
+    {
+      name: "Likes",
+      component: <LikesTab userId={data?.getUserByUsername.user?._id!} />,
+    },
+  ];
 
   return (
     <Layout>
@@ -89,11 +93,11 @@ const UserPage = () => {
                 key={index}
                 onClick={() => setActiveIndex(index)}
               >
-                {tab}
+                {tab.name}
               </button>
             ))}
           </div>
-          <Tweets tweets={userTimeline?.getUserTimeline as Tweet[]} />
+          {tabs[activeIndex].component}
         </div>
       )}
     </Layout>

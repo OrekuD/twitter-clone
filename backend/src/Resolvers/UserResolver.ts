@@ -237,7 +237,7 @@ export class UserResolver {
 
   @Query(() => UserResponse)
   async getUserByUsername(@Arg("username") username: string) {
-    const user = await UserModel.findOne({ username: username });
+    const user = await UserModel.findOne({ username });
 
     if (!user) {
       return {

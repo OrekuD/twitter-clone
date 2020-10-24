@@ -1,3 +1,0 @@
-mutation UnFollowerUser($userId: String!) {
-  unFollowUser(userId: $userId)
-}

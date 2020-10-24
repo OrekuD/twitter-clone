@@ -395,12 +395,12 @@ export type CreateTweetMutation = (
   ) }
 );
 
-export type FollowerUserMutationVariables = Exact<{
+export type FollowUserMutationVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type FollowerUserMutation = (
+export type FollowUserMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'followUser'>
 );
@@ -438,12 +438,12 @@ export type LoginMutation = (
   ) }
 );
 
-export type UnFollowerUserMutationVariables = Exact<{
+export type UnFollowUserMutationVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type UnFollowerUserMutation = (
+export type UnFollowUserMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'unFollowUser'>
 );
@@ -479,6 +479,22 @@ export type GetCurrentUserTimelineQuery = (
     { __typename?: 'Tweet' }
     & TweetDetailsFragment
   )> }
+);
+
+export type GetLikesByUserQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type GetLikesByUserQuery = (
+  { __typename?: 'Query' }
+  & { getLikesByUser?: Maybe<Array<(
+    { __typename?: 'Like' }
+    & { tweet: (
+      { __typename?: 'Tweet' }
+      & TweetDetailsFragment
+    ) }
+  )>> }
 );
 
 export type GetTrendsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -788,14 +804,14 @@ export const CreateTweetDocument = gql`
 export function useCreateTweetMutation() {
   return Urql.useMutation<CreateTweetMutation, CreateTweetMutationVariables>(CreateTweetDocument);
 };
-export const FollowerUserDocument = gql`
-    mutation FollowerUser($userId: String!) {
+export const FollowUserDocument = gql`
+    mutation FollowUser($userId: String!) {
   followUser(userId: $userId)
 }
     `;
 
-export function useFollowerUserMutation() {
-  return Urql.useMutation<FollowerUserMutation, FollowerUserMutationVariables>(FollowerUserDocument);
+export function useFollowUserMutation() {
+  return Urql.useMutation<FollowUserMutation, FollowUserMutationVariables>(FollowUserDocument);
 };
 export const LikeTweetDocument = gql`
     mutation LikeTweet($tweetId: String!) {
@@ -833,14 +849,14 @@ export const LoginDocument = gql`
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };
-export const UnFollowerUserDocument = gql`
-    mutation UnFollowerUser($userId: String!) {
+export const UnFollowUserDocument = gql`
+    mutation UnFollowUser($userId: String!) {
   unFollowUser(userId: $userId)
 }
     `;
 
-export function useUnFollowerUserMutation() {
-  return Urql.useMutation<UnFollowerUserMutation, UnFollowerUserMutationVariables>(UnFollowerUserDocument);
+export function useUnFollowUserMutation() {
+  return Urql.useMutation<UnFollowUserMutation, UnFollowUserMutationVariables>(UnFollowUserDocument);
 };
 export const AllTweetsDocument = gql`
     query AllTweets {
@@ -874,6 +890,19 @@ export const GetCurrentUserTimelineDocument = gql`
 
 export function useGetCurrentUserTimelineQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserTimelineQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCurrentUserTimelineQuery>({ query: GetCurrentUserTimelineDocument, ...options });
+};
+export const GetLikesByUserDocument = gql`
+    query GetLikesByUser($userId: String!) {
+  getLikesByUser(userId: $userId) {
+    tweet {
+      ...TweetDetails
+    }
+  }
+}
+    ${TweetDetailsFragmentDoc}`;
+
+export function useGetLikesByUserQuery(options: Omit<Urql.UseQueryArgs<GetLikesByUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetLikesByUserQuery>({ query: GetLikesByUserDocument, ...options });
 };
 export const GetTrendsDocument = gql`
     query GetTrends {

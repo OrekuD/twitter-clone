@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useAppContext } from "../../context/context";
 import { useAddUserDetailsMutation } from "../../generated/graphql";
 import { convertError } from "../../utils/convertError";
-import { Cancel, Info } from "../../Svgs";
+import { Cancel } from "../../Svgs";
 import "./EditDetails.scss";
 import Modal from "../Modal/Modal";
 import { blue } from "../../constants/colors";

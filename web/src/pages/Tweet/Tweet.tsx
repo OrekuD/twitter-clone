@@ -25,7 +25,7 @@ import {
   Retweet,
   Share,
 } from "../../Svgs";
-import { formatDate } from "../../utils/dateFormatters";
+import { formatDate, formatTime } from "../../utils/dateFormatters";
 import { userHasLiked } from "../../utils/userHasLiked";
 import "./Tweet.scss";
 import { abbreviateNumber } from "../../utils/abreviateNumber";
@@ -107,7 +107,7 @@ const TweetPage = () => {
         </div>
         <ParseText text={content} />
         <div className="tweet-page-details">
-          <p>{new Date(createdAt).getDate()}</p>
+          <p>{formatTime(createdAt)}</p>
           <div className="dot" />
           <p>{formatDate(createdAt)}</p>
           <div className="dot" />

@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { APP_URL } from "../../constants/constants";
+import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import {
@@ -34,7 +34,7 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
     _id,
     content,
     createdAt,
-    creator: { username, fullname },
+    creator: { username, fullname, image },
     commentsCount,
     likes,
     retweets,
@@ -128,13 +128,15 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
         </div>
       )}
       <div className="tweet-card">
-        <div
+        <img
           className="profile-image"
+          src={`${PROFILE_IMAGES_BASE_URL + image}`}
+          alt="profile"
           onClick={(e) => {
             e.stopPropagation();
             push(`/${username}`);
           }}
-        ></div>
+        />
         <div className="tweet-card-content">
           <div className="tweet-card-header">
             <div className="user-details">
