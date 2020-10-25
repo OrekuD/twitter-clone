@@ -6,10 +6,9 @@ import "./Tweets.scss";
 
 interface Props {
   tweets: Tweet[] | undefined;
-  replyingTo?: string;
 }
 
-const Tweets = ({ tweets, replyingTo }: Props) => {
+const Tweets = ({ tweets }: Props) => {
   let content;
   if (typeof tweets === "undefined") {
     content = (
@@ -17,13 +16,13 @@ const Tweets = ({ tweets, replyingTo }: Props) => {
         <Spinner />
       </div>
     );
-  } else if (tweets.length === 0 && !replyingTo) {
-    content = <p className="no-tweets">No tweets</p>;
+  } else if (tweets.length === 0) {
+    content = null;
   } else {
     content = (
       <>
         {tweets.map((tweet, index) => (
-          <TweetCard tweet={tweet} key={index} replyingTo={replyingTo} />
+          <TweetCard tweet={tweet} key={index} />
         ))}
       </>
     );

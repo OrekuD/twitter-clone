@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import {
   Layout,
   Spinner,
@@ -44,6 +44,7 @@ const TweetPage = () => {
   const [{ data: commentsData }, getComments] = useGetTweetCommentsQuery({
     variables: { tweetId: params.tweetId },
   });
+  const { push } = useHistory();
   const [, likeTweet] = useLikeTweetMutation();
   const [, createRetweet] = useCreateReTweetMutation();
 
@@ -63,8 +64,15 @@ const TweetPage = () => {
     );
   }
 
-  const { _id, content, createdAt, likes, creator, retweets } = data?.getTweet
-    .tweet as Tweet;
+  const {
+    _id,
+    content,
+    createdAt,
+    likes,
+    creator,
+    retweets,
+    parentTweetCreator,
+  } = data?.getTweet.tweet as Tweet;
   const { image, fullname, username } = creator;
 
   const commentTweet = () => {
@@ -105,6 +113,19 @@ const TweetPage = () => {
           </div>
           <ChevronDown size={20} color={grey} />
         </div>
+        {parentTweetCreator && (
+          <p className="replying-to">
+            Replying to{" "}
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                push(`/${username}`);
+              }}
+            >
+              @{parentTweetCreator}
+            </span>
+          </p>
+        )}
         <ParseText text={content} />
         <div className="tweet-page-details">
           <p>{formatTime(createdAt)}</p>
@@ -186,10 +207,7 @@ const TweetPage = () => {
           </div>
         </div>
       </div>
-      <Tweets
-        tweets={commentsData?.getTweetComments as Tweet[]}
-        replyingTo={username}
-      />
+      <Tweets tweets={commentsData?.getTweetComments as Tweet[]} />
     </Layout>
   );
 };

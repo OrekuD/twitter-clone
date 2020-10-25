@@ -4,5 +4,9 @@
   font-size: 14px;
   .link {
     color: $blue;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }

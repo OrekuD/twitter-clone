@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
-import {
-  Layout,
-  Tweets,
-  Spinner,
-  StackHeader,
-  EditDetails,
-} from "../../components";
-import {
-  Tweet,
-  useGetUserByUsernameQuery,
-  useGetUserTimelineQuery,
-} from "../../generated/graphql";
+import { Layout, Spinner, StackHeader, EditDetails } from "../../components";
+import { Tweet, useGetUserByUsernameQuery } from "../../generated/graphql";
 import { LikesTab } from "./LikesTab";
 import { Profile } from "./Profile";
 import { TweetsTab } from "./TweetsTab";
@@ -58,7 +48,12 @@ const UserPage = () => {
   const tabs = [
     {
       name: "Tweets",
-      component: <TweetsTab userId={data?.getUserByUsername.user?._id!} />,
+      component: (
+        <TweetsTab
+          userId={data?.getUserByUsername.user?._id!}
+          pinnedTweet={data?.getUserByUsername.user?.pinnedTweet as Tweet}
+        />
+      ),
     },
     {
       name: "Tweets & replies",

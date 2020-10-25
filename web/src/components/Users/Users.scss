@@ -1,0 +1,17 @@
+@import "../../constants/colors.scss";
+
+.no-users {
+  display: grid;
+  place-items: center;
+  padding-top: 25vh;
+
+  .main-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .sub-title {
+    font-size: 14px;
+    color: $grey;
+  }
+}

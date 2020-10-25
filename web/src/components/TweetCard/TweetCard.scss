@@ -11,7 +11,7 @@
     cursor: pointer;
   }
 
-  .retweeted {
+  .type {
     display: flex;
     align-items: center;
     padding-left: 35px;
@@ -41,13 +41,6 @@
 
       .replying-to {
         margin-top: -2px;
-        margin-bottom: 2px;
-        color: $grey;
-        font-size: 14px;
-
-        span {
-          color: $blue;
-        }
       }
 
       .tweet-card-header {

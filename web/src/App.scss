@@ -75,6 +75,21 @@ textarea {
   }
 }
 
+.replying-to {
+  margin-bottom: 0px;
+  color: $grey;
+  font-size: 14px;
+
+  span {
+    color: $blue;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+
 .form-container {
   display: flex;
   flex-direction: column;

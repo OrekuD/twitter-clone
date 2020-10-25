@@ -16,6 +16,7 @@ import argon2 from "argon2";
 import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
 import { mongoose } from "@typegoose/typegoose";
+import { Tweet, TweetModel } from "../Models/Tweet";
 
 @ObjectType()
 class UserError {
@@ -23,7 +24,7 @@ class UserError {
   message: string;
 
   @Field()
-  field: "password" | "username";
+  field: string;
 }
 
 @InputType()
@@ -71,6 +72,15 @@ class UserResponse {
   error?: UserError;
 }
 
+@ObjectType()
+class PinTweetResponse {
+  @Field()
+  state: boolean;
+
+  @Field()
+  message: string;
+}
+
 @Resolver(User)
 export class UserResolver {
   @Mutation(() => UserResponse)
@@ -107,6 +117,7 @@ export class UserResolver {
       followers: [],
       following: [],
       image: "/dummy.jpg",
+      pinnedTweetId: null,
     });
     await newUser.save();
 
@@ -261,6 +272,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(Auth)
   logout(@Ctx() { request }: Context) {
     request.session.destroy((err) => {
       if (err) {
@@ -269,6 +281,39 @@ export class UserResolver {
       }
       return true;
     });
+  }
+
+  @Mutation(() => PinTweetResponse)
+  @UseMiddleware(Auth)
+  async pinTweet(
+    @Arg("tweetId") tweetId: string,
+    @Ctx() { request }: Context
+  ): Promise<PinTweetResponse> {
+    const tweet = await TweetModel.findOne({ _id: tweetId });
+    const { userId } = request.session;
+    if (!tweet) {
+      return { state: false, message: "Tweet is unavailable" };
+    } else if (tweet.creator !== userId) {
+      return { state: false, message: "You aren't the creator of this tweet" };
+    }
+    await UserModel.updateOne({ _id: userId }, { pinnedTweetId: tweetId });
+    return {
+      state: true,
+      message: "Tweet successfully pinned",
+    };
+  }
+
+  @Mutation(() => PinTweetResponse)
+  @UseMiddleware(Auth)
+  async unPinTweet(@Ctx() { request }: Context): Promise<PinTweetResponse> {
+    await UserModel.updateOne(
+      { _id: request.session.userId },
+      { pinnedTweetId: null }
+    );
+    return {
+      state: true,
+      message: "Tweet successfully unpinned",
+    };
   }
 
   @Query(() => [User])
@@ -284,5 +329,13 @@ export class UserResolver {
   @FieldResolver(() => [User])
   following(@Root() user: User) {
     return UserModel.find({ _id: { $in: user._doc.following } });
+  }
+
+  @FieldResolver(() => Tweet, { nullable: true })
+  pinnedTweet(@Root() user: User) {
+    if (!user._doc.pinnedTweetId) {
+      return null;
+    }
+    return TweetModel.findOne({ _id: user._doc.pinnedTweetId });
   }
 }

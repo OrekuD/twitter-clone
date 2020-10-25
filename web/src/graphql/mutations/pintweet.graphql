@@ -1,0 +1,6 @@
+mutation PinTweet($tweetId: String!) {
+  pinTweet(tweetId: $tweetId) {
+    state
+    message
+  }
+}

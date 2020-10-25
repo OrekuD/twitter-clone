@@ -28,10 +28,6 @@ export class Tweet {
   @Field()
   commentsCount: number;
 
-  // @prop({ ref: () => User, autopopulate: true })
-  // @Field(() => User)
-  // creator: Ref<User>;
-
   @prop()
   @Field(() => User)
   creator: Ref<User>;

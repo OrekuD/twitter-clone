@@ -1,5 +1,5 @@
-query GetUserTimeline($userId: String!) {
-  getUserTimeline(userId: $userId) {
+query GetUserTimeline {
+  getUserTimeline {
     ...TweetDetails
   }
 }

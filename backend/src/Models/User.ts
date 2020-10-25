@@ -37,6 +37,10 @@ export class User {
   @prop()
   fullname: string;
 
+  @Field(() => String, { nullable: true })
+  @prop()
+  pinnedTweetId: string | null;
+
   @prop()
   @Field(() => [User])
   following: Ref<User>[];

@@ -25,11 +25,10 @@ import { userHasRetweeted } from "../../utils/userHasRetweeted";
 
 interface Props {
   tweet: Tweet;
-  nolink?: boolean;
-  replyingTo?: string;
+  pinnedTweet?: boolean;
 }
 
-const TweetCard = ({ tweet, replyingTo }: Props) => {
+const TweetCard = ({ tweet, pinnedTweet }: Props) => {
   const {
     _id,
     content,
@@ -39,6 +38,7 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
     likes,
     retweets,
     isRetweet,
+    parentTweetCreator,
   } = tweet;
   const [, like] = useLikeTweetMutation();
   const [, createRetweet] = useCreateReTweetMutation();
@@ -118,13 +118,19 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
       }}
     >
       {isRetweet && (
-        <div className="retweeted">
+        <div className="type">
           <Retweet size={14} color={grey} />
           {userHasRetweeted(retweets, userId) >= 0 && isRetweet ? (
             <p>You Retweeted</p>
           ) : (
             <p>{retweets[0]?.username} Retweeted</p>
           )}
+        </div>
+      )}
+      {pinnedTweet && (
+        <div className="type">
+          <Retweet size={14} color={grey} />
+          <p>Pinned Tweet</p>
         </div>
       )}
       <div className="tweet-card">
@@ -149,9 +155,17 @@ const TweetCard = ({ tweet, replyingTo }: Props) => {
               <ChevronDown size={16} color={grey} />
             </div>
           </div>
-          {replyingTo && (
+          {parentTweetCreator && (
             <p className="replying-to">
-              Replying to <span>{replyingTo}</span>
+              Replying to{" "}
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  push(`/${username}`);
+                }}
+              >
+                @{parentTweetCreator}
+              </span>
             </p>
           )}
           <ParseText text={content} />

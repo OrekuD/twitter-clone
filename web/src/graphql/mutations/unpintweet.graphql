@@ -1,0 +1,6 @@
+mutation UnPinTweet {
+  unPinTweet {
+    state
+    message
+  }
+}

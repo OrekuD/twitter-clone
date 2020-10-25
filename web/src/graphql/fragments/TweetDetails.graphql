@@ -3,6 +3,7 @@ fragment TweetDetails on Tweet {
   content
   createdAt
   isRetweet
+  parentTweetCreator
   creator {
     ...UserPartialDetails
   }

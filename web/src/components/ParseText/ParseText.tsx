@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "./ParseText.scss";
 
 interface Props {
@@ -8,6 +8,7 @@ interface Props {
 }
 
 const ParseText = ({ text, isBio }: Props) => {
+  const { push } = useHistory();
   if (!text) {
     return null;
   }
@@ -20,13 +21,27 @@ const ParseText = ({ text, isBio }: Props) => {
           return str.split(" ").map((substr) => {
             if (substr[0] === "@") {
               return (
-                <Link to={`/${substr.slice(1)}`} key={Math.random()}>
-                  <span className="link">{" " + substr + " "}</span>
-                </Link>
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    push(`/${substr.slice(1)}`);
+                  }}
+                  className="link"
+                  key={Math.random()}
+                >
+                  {" " + substr + " "}
+                </span>
               );
             } else if (substr[0] === "#") {
               return (
-                <span className="link" key={Math.random()}>
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    push(`/search/${substr.slice(1)}`);
+                  }}
+                  className="link"
+                  key={Math.random()}
+                >
                   {" " + substr + " "}
                 </span>
               );

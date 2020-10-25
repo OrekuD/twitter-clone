@@ -62,7 +62,7 @@ const Following = () => {
             </button>
           ))}
         </div>
-        <Users users={following} />
+        <Users users={following} followingPage />
       </div>
     </Layout>
   );

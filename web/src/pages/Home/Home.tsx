@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Layout, CreateTweet, Tweets, Header } from "../../components";
-import { Tweet, useGetCurrentUserTimelineQuery } from "../../generated/graphql";
+import { Tweet, useGetUserTimelineQuery } from "../../generated/graphql";
 import "./Home.scss";
 
 const Home = () => {
-  const [{ data }, userTimeline] = useGetCurrentUserTimelineQuery();
+  const [{ data }, userTimeline] = useGetUserTimelineQuery();
 
   useEffect(() => {
     userTimeline();
@@ -14,7 +14,7 @@ const Home = () => {
     <Layout>
       <Header label="Home" />
       <CreateTweet />
-      <Tweets tweets={data?.getCurrentUserTimeline as Tweet[]} />
+      <Tweets tweets={data?.getUserTimeline as Tweet[]} />
     </Layout>
   );
 };

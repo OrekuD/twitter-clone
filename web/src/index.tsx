@@ -44,6 +44,7 @@ const client = createClient({
             cache.invalidate("Query", "currentUser");
           },
           createTweet: (_, __, cache) => {
+            // cache.invalidate("Query", "getUserTimeline");
             invalidateAllTweets(cache);
           },
           addUserDetails: (_, __, cache) => {

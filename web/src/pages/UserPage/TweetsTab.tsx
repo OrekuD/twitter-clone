@@ -1,8 +1,13 @@
 import React, { useEffect } from "react";
-import { Spinner, Tweets } from "../../components";
+import { Spinner, TweetCard, Tweets } from "../../components";
 import { Tweet, useGetTweetsByUserQuery } from "../../generated/graphql";
 
-export const TweetsTab = ({ userId }: { userId: string }) => {
+interface Props {
+  pinnedTweet?: Tweet | null;
+  userId: string;
+}
+
+export const TweetsTab = ({ userId, pinnedTweet }: Props) => {
   const [{ fetching, data }, getLikes] = useGetTweetsByUserQuery({
     variables: {
       userId,
@@ -21,5 +26,15 @@ export const TweetsTab = ({ userId }: { userId: string }) => {
     );
   }
 
-  return <Tweets tweets={data?.getTweetsByUser as Tweet[]} />;
+  let tweets = data?.getTweetsByUser as Tweet[];
+  if (pinnedTweet) {
+    tweets = tweets.filter((tweet) => tweet._id !== pinnedTweet._id);
+  }
+
+  return (
+    <>
+      {pinnedTweet && <TweetCard tweet={pinnedTweet} pinnedTweet />}
+      <Tweets tweets={tweets} />
+    </>
+  );
 };

@@ -20,7 +20,6 @@ export type Query = {
   getAllTweets: Array<Tweet>;
   getTweetComments: Array<Tweet>;
   getTweetsByUser: Array<Tweet>;
-  getCurrentUserTimeline: Array<Tweet>;
   getUserTimeline: Array<Tweet>;
   getUserDetails: UserResponse;
   getUserByUsername: UserResponse;
@@ -45,11 +44,6 @@ export type QueryGetTweetCommentsArgs = {
 
 
 export type QueryGetTweetsByUserArgs = {
-  userId: Scalars['String'];
-};
-
-
-export type QueryGetUserTimelineArgs = {
   userId: Scalars['String'];
 };
 
@@ -97,6 +91,7 @@ export type Tweet = {
   retweets: Array<User>;
   likesCount: Scalars['Int'];
   retweetsCount: Scalars['Int'];
+  parentTweetCreator?: Maybe<Scalars['String']>;
 };
 
 
@@ -110,8 +105,10 @@ export type User = {
   location: Scalars['String'];
   image: Scalars['String'];
   fullname: Scalars['String'];
+  pinnedTweetId?: Maybe<Scalars['String']>;
   following: Array<User>;
   followers: Array<User>;
+  pinnedTweet?: Maybe<Tweet>;
 };
 
 export type Like = {
@@ -161,12 +158,15 @@ export type Mutation = {
   createTweet: Tweet;
   createComment: SingleTweetResponse;
   createReTweet: SingleTweetResponse;
+  deleteTweet: TweetResponse;
   createAccount: UserResponse;
   login: UserResponse;
   addUserDetails: UserResponse;
   followUser: Scalars['Boolean'];
   unFollowUser: Scalars['Boolean'];
   logout: Scalars['Boolean'];
+  pinTweet: PinTweetResponse;
+  unPinTweet: PinTweetResponse;
   likeTweet: LikeResponse;
 };
 
@@ -182,6 +182,11 @@ export type MutationCreateCommentArgs = {
 
 
 export type MutationCreateReTweetArgs = {
+  tweetId: Scalars['String'];
+};
+
+
+export type MutationDeleteTweetArgs = {
   tweetId: Scalars['String'];
 };
 
@@ -211,6 +216,11 @@ export type MutationUnFollowUserArgs = {
 };
 
 
+export type MutationPinTweetArgs = {
+  tweetId: Scalars['String'];
+};
+
+
 export type MutationLikeTweetArgs = {
   tweetId: Scalars['String'];
 };
@@ -218,6 +228,12 @@ export type MutationLikeTweetArgs = {
 export type CommentInput = {
   content: Scalars['String'];
   tweetId: Scalars['String'];
+};
+
+export type TweetResponse = {
+  __typename?: 'TweetResponse';
+  state: Scalars['Boolean'];
+  message: Scalars['String'];
 };
 
 export type RegisterInput = {
@@ -236,6 +252,12 @@ export type DetailsInput = {
   bio: Scalars['String'];
   location: Scalars['String'];
   fullname: Scalars['String'];
+};
+
+export type PinTweetResponse = {
+  __typename?: 'PinTweetResponse';
+  state: Scalars['Boolean'];
+  message: Scalars['String'];
 };
 
 export type LikeResponse = {
@@ -258,7 +280,7 @@ export type FollowDetailsFragment = (
 
 export type TweetDetailsFragment = (
   { __typename?: 'Tweet' }
-  & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'isRetweet' | 'commentsCount'>
+  & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'isRetweet' | 'parentTweetCreator' | 'commentsCount'>
   & { creator: (
     { __typename?: 'User' }
     & UserPartialDetailsFragment
@@ -274,7 +296,10 @@ export type TweetDetailsFragment = (
 export type UserFullDetailsFragment = (
   { __typename?: 'User' }
   & Pick<User, '_id' | 'username' | 'bio' | 'createdAt' | 'location' | 'image' | 'fullname'>
-  & { followers: Array<(
+  & { pinnedTweet?: Maybe<(
+    { __typename?: 'Tweet' }
+    & TweetDetailsFragment
+  )>, followers: Array<(
     { __typename?: 'User' }
     & FollowDetailsFragment
   )>, following: Array<(
@@ -395,6 +420,19 @@ export type CreateTweetMutation = (
   ) }
 );
 
+export type DeleteTweetMutationVariables = Exact<{
+  tweetId: Scalars['String'];
+}>;
+
+
+export type DeleteTweetMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteTweet: (
+    { __typename?: 'TweetResponse' }
+    & Pick<TweetResponse, 'state' | 'message'>
+  ) }
+);
+
 export type FollowUserMutationVariables = Exact<{
   userId: Scalars['String'];
 }>;
@@ -438,6 +476,19 @@ export type LoginMutation = (
   ) }
 );
 
+export type PinTweetMutationVariables = Exact<{
+  tweetId: Scalars['String'];
+}>;
+
+
+export type PinTweetMutation = (
+  { __typename?: 'Mutation' }
+  & { pinTweet: (
+    { __typename?: 'PinTweetResponse' }
+    & Pick<PinTweetResponse, 'state' | 'message'>
+  ) }
+);
+
 export type UnFollowUserMutationVariables = Exact<{
   userId: Scalars['String'];
 }>;
@@ -446,6 +497,17 @@ export type UnFollowUserMutationVariables = Exact<{
 export type UnFollowUserMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'unFollowUser'>
+);
+
+export type UnPinTweetMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UnPinTweetMutation = (
+  { __typename?: 'Mutation' }
+  & { unPinTweet: (
+    { __typename?: 'PinTweetResponse' }
+    & Pick<PinTweetResponse, 'state' | 'message'>
+  ) }
 );
 
 export type AllTweetsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -467,17 +529,6 @@ export type GetCurrentUserDetailsQuery = (
   & { currentUser?: Maybe<(
     { __typename?: 'User' }
     & UserFullDetailsFragment
-  )> }
-);
-
-export type GetCurrentUserTimelineQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetCurrentUserTimelineQuery = (
-  { __typename?: 'Query' }
-  & { getCurrentUserTimeline: Array<(
-    { __typename?: 'Tweet' }
-    & TweetDetailsFragment
   )> }
 );
 
@@ -606,9 +657,7 @@ export type GetUserDetailsQuery = (
   ) }
 );
 
-export type GetUserTimelineQueryVariables = Exact<{
-  userId: Scalars['String'];
-}>;
+export type GetUserTimelineQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserTimelineQuery = (
@@ -655,6 +704,7 @@ export const TweetDetailsFragmentDoc = gql`
   content
   createdAt
   isRetweet
+  parentTweetCreator
   creator {
     ...UserPartialDetails
   }
@@ -687,6 +737,9 @@ export const UserFullDetailsFragmentDoc = gql`
   location
   image
   fullname
+  pinnedTweet {
+    ...TweetDetails
+  }
   followers {
     ...FollowDetails
   }
@@ -694,7 +747,8 @@ export const UserFullDetailsFragmentDoc = gql`
     ...FollowDetails
   }
 }
-    ${FollowDetailsFragmentDoc}`;
+    ${TweetDetailsFragmentDoc}
+${FollowDetailsFragmentDoc}`;
 export const AddUserDetailsDocument = gql`
     mutation AddUserDetails($bio: String!, $location: String!, $fullname: String!) {
   addUserDetails(input: {bio: $bio, location: $location, fullname: $fullname}) {
@@ -804,6 +858,18 @@ export const CreateTweetDocument = gql`
 export function useCreateTweetMutation() {
   return Urql.useMutation<CreateTweetMutation, CreateTweetMutationVariables>(CreateTweetDocument);
 };
+export const DeleteTweetDocument = gql`
+    mutation DeleteTweet($tweetId: String!) {
+  deleteTweet(tweetId: $tweetId) {
+    state
+    message
+  }
+}
+    `;
+
+export function useDeleteTweetMutation() {
+  return Urql.useMutation<DeleteTweetMutation, DeleteTweetMutationVariables>(DeleteTweetDocument);
+};
 export const FollowUserDocument = gql`
     mutation FollowUser($userId: String!) {
   followUser(userId: $userId)
@@ -849,6 +915,18 @@ export const LoginDocument = gql`
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };
+export const PinTweetDocument = gql`
+    mutation PinTweet($tweetId: String!) {
+  pinTweet(tweetId: $tweetId) {
+    state
+    message
+  }
+}
+    `;
+
+export function usePinTweetMutation() {
+  return Urql.useMutation<PinTweetMutation, PinTweetMutationVariables>(PinTweetDocument);
+};
 export const UnFollowUserDocument = gql`
     mutation UnFollowUser($userId: String!) {
   unFollowUser(userId: $userId)
@@ -857,6 +935,18 @@ export const UnFollowUserDocument = gql`
 
 export function useUnFollowUserMutation() {
   return Urql.useMutation<UnFollowUserMutation, UnFollowUserMutationVariables>(UnFollowUserDocument);
+};
+export const UnPinTweetDocument = gql`
+    mutation UnPinTweet {
+  unPinTweet {
+    state
+    message
+  }
+}
+    `;
+
+export function useUnPinTweetMutation() {
+  return Urql.useMutation<UnPinTweetMutation, UnPinTweetMutationVariables>(UnPinTweetDocument);
 };
 export const AllTweetsDocument = gql`
     query AllTweets {
@@ -879,17 +969,6 @@ export const GetCurrentUserDetailsDocument = gql`
 
 export function useGetCurrentUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserDetailsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCurrentUserDetailsQuery>({ query: GetCurrentUserDetailsDocument, ...options });
-};
-export const GetCurrentUserTimelineDocument = gql`
-    query GetCurrentUserTimeline {
-  getCurrentUserTimeline {
-    ...TweetDetails
-  }
-}
-    ${TweetDetailsFragmentDoc}`;
-
-export function useGetCurrentUserTimelineQuery(options: Omit<Urql.UseQueryArgs<GetCurrentUserTimelineQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetCurrentUserTimelineQuery>({ query: GetCurrentUserTimelineDocument, ...options });
 };
 export const GetLikesByUserDocument = gql`
     query GetLikesByUser($userId: String!) {
@@ -1006,8 +1085,8 @@ export function useGetUserDetailsQuery(options: Omit<Urql.UseQueryArgs<GetUserDe
   return Urql.useQuery<GetUserDetailsQuery>({ query: GetUserDetailsDocument, ...options });
 };
 export const GetUserTimelineDocument = gql`
-    query GetUserTimeline($userId: String!) {
-  getUserTimeline(userId: $userId) {
+    query GetUserTimeline {
+  getUserTimeline {
     ...TweetDetails
   }
 }

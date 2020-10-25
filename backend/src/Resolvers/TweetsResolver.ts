@@ -31,6 +31,15 @@ class TweetError {
   field: string;
 }
 
+@ObjectType()
+class TweetResponse {
+  @Field()
+  state: boolean;
+
+  @Field()
+  message: string;
+}
+
 @InputType()
 class CommentInput {
   @Field()
@@ -210,9 +219,35 @@ export class TweetsResolver {
     return { tweet: retweet };
   }
 
+  @Mutation(() => TweetResponse)
+  @UseMiddleware(Auth)
+  async deleteTweet(
+    @Arg("tweetId") tweetId: string,
+    @Ctx() { request }: Context
+  ): Promise<TweetResponse> {
+    const tweet = await TweetModel.findOne({ _id: tweetId });
+    if (!tweet) {
+      return {
+        state: false,
+        message: "Tweet is unavailable",
+      };
+    } else if (tweet.creator !== request.session.userId) {
+      return {
+        state: false,
+        message: "You aren't the creator of this tweet",
+      };
+    }
+
+    await TweetModel.deleteOne({ _id: tweetId });
+    return {
+      state: true,
+      message: "Tweet successfully deleted",
+    };
+  }
+
   @Query(() => [Tweet])
   @UseMiddleware(Auth)
-  async getCurrentUserTimeline(@Ctx() { request }: Context) {
+  async getUserTimeline(@Ctx() { request }: Context) {
     const { userId } = request.session;
     const user = await UserModel.findOne({ _id: userId });
     const ids = [userId, ...user?.following!];
@@ -222,18 +257,6 @@ export class TweetsResolver {
         $in: ids.flat(Infinity).map((id) => String(id)),
       },
     }).sort({
-      createdAt: "desc",
-    });
-  }
-
-  @Query(() => [Tweet])
-  async getUserTimeline(@Arg("userId") userId: string) {
-    // const { userId } = request.session;
-    // const user = await UserModel.findOne({ _id: id });
-    // const following = user?.following;
-    // console.log(following);
-    // better way of creating a timeline
-    return TweetModel.find({ creator: userId }).sort({
       createdAt: "desc",
     });
   }
@@ -262,5 +285,15 @@ export class TweetsResolver {
   @FieldResolver(() => [User])
   retweets(@Root() tweet: Tweet) {
     return UserModel.find({ _id: { $in: tweet._doc.retweets } });
+  }
+
+  @FieldResolver(() => String, { nullable: true })
+  async parentTweetCreator(@Root() tweet: Tweet) {
+    if (!tweet._doc.parentId) {
+      return null;
+    }
+    const parentTweet = await TweetModel.findOne({ _id: tweet._doc.parentId });
+    const user = await UserModel.findOne({ _id: parentTweet?.creator });
+    return user?.username;
   }
 }

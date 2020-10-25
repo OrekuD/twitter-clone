@@ -6,6 +6,9 @@ fragment UserFullDetails on User {
   location
   image
   fullname
+  pinnedTweet {
+    ...TweetDetails
+  }
   followers {
     ...FollowDetails
   }
