@@ -29,6 +29,7 @@ import { formatDate, formatTime } from "../../utils/dateFormatters";
 import { userHasLiked } from "../../utils/userHasLiked";
 import "./Tweet.scss";
 import { abbreviateNumber } from "../../utils/abreviateNumber";
+import { userHasRetweeted } from "../../utils/userHasRetweeted";
 
 const TweetPage = () => {
   const {
@@ -160,7 +161,14 @@ const TweetPage = () => {
               }}
             >
               <div className="svg">
-                <Retweet size={20} />
+                <Retweet
+                  size={20}
+                  color={
+                    userHasRetweeted(retweets, userId) >= 0
+                      ? "rgb(22, 186, 97)"
+                      : undefined
+                  }
+                />
               </div>
             </button>
           </div>

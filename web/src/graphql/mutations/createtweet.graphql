@@ -1,12 +1,6 @@
 mutation CreateTweet($content: String!) {
   createTweet(content: $content) {
-    content
-    _id
-    createdAt
-    creator {
-      username
-      bio
-      _id
-    }
+    state
+    message
   }
 }

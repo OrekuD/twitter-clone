@@ -18,7 +18,7 @@ import CreateTweet from "../CreateTweet/CreateTweet";
 const menu = [
   {
     name: "Home",
-    path: "/",
+    path: "/home",
     Icon: HomeIcon,
   },
   {

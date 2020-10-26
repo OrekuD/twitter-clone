@@ -6,6 +6,7 @@ import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
 import App from "./App";
 import { Provider as ContextProvider } from "./context/context";
 import { invalidateAllTweets } from "./utils/invalidateAllTweets";
+import { invalidateUser } from "./utils/invalidateUser";
 
 const client = createClient({
   url: "http://localhost:4000/graphql",
@@ -44,7 +45,6 @@ const client = createClient({
             cache.invalidate("Query", "currentUser");
           },
           createTweet: (_, __, cache) => {
-            // cache.invalidate("Query", "getUserTimeline");
             invalidateAllTweets(cache);
           },
           addUserDetails: (_, __, cache) => {
@@ -52,7 +52,6 @@ const client = createClient({
           },
           createReTweet: (_, __, cache) => {
             invalidateAllTweets(cache);
-            // console.log("---------", cache.inspectFields("Query"));
           },
           likeTweet: (_, __, cache) => {
             invalidateAllTweets(cache);
@@ -61,18 +60,10 @@ const client = createClient({
             invalidateAllTweets(cache);
           },
           followUser: (_, __, cache) => {
-            const allFields = cache.inspectFields("Query");
-            const field = allFields.find(
-              (field) => field.fieldName === "getUserByUsername"
-            );
-            cache.invalidate("Query", "getUserByUsername", field?.arguments!);
+            invalidateUser(cache);
           },
           unFollowUser: (_, __, cache) => {
-            const allFields = cache.inspectFields("Query");
-            const field = allFields.find(
-              (field) => field.fieldName === "getUserByUsername"
-            );
-            cache.invalidate("Query", "getUserByUsername", field?.arguments!);
+            invalidateUser(cache);
           },
         },
       },

@@ -12,19 +12,27 @@ const UserPage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
-  const excludedRoutes = ["explore", "search"];
+  const excludedRoutes = ["explore", "search", "home", "login", "register"];
+  const username = excludedRoutes.includes(params.username)
+    ? ""
+    : params.username;
 
-  const [{ data }, getUser] = useGetUserByUsernameQuery({
-    pause: true,
-    variables: { username: params.username },
+  const [{ data, fetching }, getUser] = useGetUserByUsernameQuery({
+    pause: username === "",
+    variables: {
+      username,
+    },
   });
 
   useEffect(() => {
     getUser();
   }, [getUser, params]);
 
-  // to prevent from using certain routes as a username in fetching detailss
   if (excludedRoutes.includes(params.username)) {
+    return null;
+  }
+
+  if (fetching) {
     return (
       <Layout>
         <div className="loading-screen">
@@ -34,12 +42,12 @@ const UserPage = () => {
     );
   }
 
-  if (data?.getUserByUsername.error) {
+  if (data?.getUserByUsername.error?.message.includes("not exist")) {
     return (
       <Layout>
         <StackHeader />
         <div className="no-user">
-          <p>User is unavailable </p>
+          <p>User is unavailable</p>
         </div>
       </Layout>
     );
@@ -67,34 +75,30 @@ const UserPage = () => {
 
   return (
     <Layout>
-      <StackHeader label={params.username} />
       <EditDetails isVisible={isVisible} setIsVisible={setIsVisible} />
-      {!data ? (
-        <div className="loading-screen">
-          <Spinner />
-        </div>
-      ) : (
-        <div className="user-page">
-          {data.getUserByUsername.user && (
+      <div className="user-page">
+        {data?.getUserByUsername.user && (
+          <>
+            <StackHeader label={params.username} />
             <Profile
               user={data.getUserByUsername.user}
               setIsVisible={setIsVisible}
             />
-          )}
-          <div className="tabs">
-            {tabs.map((tab, index) => (
-              <button
-                className={`tab ${index === activeIndex ? "active" : ""}`}
-                key={index}
-                onClick={() => setActiveIndex(index)}
-              >
-                {tab.name}
-              </button>
-            ))}
-          </div>
-          {tabs[activeIndex].component}
-        </div>
-      )}
+            <div className="tabs">
+              {tabs.map((tab, index) => (
+                <button
+                  className={`tab ${index === activeIndex ? "active" : ""}`}
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  {tab.name}
+                </button>
+              ))}
+            </div>
+            {tabs[activeIndex].component}
+          </>
+        )}
+      </div>
     </Layout>
   );
 };

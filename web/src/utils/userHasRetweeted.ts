@@ -1,4 +1,4 @@
-import { User } from "../generated/graphql";
+import { Retweet } from "../generated/graphql";
 
-export const userHasRetweeted = (retweets: User[], userId: string) =>
-  retweets.findIndex((retweet) => retweet._id === userId);
+export const userHasRetweeted = (retweets: Retweet[], userId: string) =>
+  retweets.findIndex((retweet) => retweet.creatorId === userId);

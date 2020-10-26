@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.scss";
+import "./normalize.css";
 import {
   EditDetails,
   Home,
@@ -11,6 +12,7 @@ import {
   SearchResults,
   Following,
   Followers,
+  LandingPage,
 } from "./pages";
 import { Redirect, Route } from "react-router-dom";
 import { useAppContext } from "./context/context";
@@ -20,14 +22,15 @@ function App() {
   const { isLoggedIn } = useAppContext();
   return (
     <>
-      {!isLoggedIn && <Redirect from="/" to="/user/login" />}
-      <Route path="/" exact component={Home} />
+      {!isLoggedIn && <Redirect from="/" to="/login" />}
+      {isLoggedIn && <Redirect from="/" to="/home" />}
+      <Route path="/" exact component={LandingPage} />
+      <Route path="/home" exact component={Home} />
       <Route path="/explore" exact component={Explore} />
       <Route path="/search/:hashtag" exact component={SearchResults} />
       <Route path="/:username/status/:tweetId" exact component={Tweet} />
-      <Route path="/user/register" exact component={Register} />
-      <Route path="/user/login" exact component={Login} />
-      <Route path="/user/edit-details" exact component={EditDetails} />
+      <Route path="/register" exact component={Register} />
+      <Route path="/login" exact component={Login} />
       <Route path="/:username" exact component={UserPage} />
       <Route path="/:username/following" exact component={Following} />
       <Route path="/:username/followers" exact component={Followers} />

@@ -1,6 +1,7 @@
 import { prop, getModelForClass, mongoose, Ref } from "@typegoose/typegoose";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Like } from "./Like";
+import { Retweet } from "./Retweet";
 import { User } from "./User";
 
 @ObjectType()
@@ -15,10 +16,6 @@ export class Tweet {
   @prop()
   @Field()
   content: string;
-
-  @prop()
-  @Field()
-  isRetweet: boolean;
 
   @prop()
   @Field(() => Date)
@@ -37,8 +34,8 @@ export class Tweet {
   likes: Ref<Like>[];
 
   @prop()
-  @Field(() => [User])
-  retweets: Ref<User>[];
+  @Field(() => [Retweet])
+  retweets: Ref<Retweet>[];
 
   _doc?: any;
 }

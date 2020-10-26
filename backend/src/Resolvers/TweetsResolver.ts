@@ -18,9 +18,9 @@ import { Context } from "../types";
 import { extractHashtags } from "../Utils/extractHashtags";
 import { TrendsModel } from "../Models/Trends";
 import { User, UserModel } from "../Models/User";
-import { mongoose } from "@typegoose/typegoose";
-import { LikeModel } from "../Models/Like";
+import { Like, LikeModel } from "../Models/Like";
 import { userLoader } from "../Utils/dataLoaders";
+import { Retweet, RetweetModel } from "../Models/Retweet";
 
 @ObjectType()
 class TweetError {
@@ -72,6 +72,7 @@ export class TweetsResolver {
     return { tweet };
   }
 
+  // remove this later
   @Query(() => [Tweet])
   getAllTweets() {
     return TweetModel.find().sort({ createdAt: "desc" });
@@ -89,17 +90,16 @@ export class TweetsResolver {
     });
   }
 
-  @Mutation(() => Tweet)
+  @Mutation(() => TweetResponse)
   @UseMiddleware(Auth)
   async createTweet(
     @Arg("content") content: string,
     @Ctx() { request }: Context
-  ): Promise<Tweet> {
+  ): Promise<TweetResponse> {
     const tweet = await TweetModel.create({
       content,
       creator: request.session.userId,
       createdAt: Date.now(),
-      isRetweet: false,
       commentsCount: 0,
       parentId: null,
       likes: [],
@@ -127,24 +127,26 @@ export class TweetsResolver {
         }
       });
     }
-    return tweet;
+
+    return {
+      state: true,
+      message: "Tweet successfull",
+    };
   }
 
-  @Mutation(() => SingleTweetResponse)
+  @Mutation(() => TweetResponse)
   @UseMiddleware(Auth)
   async createComment(
     @Arg("input") input: CommentInput,
     @Ctx() { request }: Context
-  ): Promise<SingleTweetResponse> {
+  ): Promise<TweetResponse> {
     const { content, tweetId } = input;
     const { userId } = request.session;
     const tweet = await TweetModel.findOne({ _id: tweetId });
     if (!tweet) {
       return {
-        error: {
-          message: "Tweet is unavailable",
-          field: "tweet",
-        },
+        message: "Tweet is unavailable",
+        state: false,
       };
     }
 
@@ -154,7 +156,6 @@ export class TweetsResolver {
       creator: userId,
       createdAt: Date.now(),
       commentsCount: 0,
-      isRetweet: false,
       likes: [],
       retweets: [],
     });
@@ -165,58 +166,10 @@ export class TweetsResolver {
       { commentsCount: tweet.commentsCount + 1 }
     );
 
-    return { tweet: comment };
-  }
-
-  @Mutation(() => SingleTweetResponse)
-  @UseMiddleware(Auth)
-  async createReTweet(
-    @Arg("tweetId") tweetId: string,
-    @Ctx() { request }: Context
-  ): Promise<SingleTweetResponse> {
-    const tweet = await TweetModel.findOne({ _id: tweetId });
-    if (!tweet) {
-      return {
-        error: {
-          field: "tweet",
-          message: "Tweet is unavailable",
-        },
-      };
-    }
-    const {
-      commentsCount,
-      content,
-      creator,
-      likes,
-      retweets,
-      parentId,
-      createdAt,
-    } = tweet!;
-    // console.log(
-    //   "----------------- 1",
-    //   likes.map((like) => (like as Like)._id)
-    // );
-    const retweet = await TweetModel.create({
-      content,
-      creator: creator as mongoose.Types.ObjectId,
-      createdAt,
-      isRetweet: true,
-      commentsCount,
-      parentId,
-      likes,
-      retweets: [request.session.userId, ...retweets],
-    });
-    await TweetModel.updateOne(
-      {
-        _id: tweetId,
-      },
-      {
-        $push: { retweets: request.session.userId },
-      }
-    );
-    await retweet.save();
-
-    return { tweet: retweet };
+    return {
+      state: true,
+      message: "Comment successfull",
+    };
   }
 
   @Mutation(() => TweetResponse)
@@ -252,6 +205,8 @@ export class TweetsResolver {
     const user = await UserModel.findOne({ _id: userId });
     const ids = [userId, ...user?.following!];
 
+    // const sortedActivities = activities.sort((a, b) => b.date - a.date)
+
     return TweetModel.find({
       creator: {
         $in: ids.flat(Infinity).map((id) => String(id)),
@@ -277,14 +232,14 @@ export class TweetsResolver {
     return userLoader().load(tweet._doc.creator);
   }
 
-  @FieldResolver(() => [User])
+  @FieldResolver(() => [Like])
   likes(@Root() tweet: Tweet) {
     return LikeModel.find({ _id: { $in: tweet._doc.likes } });
   }
 
-  @FieldResolver(() => [User])
+  @FieldResolver(() => [Retweet])
   retweets(@Root() tweet: Tweet) {
-    return UserModel.find({ _id: { $in: tweet._doc.retweets } });
+    return RetweetModel.find({ _id: { $in: tweet._doc.retweets } });
   }
 
   @FieldResolver(() => String, { nullable: true })

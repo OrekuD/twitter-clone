@@ -248,6 +248,14 @@ export class UserResolver {
 
   @Query(() => UserResponse)
   async getUserByUsername(@Arg("username") username: string) {
+    if (!username) {
+      return {
+        error: {
+          message: "Wrong input",
+          field: "username",
+        },
+      };
+    }
     const user = await UserModel.findOne({ username });
 
     if (!user) {

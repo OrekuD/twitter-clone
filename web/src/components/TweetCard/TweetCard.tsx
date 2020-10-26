@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
@@ -37,7 +37,6 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
     commentsCount,
     likes,
     retweets,
-    isRetweet,
     parentTweetCreator,
   } = tweet;
   const [, like] = useLikeTweetMutation();
@@ -49,6 +48,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
   } = useAppContext();
   const userId = userDetails?._id!;
   const { push } = useHistory();
+  const { params } = useRouteMatch<{ username: string }>();
 
   const share = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
@@ -117,16 +117,6 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
         push(`/${username}/status/${_id}`);
       }}
     >
-      {isRetweet && (
-        <div className="type">
-          <Retweet size={14} color={grey} />
-          {userHasRetweeted(retweets, userId) >= 0 && isRetweet ? (
-            <p>You Retweeted</p>
-          ) : (
-            <p>{retweets[0]?.username} Retweeted</p>
-          )}
-        </div>
-      )}
       {pinnedTweet && (
         <div className="type">
           <Retweet size={14} color={grey} />
@@ -140,6 +130,10 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
           alt="profile"
           onClick={(e) => {
             e.stopPropagation();
+            if (params.username === username) {
+              window.scrollTo({ behavior: "smooth", top: 0 });
+              return;
+            }
             push(`/${username}`);
           }}
         />

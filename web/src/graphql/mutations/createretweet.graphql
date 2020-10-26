@@ -1,18 +1,6 @@
 mutation CreateReTweet($tweetId: String!) {
   createReTweet(tweetId: $tweetId) {
-    tweet {
-      content
-      _id
-      createdAt
-      creator {
-        username
-        bio
-        _id
-      }
-    }
-    error {
-      message
-      field
-    }
+    state
+    message
   }
 }
