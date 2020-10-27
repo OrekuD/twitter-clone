@@ -1,7 +1,6 @@
 import { prop, getModelForClass, mongoose, Ref } from "@typegoose/typegoose";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Like } from "./Like";
-import { Retweet } from "./Retweet";
 import { User } from "./User";
 
 @ObjectType()
@@ -9,9 +8,15 @@ export class Tweet {
   @Field(() => ID)
   _id: mongoose.Types.ObjectId;
 
+  // A tweet with a parentId is a comment
   @prop()
   @Field(() => String, { nullable: true })
   parentId: string | null;
+
+  // A tweet with a originalTweetId is a retweet
+  @prop()
+  @Field(() => String, { nullable: true })
+  originalTweetId: string | null;
 
   @prop()
   @Field()
@@ -34,8 +39,8 @@ export class Tweet {
   likes: Ref<Like>[];
 
   @prop()
-  @Field(() => [Retweet])
-  retweets: Ref<Retweet>[];
+  @Field(() => [User])
+  retweets: Ref<User>[];
 
   _doc?: any;
 }

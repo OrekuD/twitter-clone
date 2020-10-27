@@ -11,7 +11,6 @@ import {
   InputType,
   FieldResolver,
   Root,
-  Int,
 } from "type-graphql";
 import { Tweet, TweetModel } from "../Models/Tweet";
 import { Context } from "../types";
@@ -19,8 +18,7 @@ import { extractHashtags } from "../Utils/extractHashtags";
 import { TrendsModel } from "../Models/Trends";
 import { User, UserModel } from "../Models/User";
 import { Like, LikeModel } from "../Models/Like";
-import { userLoader } from "../Utils/dataLoaders";
-import { Retweet, RetweetModel } from "../Models/Retweet";
+import { likeLoader, tweetLoader, userLoader } from "../Utils/dataLoaders";
 
 @ObjectType()
 class TweetError {
@@ -102,6 +100,7 @@ export class TweetsResolver {
       createdAt: Date.now(),
       commentsCount: 0,
       parentId: null,
+      originalTweetId: null,
       likes: [],
       retweets: [],
     });
@@ -120,7 +119,7 @@ export class TweetsResolver {
           await TrendsModel.updateOne(
             { _id: trend.id! },
             {
-              $push: { Tweets: [tweet.id] as any },
+              $push: { Tweets: tweet.id },
               numberOfTweets: trend.numberOfTweets + 1,
             }
           );
@@ -131,6 +130,49 @@ export class TweetsResolver {
     return {
       state: true,
       message: "Tweet successfull",
+    };
+  }
+
+  @Mutation(() => TweetResponse)
+  @UseMiddleware(Auth)
+  async createRetweet(
+    @Arg("tweetId") tweetId: string,
+    @Arg("content") content: string,
+    @Ctx() { request }: Context
+  ): Promise<TweetResponse> {
+    const tweet = await TweetModel.findOne({ _id: tweetId });
+    const { userId } = request.session;
+    if (!tweet) {
+      return {
+        state: false,
+        message: "Tweet is unavailable",
+      };
+    }
+
+    const retweet = await TweetModel.create({
+      originalTweetId: tweetId,
+      createdAt: Date.now(),
+      content,
+      creator: userId,
+      commentsCount: 0,
+      parentId: null,
+      likes: [],
+      retweets: [],
+    });
+
+    await TweetModel.updateOne(
+      {
+        _id: tweetId,
+      },
+      {
+        $push: { retweets: userId },
+      }
+    );
+    await retweet.save();
+
+    return {
+      state: true,
+      message: "Retweet successfull",
     };
   }
 
@@ -152,6 +194,7 @@ export class TweetsResolver {
 
     const comment = await TweetModel.create({
       parentId: tweetId,
+      originalTweetId: null,
       content,
       creator: userId,
       createdAt: Date.now(),
@@ -207,20 +250,13 @@ export class TweetsResolver {
     // There's definitely a better way to generate the timeline
     // This is the easiest way I could think of :)
 
-    // First, get the IDs of the current user and the users he/she is following
+    // First, get the IDs of the current user and that user's following list
     const ids = [userId, ...user?.following!];
 
     // then, fetch their tweets
     const tweets = await TweetModel.find({
       creator: {
         $in: ids.flat(Infinity).map((id) => String(id)),
-      },
-    });
-
-    // then, fetch the retweets of user's following list
-    const retweets = await RetweetModel.find({
-      creatorId: {
-        $in: user?.following.map((id) => String(id)),
       },
     });
 
@@ -231,55 +267,40 @@ export class TweetsResolver {
       },
     });
 
-    // then, fetch the tweets associated with the likes / retweets
-    const tweetsIds = [
-      ...retweets.map((retweet) => retweet.tweetId),
-      ...likes.map((like) => like.tweetId),
-    ];
+    // then, fetch the tweets associated with the likes
+    const tweetsIds = likes.map((like) => like.tweetId);
 
-    const timelineTweets = await TweetModel.find({
+    const likedTweets = await TweetModel.find({
       _id: {
         $in: [...new Set(tweetsIds)], // remove duplicates
       },
     });
 
     // then, sort results based on their createdAt field
-    const sortedItems = [...likes, ...retweets, ...tweets].sort(
+    const sortedItems = [...likes, ...tweets].sort(
       (a, b) => b.createdAt.valueOf() - a.createdAt.valueOf()
     );
 
     const sortedTweets = sortedItems.map((item) => {
-      if ((item as Like | Retweet).tweetId) {
-        return timelineTweets.find(
-          ({ id }) => id === (item as Like | Retweet).tweetId
-        );
+      if ((item as Like).tweetId) {
+        return likedTweets.find(({ id }) => id === (item as Like).tweetId);
       } else {
         return item;
       }
     });
 
-    const uniq = (array: (Like | Tweet | undefined)[]) => {
-      const objs: (Like | Tweet | undefined)[] = [];
-      return array.filter((item) => {
-        return objs.indexOf(item) >= 0 ? false : objs.push(item);
-      });
-    };
-
     // Remove any duplicate tweets and return result
-    return uniq(sortedTweets);
+    // const uniq = (array: (Like | Tweet | undefined)[]) => {
+    //   const objs: (Like | Tweet | undefined)[] = [];
+    //   return array.filter((item) => {
+    //     return objs.indexOf(item) >= 0 ? false : objs.push(item);
+    //   });
+    // };
+
+    return sortedTweets;
   }
 
   // Field resolvers
-  @FieldResolver(() => Int)
-  likesCount(@Root() tweet: Tweet) {
-    return tweet._doc.likes.length;
-  }
-
-  @FieldResolver(() => Int)
-  retweetsCount(@Root() tweet: Tweet) {
-    return tweet._doc.retweets.length;
-  }
-
   @FieldResolver(() => User, { nullable: true })
   creator(@Root() tweet: Tweet) {
     return userLoader().load(tweet._doc.creator);
@@ -287,12 +308,14 @@ export class TweetsResolver {
 
   @FieldResolver(() => [Like])
   likes(@Root() tweet: Tweet) {
-    return LikeModel.find({ _id: { $in: tweet._doc.likes } });
+    // LikeModel.find({ _id: { $in: tweet._doc.likes } });
+    return likeLoader().loadMany(tweet._doc.likes);
   }
 
-  @FieldResolver(() => [Retweet])
+  @FieldResolver(() => [User])
   retweets(@Root() tweet: Tweet) {
-    return RetweetModel.find({ _id: { $in: tweet._doc.retweets } });
+    // UserModel.find({ _id: { $in: tweet._doc.retweets } })
+    return userLoader().loadMany(tweet._doc.retweets);
   }
 
   @FieldResolver(() => String, { nullable: true })
@@ -303,5 +326,14 @@ export class TweetsResolver {
     const parentTweet = await TweetModel.findOne({ _id: tweet._doc.parentId });
     const user = await UserModel.findOne({ _id: parentTweet?.creator });
     return user?.username;
+  }
+
+  @FieldResolver(() => Tweet, { nullable: true })
+  originalTweet(@Root() tweet: Tweet) {
+    if (!tweet._doc.originalTweetId) {
+      return null;
+    }
+    // TweetModel.findOne({ _id: tweet._doc.originalTweetId })
+    return tweetLoader().load(tweet._doc.originalTweetId);
   }
 }

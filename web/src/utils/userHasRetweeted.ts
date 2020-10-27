@@ -1,4 +1,6 @@
-import { Retweet } from "../generated/graphql";
+import { UserPartialDetailsFragment } from "../generated/graphql";
 
-export const userHasRetweeted = (retweets: Retweet[], userId: string) =>
-  retweets.findIndex((retweet) => retweet.creatorId === userId);
+export const userHasRetweeted = (
+  retweets: UserPartialDetailsFragment[],
+  userId: string
+) => retweets.findIndex((retweet) => retweet._id === userId);

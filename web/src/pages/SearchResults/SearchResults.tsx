@@ -35,7 +35,7 @@ const SearchResults = () => {
     <Layout>
       <div className="search-results-page">
         <div className="top-section">
-          <button onClick={history.goBack} className="back-icon">
+          <button onClick={history.goBack} className="icon-wrapper">
             <Arrow size={24} color={blue} />
           </button>
           <div className="search-input-container">

@@ -50,7 +50,7 @@ const client = createClient({
           addUserDetails: (_, __, cache) => {
             cache.invalidate("Query", "currentUser");
           },
-          createReTweet: (_, __, cache) => {
+          createRetweet: (_, __, cache) => {
             invalidateAllTweets(cache);
           },
           likeTweet: (_, __, cache) => {

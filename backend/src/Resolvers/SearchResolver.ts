@@ -18,18 +18,16 @@ export class SearchResolver {
   async search(@Arg("searchTerm") searchTerm: string): Promise<Response> {
     const tweets = await TweetModel.find();
     const users = await UserModel.find();
-    const userkeys = ["username", "fullname"];
-    const tweetkeys = ["content"];
     const userSearch = new Fuse(users, {
-      keys: userkeys,
+      keys: ["username", "fullname"],
     });
-    const tweetSearch = new Fuse(tweets, {
-      keys: tweetkeys,
+    const tweetsSearch = new Fuse(tweets, {
+      keys: ["content"],
     });
     const usersResults = userSearch.search(searchTerm);
-    const tweetResults = tweetSearch.search(searchTerm);
+    const tweetsResults = tweetsSearch.search(searchTerm);
     return {
-      tweets: tweetResults.map((result) => result.item),
+      tweets: tweetsResults.map((result) => result.item),
       users: usersResults.map((result) => result.item),
     };
   }

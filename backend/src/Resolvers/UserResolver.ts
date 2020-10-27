@@ -17,6 +17,7 @@ import { Context } from "../types";
 import { Auth } from "../Middleware/Auth";
 import { mongoose } from "@typegoose/typegoose";
 import { Tweet, TweetModel } from "../Models/Tweet";
+import { userLoader } from "../Utils/dataLoaders";
 
 @ObjectType()
 class UserError {
@@ -116,7 +117,7 @@ export class UserResolver {
       location: "",
       followers: [],
       following: [],
-      image: "/dummy.jpg",
+      image: "/dummy.png",
       pinnedTweetId: null,
     });
     await newUser.save();
@@ -331,12 +332,14 @@ export class UserResolver {
 
   @FieldResolver(() => [User])
   followers(@Root() user: User) {
-    return UserModel.find({ _id: { $in: user._doc.followers } });
+    // UserModel.find({ _id: { $in: user._doc.followers } })
+    return userLoader().loadMany(user._doc.followers);
   }
 
   @FieldResolver(() => [User])
   following(@Root() user: User) {
-    return UserModel.find({ _id: { $in: user._doc.following } });
+    // UserModel.find({ _id: { $in: user._doc.following } });
+    return userLoader().loadMany(user._doc.following);
   }
 
   @FieldResolver(() => Tweet, { nullable: true })

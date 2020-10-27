@@ -3,11 +3,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
-import {
-  Tweet,
-  useCreateReTweetMutation,
-  useLikeTweetMutation,
-} from "../../generated/graphql";
+import { Tweet, useLikeTweetMutation } from "../../generated/graphql";
 import {
   FavouriteFilled,
   Favourite,
@@ -16,15 +12,17 @@ import {
   ChevronDown,
   Retweet,
   Pin,
+  MenuDots,
 } from "../../Svgs";
-import { timeSince } from "../../utils/timeSince";
 import { userHasLiked } from "../../utils/userHasLiked";
-import ParseText from "../ParseText/ParseText";
+import ParsedText from "../ParsedText/ParsedText";
 import "./TweetCard.scss";
 import { abbreviateNumber } from "../../utils/abreviateNumber";
 import { userHasRetweeted } from "../../utils/userHasRetweeted";
 import { isFollowing } from "../../utils/isFollowing";
 import { usersWhoLiked } from "../../utils/usersWhoLiked";
+import OriginalTweetCard from "../OriginalTweetCard/OriginalTweetCard";
+import { timeSince } from "../../utils/dateFormatters";
 
 interface Props {
   tweet: Tweet;
@@ -41,13 +39,14 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
     likes,
     retweets,
     parentTweetCreator,
+    originalTweet,
   } = tweet;
   const [, like] = useLikeTweetMutation();
-  const [, createRetweet] = useCreateReTweetMutation();
   const {
     userDetails,
     setShowCommentModal,
     setSelectedTweet,
+    setShowRetweetModal,
   } = useAppContext();
   const userId = userDetails?._id!;
   const { push } = useHistory();
@@ -88,25 +87,6 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
 
     // Call like mutation
     await like({
-      tweetId: _id,
-    });
-  };
-
-  const retweet = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
-    // Mutate retweets array on client side just to show user an immediate visual feedback
-    if (userHasRetweeted(retweets, userId) >= 0) {
-      retweets.splice(userHasRetweeted(retweets, userId), 1);
-    } else {
-      retweets.unshift({
-        creatorId: userId,
-      } as any);
-    }
-
-    // Call retweet mutation
-    await createRetweet({
       tweetId: _id,
     });
   };
@@ -154,10 +134,10 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
               <p className="fullname">{fullname}</p>
               <p className="username">@{username}</p>
               <div className="dot" />
-              <p className="username">{timeSince(new Date(createdAt))}</p>
+              <p className="username">{timeSince(createdAt)}</p>
             </div>
-            <div className="view-tweet">
-              <ChevronDown size={16} color={grey} />
+            <div className="icon-wrapper">
+              <MenuDots size={20} />
             </div>
           </div>
           {parentTweetCreator && (
@@ -173,7 +153,19 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
               </span>
             </p>
           )}
-          <ParseText text={content} />
+          <ParsedText text={content} />
+          {originalTweet && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                push(
+                  `/${originalTweet?.creator.username}/status/${originalTweet?._id}`
+                );
+              }}
+            >
+              <OriginalTweetCard tweet={originalTweet} />
+            </div>
+          )}
           <div className="tweet-actions">
             <div className="icon-container">
               <button className="icon" onClick={commentTweet}>
@@ -186,7 +178,14 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
               </button>
             </div>
             <div className="icon-container">
-              <button className="icon" onClick={retweet}>
+              <button
+                className="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTweet(tweet);
+                  setShowRetweetModal(true);
+                }}
+              >
                 <div className="svg">
                   <Retweet
                     size={20}

@@ -1,13 +1,13 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import "./ParseText.scss";
+import "./ParsedText.scss";
 
 interface Props {
   text: string;
   isBio?: boolean;
 }
 
-const ParseText = ({ text, isBio }: Props) => {
+const ParsedText = ({ text, isBio }: Props) => {
   const { push } = useHistory();
   if (!text) {
     return null;
@@ -55,4 +55,4 @@ const ParseText = ({ text, isBio }: Props) => {
   );
 };
 
-export default ParseText;
+export default ParsedText;

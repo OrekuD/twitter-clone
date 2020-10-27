@@ -11,7 +11,6 @@ import connectMongo from "connect-mongo";
 import { SearchResolver } from "./Resolvers/SearchResolver";
 import { TrendsResolver } from "./Resolvers/TrendsResolver";
 import { setLogLevel, LogLevels } from "@typegoose/typegoose";
-import { RetweetResolver } from "./Resolvers/RetweetResolver";
 
 const main = async () => {
   const PORT = process.env.PORT || 4000;
@@ -51,7 +50,6 @@ const main = async () => {
       LikeResolver,
       SearchResolver,
       TrendsResolver,
-      RetweetResolver,
     ],
     validate: false,
   });

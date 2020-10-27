@@ -76,7 +76,10 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
       <form onSubmit={handleSubmit}>
         <div className="edit-details">
           <div className="modal-header">
-            <button className="close-btn" onClick={() => setIsVisible(false)}>
+            <button
+              className="icon-wrapper"
+              onClick={() => setIsVisible(false)}
+            >
               <Cancel size={24} color={blue} />
             </button>
             <p className="edit-details-title">Edit profile</p>

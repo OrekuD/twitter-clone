@@ -1,5 +1,5 @@
-mutation CreateReTweet($tweetId: String!) {
-  createReTweet(tweetId: $tweetId) {
+mutation CreateRetweet($tweetId: String!, $content: String!) {
+  createRetweet(tweetId: $tweetId, content: $content) {
     state
     message
   }

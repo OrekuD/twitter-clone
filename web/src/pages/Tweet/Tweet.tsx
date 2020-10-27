@@ -4,8 +4,9 @@ import {
   Layout,
   Spinner,
   StackHeader,
-  ParseText,
+  ParsedText,
   Tweets,
+  OriginalTweetCard,
 } from "../../components";
 import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { grey } from "../../constants/colors";
@@ -15,7 +16,6 @@ import {
   useGetTweetCommentsQuery,
   useGetTweetQuery,
   useLikeTweetMutation,
-  useCreateReTweetMutation,
 } from "../../generated/graphql";
 import {
   ChatBubble,
@@ -36,6 +36,7 @@ const TweetPage = () => {
     setSelectedTweet,
     setShowCommentModal,
     userDetails,
+    setShowRetweetModal,
   } = useAppContext();
   const userId = userDetails?._id!;
   const { params } = useRouteMatch<{ username: string; tweetId: string }>();
@@ -47,7 +48,6 @@ const TweetPage = () => {
   });
   const { push } = useHistory();
   const [, likeTweet] = useLikeTweetMutation();
-  const [, createRetweet] = useCreateReTweetMutation();
 
   useEffect(() => {
     getTweet();
@@ -73,6 +73,7 @@ const TweetPage = () => {
     creator,
     retweets,
     parentTweetCreator,
+    originalTweet,
   } = data?.getTweet.tweet as Tweet;
   const { image, fullname, username } = creator;
 
@@ -127,7 +128,19 @@ const TweetPage = () => {
             </span>
           </p>
         )}
-        <ParseText text={content} />
+        <ParsedText text={content} />
+        {originalTweet && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              push(
+                `/${originalTweet?.creator.username}/status/${originalTweet?._id}`
+              );
+            }}
+          >
+            <OriginalTweetCard tweet={originalTweet} />
+          </div>
+        )}
         <div className="tweet-page-details">
           <p>{formatTime(createdAt)}</p>
           <div className="dot" />
@@ -155,9 +168,8 @@ const TweetPage = () => {
             <button
               className="icon"
               onClick={() => {
-                createRetweet({
-                  tweetId: _id,
-                });
+                setSelectedTweet(data?.getTweet.tweet as Tweet);
+                setShowRetweetModal(true);
               }}
             >
               <div className="svg">

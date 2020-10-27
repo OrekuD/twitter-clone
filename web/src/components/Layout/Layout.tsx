@@ -3,6 +3,7 @@ import CreateComment from "../CreateComment/CreateComment";
 import SideMenu from "../SideMenu/SideMenu";
 import SearchTab from "../SearchTab/SearchTab";
 import "./Layout.scss";
+import CreateRetweet from "../CreateRetweet/CreateRetweet";
 
 const Layout: React.FC = ({ children }) => {
   return (
@@ -12,6 +13,7 @@ const Layout: React.FC = ({ children }) => {
         <div className="content-container">{children}</div>
         <SearchTab />
         <CreateComment />
+        <CreateRetweet />
       </div>
     </>
   );

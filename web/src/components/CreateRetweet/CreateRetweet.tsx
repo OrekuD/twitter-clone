@@ -5,11 +5,12 @@ import { useAppContext } from "../../context/context";
 import { Cancel } from "../../Svgs";
 import Modal from "../Modal/Modal";
 import ParsedText from "../ParsedText/ParsedText";
-import { useCreateCommentMutation } from "../../generated/graphql";
+import { useCreateRetweetMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import "./CreateComment.scss";
+import "./CreateRetweet.scss";
 import { timeSince } from "../../utils/dateFormatters";
+import OriginalTweetCard from "../OriginalTweetCard/OriginalTweetCard";
 
 const schema = Yup.object().shape({
   comment: Yup.string()
@@ -18,15 +19,14 @@ const schema = Yup.object().shape({
     .required(),
 });
 
-const CreateComment = () => {
+const CreateRetweet = () => {
   const {
     selectedTweet,
-    setShowCommentModal,
-    setSelectedTweet,
-    showCommentModal,
+    setShowRetweetModal,
+    showRetweetModal,
     userDetails,
   } = useAppContext();
-  const [, createComment] = useCreateCommentMutation();
+  const [, createRetweet] = useCreateRetweetMutation();
 
   const {
     handleChange,
@@ -40,13 +40,13 @@ const CreateComment = () => {
     validationSchema: schema,
     initialErrors: { comment: "Comment must exceed 1 character" },
     onSubmit: async (values, { resetForm }) => {
-      await createComment({
+      await createRetweet({
         content: values.comment,
-        tweetId: _id,
+        tweetId: selectedTweet?._id!,
       });
       resetForm();
       setTimeout(() => {
-        setShowCommentModal(false);
+        setShowRetweetModal(false);
       }, 500);
     },
   });
@@ -54,49 +54,22 @@ const CreateComment = () => {
   if (!selectedTweet) {
     return null;
   }
-  const {
-    _id,
-    content,
-    createdAt,
-    creator: { fullname, username, image },
-  } = selectedTweet;
 
   return (
     <Modal
-      isVisible={showCommentModal}
-      onClose={() => setShowCommentModal(false)}
+      isVisible={showRetweetModal}
+      onClose={() => setShowRetweetModal(false)}
     >
       <div className="create-comment">
         <div className="modal-header">
           <button
             className="icon-wrapper"
-            onClick={() => {
-              setShowCommentModal(false);
-            }}
+            onClick={() => setShowRetweetModal(false)}
           >
             <Cancel size={24} color={blue} />
           </button>
         </div>
         <div className="comment-content">
-          <div className="tweet">
-            <img
-              src={`${PROFILE_IMAGES_BASE_URL + image}`}
-              alt="profile"
-              className="profile-image"
-            />
-            <div className="tweet-details">
-              <div className="user-details">
-                <p className="fullname">{fullname}</p>
-                <p className="username">@{username}</p>
-                <div className="dot" />
-                <p className="username">{timeSince(createdAt)}</p>
-              </div>
-              <ParsedText text={content} />
-              <p className="replying-to">
-                Replying to <span>@{username}</span>
-              </p>
-            </div>
-          </div>
           <div className="reply">
             <img
               src={`${PROFILE_IMAGES_BASE_URL + userDetails?.image}`}
@@ -106,7 +79,7 @@ const CreateComment = () => {
             <form onSubmit={handleSubmit} className="comment-input">
               <textarea
                 className="textarea"
-                placeholder="Tweet your reply"
+                placeholder="Add a comment"
                 draggable={false}
                 value={comment}
                 onChange={handleChange("comment")}
@@ -117,14 +90,15 @@ const CreateComment = () => {
                 }}
               ></textarea>
               <button className="ripple-btn" disabled={!!errors.comment}>
-                Reply
+                Retweet
               </button>
             </form>
           </div>
+          <OriginalTweetCard tweet={selectedTweet} />
         </div>
       </div>
     </Modal>
   );
 };
 
-export default CreateComment;
+export default CreateRetweet;

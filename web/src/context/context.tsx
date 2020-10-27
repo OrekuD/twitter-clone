@@ -10,10 +10,12 @@ import { AppContext } from "../types";
 const Context = createContext<AppContext>({
   isLoggedIn: false,
   showCommentModal: false,
+  showRetweetModal: false,
   showSplashScreen: true,
   selectedTweet: null,
   setSelectedTweet: () => {},
   setShowCommentModal: () => {},
+  setShowRetweetModal: () => {},
   setShowSplashScreen: () => {},
   setIsLoggedIn: () => {},
   userDetails: null,
@@ -26,9 +28,10 @@ const Provider: React.FC = ({ children }) => {
     setUserDetails,
   ] = useState<UserFullDetailsFragment | null>(null);
   const [showCommentModal, setShowCommentModal] = useState(false);
+  const [showRetweetModal, setShowRetweetModal] = useState(false);
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
-  const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
+  const [{ data, error }, getUserDetails] = useGetCurrentUserDetailsQuery();
 
   useEffect(() => {
     setIsLoggedIn(isLoggedIn);
@@ -76,6 +79,8 @@ const Provider: React.FC = ({ children }) => {
     setSelectedTweet,
     setShowSplashScreen,
     showSplashScreen,
+    showRetweetModal,
+    setShowRetweetModal,
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

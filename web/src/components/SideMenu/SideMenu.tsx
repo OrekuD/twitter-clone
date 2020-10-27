@@ -90,7 +90,7 @@ const SideMenu = () => {
       </div>
       <Modal isVisible={isVisible} onClose={() => setIsVisible(false)}>
         <div className="modal-header">
-          <button className="close-btn" onClick={() => setIsVisible(false)}>
+          <button className="icon-wrapper" onClick={() => setIsVisible(false)}>
             <Cancel size={24} color={blue} />
           </button>
         </div>

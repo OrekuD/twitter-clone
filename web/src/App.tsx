@@ -2,7 +2,6 @@ import React from "react";
 import "./App.scss";
 import "./normalize.css";
 import {
-  EditDetails,
   Home,
   Login,
   Tweet,
@@ -23,7 +22,7 @@ function App() {
   return (
     <>
       {!isLoggedIn && <Redirect from="/" to="/login" />}
-      {isLoggedIn && <Redirect from="/" to="/home" />}
+      {isLoggedIn && <Redirect exact strict from="/" to="/home" />}
       <Route path="/" exact component={LandingPage} />
       <Route path="/home" exact component={Home} />
       <Route path="/explore" exact component={Explore} />

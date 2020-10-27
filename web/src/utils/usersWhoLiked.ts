@@ -12,6 +12,5 @@ export const usersWhoLiked = (
       }
     });
   });
-  console.log(users);
   return users;
 };

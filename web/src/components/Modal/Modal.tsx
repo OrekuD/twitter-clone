@@ -1,6 +1,7 @@
 import React from "react";
 import "./Modal.scss";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAppContext } from "../../context/context";
 
 interface Props {
   isVisible: boolean;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const Modal: React.FC<Props> = ({ isVisible, children, onClose }) => {
+  const { setSelectedTweet } = useAppContext();
   return (
     <AnimatePresence exitBeforeEnter>
       {isVisible && (

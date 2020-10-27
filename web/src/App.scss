@@ -52,6 +52,27 @@ textarea {
   place-items: center;
 }
 
+.welcome {
+  padding: 40px 15px;
+  text-align: center;
+
+  .main-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .sub-title {
+    font-size: 14px;
+    color: $grey;
+    margin: 15px 0;
+  }
+
+  button {
+    height: 40px;
+    border-radius: 20px;
+  }
+}
+
 .tabs {
   height: 60px;
   display: flex;
@@ -354,7 +375,7 @@ textarea {
   }
 }
 
-.back-icon {
+.icon-wrapper {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -362,7 +383,23 @@ textarea {
   place-items: center;
   transition: 0.3s ease-in-out background;
 
+  svg {
+    fill: $grey;
+  }
+
   &:hover {
     background-color: $lightpurple;
+
+    svg {
+      fill: $blue;
+    }
   }
+}
+
+.dot {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: $grey;
+  margin: 0 5px;
 }

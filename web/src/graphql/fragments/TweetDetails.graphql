@@ -3,6 +3,15 @@ fragment TweetDetails on Tweet {
   content
   createdAt
   parentTweetCreator
+  originalTweet {
+    _id
+    content
+    createdAt
+    parentTweetCreator
+    creator {
+      ...UserPartialDetails
+    }
+  }
   creator {
     ...UserPartialDetails
   }
@@ -10,7 +19,7 @@ fragment TweetDetails on Tweet {
     creatorId
   }
   retweets {
-    creatorId
+    ...UserPartialDetails
   }
   commentsCount
 }

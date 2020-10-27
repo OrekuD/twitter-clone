@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ParseText } from "../../components";
+import { ParsedText } from "../../components";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import { useAppContext } from "../../context/context";
 import {
@@ -93,7 +93,7 @@ export const Profile = ({ user, setIsVisible }: Props) => {
       <div className="profile-details">
         <p className="fullname">{fullname}</p>
         <p className="username">@{username}</p>
-        <ParseText text={bio} isBio />
+        <ParsedText text={bio} isBio />
         <div className="links">
           {location && (
             <div className="row">

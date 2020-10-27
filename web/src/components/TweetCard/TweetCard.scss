@@ -1,7 +1,7 @@
 @import "../../constants/colors.scss";
 
 .tweet-card-container {
-  padding: 10px 20px;
+  padding: 5px 20px 10px 20px;
   padding-bottom: 0;
   border-bottom: 1px solid $lightgrey;
   transition: background 0.3s ease-in-out;
@@ -32,7 +32,7 @@
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background-color: rebeccapurple;
+      margin-top: 10px;
     }
 
     .tweet-card-content {
@@ -43,15 +43,22 @@
         margin-top: -2px;
       }
 
+      .parsed-text {
+        margin-top: -5px;
+      }
+
       .tweet-card-header {
         display: flex;
         width: 100%;
+        // background-color: red;
+
         .user-details {
           display: flex;
+          align-items: center;
           font-size: 14px;
 
           .fullname {
-            font-weight: 600;
+            font-weight: 700;
             color: #ffffff;
             margin-right: 5px;
           }
@@ -59,17 +66,9 @@
           .username {
             color: $grey;
           }
-
-          .dot {
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            background-color: $grey;
-            margin: auto 5px;
-          }
         }
 
-        .view-tweet {
+        .icon-wrapper {
           margin-left: auto;
         }
       }

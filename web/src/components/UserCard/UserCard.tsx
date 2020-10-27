@@ -6,7 +6,7 @@ import {
 } from "../../generated/graphql";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import "./UserCard.scss";
-import ParseText from "../ParseText/ParseText";
+import ParsedText from "../ParsedText/ParsedText";
 import { useHistory } from "react-router-dom";
 import { isFollowing } from "../../utils/isFollowing";
 import { useAppContext } from "../../context/context";
@@ -93,7 +93,7 @@ const UserCard = ({ user }: Props) => {
             </button>
           )}
         </div>
-        <ParseText text={bio} />
+        <ParsedText text={bio} />
       </div>
     </div>
   );

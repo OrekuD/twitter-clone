@@ -23,19 +23,6 @@
       padding-left: 15px;
       display: flex;
       align-items: center;
-
-      .close-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        transition: 0.3s ease-in-out background;
-
-        &:hover {
-          background-color: rgba(29, 161, 243, 0.1);
-        }
-      }
     }
   }
 }

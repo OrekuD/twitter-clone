@@ -1,5 +1,7 @@
 export { Header, StackHeader } from "./AppBars";
 export { default as CreateTweet } from "./CreateTweet/CreateTweet";
+export { default as CreateRetweet } from "./CreateRetweet/CreateRetweet";
+export { default as OriginalTweetCard } from "./OriginalTweetCard/OriginalTweetCard";
 export { default as TweetCard } from "./TweetCard/TweetCard";
 export { default as UserCard } from "./UserCard/UserCard";
 export { default as Spinner } from "./Spinner/Spinner";
@@ -10,6 +12,6 @@ export { default as Tweets } from "./Tweets/Tweets";
 export { default as SplashScreen } from "./SplashScreen/SplashScreen";
 export { default as Modal } from "./Modal/Modal";
 export { default as CreateComment } from "./CreateComment/CreateComment";
-export { default as ParseText } from "./ParseText/ParseText";
+export { default as ParsedText } from "./ParsedText/ParsedText";
 export { default as EditDetails } from "./EditDetails/EditDetails";
 export { default as Users } from "./Users/Users";

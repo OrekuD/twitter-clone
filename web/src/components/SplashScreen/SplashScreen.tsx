@@ -11,7 +11,7 @@ const SplashScreen = () => {
   }
   return (
     <div className="splash-screen">
-      <Logo size={70} color="#1DA1F2" />
+      <Logo size={90} color="#1DA1F2" />
     </div>
   );
 };

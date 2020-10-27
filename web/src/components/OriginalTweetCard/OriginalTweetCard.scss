@@ -1,0 +1,49 @@
+@import "../../constants/colors.scss";
+
+.original-tweet-card {
+  border: 1px solid $lightgrey;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  transition: background 0.3s ease-in-out;
+
+  &:hover {
+    background-color: $lighterpurple;
+    cursor: pointer;
+  }
+
+  .profile-details {
+    display: flex;
+    align-items: center;
+    // background-color: red;
+    margin-bottom: 10px;
+
+    .profile-image-small {
+      width: 20px;
+      height: 20px;
+      border-radius: 10px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    .fullname {
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 3px;
+    }
+
+    .username {
+      color: $grey;
+    }
+
+    .created-at {
+      color: $grey;
+    }
+
+    .dot {
+      margin: 0 3px;
+    }
+  }
+}

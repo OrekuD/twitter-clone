@@ -12,41 +12,6 @@
   .comment-content {
     padding: 10px;
 
-    .tweet {
-      display: flex;
-
-      .tweet-details {
-        margin-left: 15px;
-
-        p {
-          font-size: 14px;
-        }
-
-        .user-details {
-          display: flex;
-          align-items: center;
-
-          .fullname {
-            font-weight: 600;
-            margin-right: 5px;
-          }
-
-          .username {
-            color: $grey;
-          }
-        }
-
-        .replying-to {
-          color: $grey;
-          margin-top: 15px;
-
-          span {
-            color: $blue;
-          }
-        }
-      }
-    }
-
     .reply {
       display: flex;
       margin-top: 15px;
