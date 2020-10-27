@@ -203,17 +203,70 @@ export class TweetsResolver {
   async getUserTimeline(@Ctx() { request }: Context) {
     const { userId } = request.session;
     const user = await UserModel.findOne({ _id: userId });
+
+    // There's definitely a better way to generate the timeline
+    // This is the easiest way I could think of :)
+
+    // First, get the IDs of the current user and the users he/she is following
     const ids = [userId, ...user?.following!];
 
-    // const sortedActivities = activities.sort((a, b) => b.date - a.date)
-
-    return TweetModel.find({
+    // then, fetch their tweets
+    const tweets = await TweetModel.find({
       creator: {
         $in: ids.flat(Infinity).map((id) => String(id)),
       },
-    }).sort({
-      createdAt: "desc",
     });
+
+    // then, fetch the retweets of user's following list
+    const retweets = await RetweetModel.find({
+      creatorId: {
+        $in: user?.following.map((id) => String(id)),
+      },
+    });
+
+    // then, fetch the likes of user's following list
+    const likes = await LikeModel.find({
+      creatorId: {
+        $in: user?.following.map((id) => String(id)),
+      },
+    });
+
+    // then, fetch the tweets associated with the likes / retweets
+    const tweetsIds = [
+      ...retweets.map((retweet) => retweet.tweetId),
+      ...likes.map((like) => like.tweetId),
+    ];
+
+    const timelineTweets = await TweetModel.find({
+      _id: {
+        $in: [...new Set(tweetsIds)], // remove duplicates
+      },
+    });
+
+    // then, sort results based on their createdAt field
+    const sortedItems = [...likes, ...retweets, ...tweets].sort(
+      (a, b) => b.createdAt.valueOf() - a.createdAt.valueOf()
+    );
+
+    const sortedTweets = sortedItems.map((item) => {
+      if ((item as Like | Retweet).tweetId) {
+        return timelineTweets.find(
+          ({ id }) => id === (item as Like | Retweet).tweetId
+        );
+      } else {
+        return item;
+      }
+    });
+
+    const uniq = (array: (Like | Tweet | undefined)[]) => {
+      const objs: (Like | Tweet | undefined)[] = [];
+      return array.filter((item) => {
+        return objs.indexOf(item) >= 0 ? false : objs.push(item);
+      });
+    };
+
+    // Remove any duplicate tweets and return result
+    return uniq(sortedTweets);
   }
 
   // Field resolvers

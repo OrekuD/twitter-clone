@@ -56,7 +56,7 @@ const Register = () => {
         setErrors(convertError(res.data?.createAccount.error));
       } else if (res.data?.createAccount.user) {
         setIsLoggedIn(true);
-        history.push("/");
+        history.push("/home");
       }
     },
   });

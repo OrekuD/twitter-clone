@@ -15,6 +15,7 @@ import {
   Share,
   ChevronDown,
   Retweet,
+  Pin,
 } from "../../Svgs";
 import { timeSince } from "../../utils/timeSince";
 import { userHasLiked } from "../../utils/userHasLiked";
@@ -22,6 +23,8 @@ import ParseText from "../ParseText/ParseText";
 import "./TweetCard.scss";
 import { abbreviateNumber } from "../../utils/abreviateNumber";
 import { userHasRetweeted } from "../../utils/userHasRetweeted";
+import { isFollowing } from "../../utils/isFollowing";
+import { usersWhoLiked } from "../../utils/usersWhoLiked";
 
 interface Props {
   tweet: Tweet;
@@ -119,8 +122,16 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
     >
       {pinnedTweet && (
         <div className="type">
-          <Retweet size={14} color={grey} />
+          <Pin size={12} color={grey} />
           <p>Pinned Tweet</p>
+        </div>
+      )}
+      {usersWhoLiked(userDetails?.following!, likes).length > 0 && (
+        <div className="type">
+          <FavouriteFilled size={12} color={grey} />
+          <p>
+            {usersWhoLiked(userDetails?.following!, likes)[0].fullname} liked
+          </p>
         </div>
       )}
       <div className="tweet-card">

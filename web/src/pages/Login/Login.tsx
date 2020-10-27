@@ -35,7 +35,7 @@ const Login = () => {
           setErrors(convertError(res.data?.login.error));
         } else if (res.data?.login.user) {
           setIsLoggedIn(true);
-          history.push("/");
+          history.push("/home");
         }
       },
     }
