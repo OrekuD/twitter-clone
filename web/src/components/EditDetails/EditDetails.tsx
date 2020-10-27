@@ -73,7 +73,7 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
         setIsVisible(false);
       }}
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form">
         <div className="edit-details">
           <div className="modal-header">
             <button

@@ -40,7 +40,7 @@ const TweetPage = () => {
   } = useAppContext();
   const userId = userDetails?._id!;
   const { params } = useRouteMatch<{ username: string; tweetId: string }>();
-  const [{ data }, getTweet] = useGetTweetQuery({
+  const [{ data, fetching }, getTweet] = useGetTweetQuery({
     variables: { id: params.tweetId },
   });
   const [{ data: commentsData }, getComments] = useGetTweetCommentsQuery({
@@ -54,7 +54,7 @@ const TweetPage = () => {
     getComments();
   }, [getTweet, params]);
 
-  if (!data) {
+  if (fetching) {
     return (
       <Layout>
         <StackHeader label="Tweet" />

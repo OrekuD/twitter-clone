@@ -247,8 +247,8 @@ export class TweetsResolver {
     const { userId } = request.session;
     const user = await UserModel.findOne({ _id: userId });
 
-    // There's definitely a better way to generate the timeline
-    // This is the easiest way I could think of :)
+    // There's probably a better way to generate the timeline
+    // This is what I could think of :)
 
     // First, get the IDs of the current user and that user's following list
     const ids = [userId, ...user?.following!];
@@ -260,7 +260,7 @@ export class TweetsResolver {
       },
     });
 
-    // then, fetch the likes of user's following list
+    // then, fetch likes on tweets made by the user's following list
     const likes = await LikeModel.find({
       creatorId: {
         $in: user?.following.map((id) => String(id)),
@@ -268,11 +268,11 @@ export class TweetsResolver {
     });
 
     // then, fetch the tweets associated with the likes
-    const tweetsIds = likes.map((like) => like.tweetId);
+    const likedTweetsIds = likes.map((like) => like.tweetId);
 
     const likedTweets = await TweetModel.find({
       _id: {
-        $in: [...new Set(tweetsIds)], // remove duplicates
+        $in: [...new Set(likedTweetsIds)], // remove duplicate ids
       },
     });
 
@@ -290,14 +290,23 @@ export class TweetsResolver {
     });
 
     // Remove any duplicate tweets and return result
-    // const uniq = (array: (Like | Tweet | undefined)[]) => {
-    //   const objs: (Like | Tweet | undefined)[] = [];
-    //   return array.filter((item) => {
-    //     return objs.indexOf(item) >= 0 ? false : objs.push(item);
-    //   });
-    // };
+    const removeDuplicateTweets = (tweets: Tweet[]) => {
+      const tweetIds = tweets.map((tweet) => String(tweet._id));
+      const newSet = [...new Set(tweetIds)];
+      console.log({ tweetIds, newSet });
+      return tweets.map((tweet) => {
+        if (newSet.includes(String(tweet._id))) {
+          return tweet;
+        }
+      });
+    };
 
-    return sortedTweets;
+    // console.log(sortedTweets.map((item) => item?.id));
+    // console.log(
+    //   removeDuplicateTweets(sortedTweets as Tweet[]).map((item) => item?._id)
+    // );
+
+    return removeDuplicateTweets(sortedTweets as Tweet[]);
   }
 
   // Field resolvers

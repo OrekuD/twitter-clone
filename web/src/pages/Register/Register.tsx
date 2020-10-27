@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { Link, useHistory } from "react-router-dom";
 import { convertError } from "../../utils/convertError";
 import { useAppContext } from "../../context/context";
-import { Info } from "../../Svgs";
+import { Info, Logo } from "../../Svgs";
 
 const schema = Yup.object().shape({
   username: Yup.string()
@@ -41,9 +41,11 @@ const Register = () => {
     errors,
     touched,
     isSubmitting,
+    isValid,
   } = useFormik({
     initialValues,
     validationSchema: schema,
+    isInitialValid: false,
     onSubmit: async (values, { setErrors }) => {
       const res = await createAccount({
         email: values.email!,
@@ -63,85 +65,90 @@ const Register = () => {
 
   return (
     <div className="form-container">
-      <p className="form-title">Create Account</p>
-      <form onSubmit={handleSubmit}>
-        <div className="group">
-          <label htmlFor="username">Username</label>
-          <div className="input">
+      <div className="logo">
+        <Logo size={50} color="#fff" />
+      </div>
+      <p className="form-title">Sign up for Twitter</p>
+      <form onSubmit={handleSubmit} className="form">
+        <div className="form-group">
+          <div className="form-input">
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               name="username"
               onChange={handleChange("username")}
               onBlur={handleBlur("username")}
             />
-            {errors.username && touched.username && (
-              <div className="error">
-                <Info size={14} color="red" />
-                <p className="error-label">{errors.username}</p>
-              </div>
-            )}
           </div>
+          {errors.username && touched.username && (
+            <div className="error">
+              <Info size={14} color="red" />
+              <p className="error-label">{errors.username}</p>
+            </div>
+          )}
         </div>
-        <div className="group">
-          <label htmlFor="fullname">Full Name</label>
-          <div className="input">
+        <div className="form-group">
+          <div className="form-input">
+            <label htmlFor="fullname">Full Name</label>
             <input
               type="text"
               name="fullname"
               onChange={handleChange("fullname")}
               onBlur={handleBlur("fullname")}
             />
-            {errors.fullname && touched.fullname && (
-              <div className="error">
-                <Info size={14} color="red" />
-                <p className="error-label">{errors.fullname}</p>
-              </div>
-            )}
           </div>
+          {errors.fullname && touched.fullname && (
+            <div className="error">
+              <Info size={14} color="red" />
+              <p className="error-label">{errors.fullname}</p>
+            </div>
+          )}
         </div>
-        <div className="group">
-          <label htmlFor="email">Email</label>
-          <div className="input">
+        <div className="form-group">
+          <div className="form-input">
+            <label htmlFor="email">Email</label>
             <input
               type="text"
               name="email"
               onChange={handleChange("email")}
               onBlur={handleBlur("email")}
             />
-            {errors.email && touched.email && (
-              <div className="error">
-                <Info size={14} color="red" />
-                <p className="error-label">{errors.email}</p>
-              </div>
-            )}
           </div>
+          {errors.email && touched.email && (
+            <div className="error">
+              <Info size={14} color="red" />
+              <p className="error-label">{errors.email}</p>
+            </div>
+          )}
         </div>
-        <div className="group">
-          <label htmlFor="password">Password</label>
-          <div className="input">
+        <div className="form-group">
+          <div className="form-input">
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               name="password"
               onChange={handleChange("password")}
               onBlur={handleBlur("password")}
             />
-            {errors.password && touched.password && (
-              <div className="error">
-                <Info size={14} color="red" />
-                <p className="error-label">{errors.password}</p>
-              </div>
-            )}
           </div>
+          {errors.password && touched.password && (
+            <div className="error">
+              <Info size={14} color="red" />
+              <p className="error-label">{errors.password}</p>
+            </div>
+          )}
         </div>
-        <div className="bottom-section">
-          <button className="ripple-btn" type="submit" disabled={isSubmitting}>
-            Submit
-          </button>
-          <p>
-            Already have an account? <Link to="/login">Log in</Link>
-          </p>
-        </div>
+        <button
+          className="ripple-btn"
+          type="submit"
+          disabled={!isValid || isSubmitting}
+        >
+          Submit
+        </button>
       </form>
+      <p className="link">
+        <Link to="/login">Log in to Twitter</Link>
+      </p>
     </div>
   );
 };

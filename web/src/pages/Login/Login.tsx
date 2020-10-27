@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { Link, useHistory } from "react-router-dom";
 import { convertError } from "../../utils/convertError";
 import { useAppContext } from "../../context/context";
-import { Info } from "../../Svgs";
+import { Info, Logo } from "../../Svgs";
 
 const LogInSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
@@ -21,73 +21,85 @@ const Login = () => {
     password: "",
   };
 
-  const { handleChange, handleSubmit, handleBlur, errors, touched } = useFormik(
-    {
-      initialValues,
-      validationSchema: LogInSchema,
-      onSubmit: async (values, { setErrors }) => {
-        const res = await login({
-          password: values.password,
-          username: values.username,
-        });
+  const {
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    errors,
+    touched,
+    isValid,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    validationSchema: LogInSchema,
+    isInitialValid: false,
+    onSubmit: async (values, { setErrors }) => {
+      const res = await login({
+        password: values.password,
+        username: values.username,
+      });
 
-        if (res.data?.login.error) {
-          setErrors(convertError(res.data?.login.error));
-        } else if (res.data?.login.user) {
-          setIsLoggedIn(true);
-          history.push("/home");
-        }
-      },
-    }
-  );
+      if (res.data?.login.error) {
+        setErrors(convertError(res.data?.login.error));
+      } else if (res.data?.login.user) {
+        setIsLoggedIn(true);
+        history.push("/home");
+      }
+    },
+  });
 
   return (
     <div className="form-container">
-      <p className="form-title">Login</p>
-      <form onSubmit={handleSubmit}>
-        <div className="group">
-          <label htmlFor="username">Username</label>
-          <div className="input">
+      <div className="logo">
+        <Logo size={50} color="#fff" />
+      </div>
+      <p className="form-title">Log in to Twitter</p>
+      <form onSubmit={handleSubmit} className="form">
+        <div className="form-group">
+          <div className="form-input">
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               name="username"
               onChange={handleChange("username")}
               onBlur={handleBlur("username")}
             />
-            {errors.username && touched.username && (
-              <div className="error">
-                <Info size={14} color="red" />
-                <p className="error-label">{errors.username}</p>
-              </div>
-            )}
           </div>
+          {errors.username && touched.username && (
+            <div className="error">
+              <Info size={14} color="red" />
+              <p className="error-label">{errors.username}</p>
+            </div>
+          )}
         </div>
-        <div className="group">
-          <label htmlFor="password">Password</label>
-          <div className="input">
+        <div className="form-group">
+          <div className="form-input">
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               name="password"
               onChange={handleChange("password")}
               onBlur={handleBlur("password")}
             />
-            {errors.password && touched.password && (
-              <div className="error">
-                <Info size={14} color="red" />
-                <p className="error-label">{errors.password}</p>
-              </div>
-            )}
           </div>
+          {errors.password && touched.password && (
+            <div className="error">
+              <Info size={14} color="red" />
+              <p className="error-label">{errors.password}</p>
+            </div>
+          )}
         </div>
-        <div className="bottom-section">
-          <button className="ripple-btn" type="submit">
-            Log in
-          </button>
-          <p>
-            Don't have an account? <Link to="/register">Create one</Link>
-          </p>
-        </div>
+        <button
+          className="ripple-btn"
+          type="submit"
+          disabled={isSubmitting || !isValid}
+        >
+          Log in
+        </button>
       </form>
+      <p className="link">
+        <Link to="/register">Sign up for Twitter</Link>
+      </p>
     </div>
   );
 };

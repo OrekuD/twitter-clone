@@ -96,7 +96,6 @@ textarea {
 }
 
 .replying-to {
-  margin-bottom: 0px;
   color: $grey;
   font-size: 14px;
 
@@ -111,104 +110,88 @@ textarea {
 }
 
 .form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: 100px;
+  padding-top: 20px;
+  max-width: 450px;
+  margin: 0 auto;
+
+  .logo {
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
   .form-title {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .ripple-btn {
+    height: 40px;
+    border-radius: 20px;
+    width: 100%;
+  }
+
+  .link {
+    color: $blue;
+    margin-top: 20px;
     text-align: center;
   }
 
-  form {
-    .group {
-      margin: 20px 0;
-      display: flex;
+  .form {
+    .form-group {
+      margin-bottom: 15px;
+    }
+  }
+}
+
+.form {
+  .form-group {
+    margin-bottom: 50px;
+
+    .form-input {
+      background-color: $purple;
+      padding: 4px 10px;
+      border-bottom: 2px solid $grey;
 
       label {
-        margin-right: 15px;
-        width: 80px;
+        display: block;
+        color: $grey;
         font-size: 14px;
-        margin-top: 10px;
-        text-align: center;
       }
 
-      .input {
-        .error {
-          display: flex;
-          align-items: center;
-          margin-top: 5px;
+      input {
+        margin-bottom: 5px;
+        font-size: 18px;
+        width: 100%;
+      }
 
-          .error-label {
-            font-size: 12px;
-            color: #b00020;
-            margin-top: 2px;
-            margin-left: 4px;
-          }
-        }
-
-        input {
-          height: 40px;
-          width: 300px;
-          padding: 0 10px;
-          border-radius: 5px;
-          border: 1px solid #adadbb;
-          font-size: 16px;
-          transition: 0.3s ease-in-out border-color;
-
-          &:hover {
-            border: 1px solid #1675e0;
-          }
-
-          &:focus {
-            outline: none;
-            border: 1px solid #1675e0;
-          }
-        }
-
-        textarea {
-          height: 130px;
-          width: 300px;
-          padding: 10px;
-          border-radius: 5px;
-          font-size: 16px;
-          border: 1px solid #adadbb;
-          transition: 0.3s ease-in-out border-color;
-          resize: none;
-
-          &:hover {
-            border: 1px solid #1675e0;
-          }
-
-          &:focus {
-            outline: none;
-            border: 1px solid #1675e0;
-          }
-        }
+      textarea {
+        margin-bottom: 5px;
+        font-size: 18px;
+        // background-color: red;
+        width: 100%;
+        height: 100px;
+        resize: none;
       }
     }
 
-    .bottom-section {
+    .count {
+      float: right;
+      color: $grey;
+      margin-right: 10px;
+      font-size: 14px;
+    }
+
+    .error {
       display: flex;
-      flex-direction: column;
       align-items: center;
+      margin-top: 5px;
 
-      .ripple-btn {
-        width: 100px;
-        height: 40px;
-        border-radius: 20px;
-      }
-
-      p {
-        margin-top: 20px;
-        font-size: 14px;
-
-        a {
-          color: #3498ff;
-        }
+      .error-label {
+        font-size: 12px;
+        margin-top: 2px;
+        margin-left: 4px;
       }
     }
   }
@@ -249,7 +232,7 @@ textarea {
 
 .transparent-btn {
   background-color: transparent;
-  border: 2px solid $blue;
+  border: 1px solid $blue;
   width: 90px;
   padding-bottom: 2px;
   height: 30px;
