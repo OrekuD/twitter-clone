@@ -3,6 +3,10 @@
 .side-menu {
   flex: 1;
 
+  @media (max-width: 600px) {
+    display: none;
+  }
+
   .side-menu-content {
     position: fixed;
     width: 22%;
@@ -12,6 +16,10 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    @media (max-width: 840px) {
+      width: 33%;
+    }
 
     .logo {
       margin: 10px;

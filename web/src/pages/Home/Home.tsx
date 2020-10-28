@@ -26,7 +26,9 @@ const Home = () => {
           <button className="ripple-btn">Let's go</button>
         </div>
       ) : (
-        <Tweets tweets={data?.getUserTimeline as Tweet[]} />
+        <div className="home-timeline">
+          <Tweets tweets={data?.getUserTimeline as Tweet[]} />
+        </div>
       )}
     </Layout>
   );

@@ -4,12 +4,10 @@ import { blue } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import { Cancel } from "../../Svgs";
 import Modal from "../Modal/Modal";
-import ParsedText from "../ParsedText/ParsedText";
 import { useCreateRetweetMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import "./CreateRetweet.scss";
-import { timeSince } from "../../utils/dateFormatters";
 import OriginalTweetCard from "../OriginalTweetCard/OriginalTweetCard";
 
 const schema = Yup.object().shape({
@@ -60,7 +58,7 @@ const CreateRetweet = () => {
       isVisible={showRetweetModal}
       onClose={() => setShowRetweetModal(false)}
     >
-      <div className="create-comment">
+      <div className="create-retweet">
         <div className="modal-header">
           <button
             className="icon-wrapper"
@@ -69,14 +67,14 @@ const CreateRetweet = () => {
             <Cancel size={24} color={blue} />
           </button>
         </div>
-        <div className="comment-content">
+        <div className="retweet-content">
           <div className="reply">
             <img
               src={`${PROFILE_IMAGES_BASE_URL + userDetails?.image}`}
               alt="profile"
               className="profile-image"
             />
-            <form onSubmit={handleSubmit} className="comment-input">
+            <form onSubmit={handleSubmit} className="retweet-input">
               <textarea
                 className="textarea"
                 placeholder="Add a comment"
@@ -89,12 +87,12 @@ const CreateRetweet = () => {
                     errors.comment && touched.comment ? "#b00020" : "#ffffff",
                 }}
               ></textarea>
+              <OriginalTweetCard tweet={selectedTweet} />
               <button className="ripple-btn" disabled={!!errors.comment}>
                 Retweet
               </button>
             </form>
           </div>
-          <OriginalTweetCard tweet={selectedTweet} />
         </div>
       </div>
     </Modal>

@@ -31,7 +31,7 @@ const Provider: React.FC = ({ children }) => {
   const [showRetweetModal, setShowRetweetModal] = useState(false);
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
-  const [{ data, error }, getUserDetails] = useGetCurrentUserDetailsQuery();
+  const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
 
   useEffect(() => {
     setIsLoggedIn(isLoggedIn);

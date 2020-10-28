@@ -1,16 +1,41 @@
 @import "../../constants/colors.scss";
 
 .header {
-  height: 60px;
+  height: 65px;
   border-bottom: 1px solid $lightgrey;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
 
-  .label {
-    font-size: 18px;
-    font-weight: 700;
+  @media (max-width: 600px) {
+    padding: 0 15px;
+    position: fixed;
+    width: 100%;
+    background-color: $deeppurple;
+  }
+
+  .left-content {
+    display: flex;
+    align-items: center;
+
+    .profile-image {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin-right: 10px;
+      display: none;
+
+      @media (max-width: 600px) {
+        display: block;
+        margin-right: 20px;
+      }
+    }
+
+    .label {
+      font-size: 18px;
+      font-weight: 700;
+    }
   }
 }
 

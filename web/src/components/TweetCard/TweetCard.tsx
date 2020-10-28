@@ -136,7 +136,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
               <div className="dot" />
               <p className="username">{timeSince(createdAt)}</p>
             </div>
-            <div className="icon-wrapper">
+            <div className="icon-wrapper" onClick={(e) => e.stopPropagation()}>
               <MenuDots size={20} />
             </div>
           </div>

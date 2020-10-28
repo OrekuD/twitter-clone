@@ -10,10 +10,10 @@ import {
   Logo,
   ProfileIcon,
 } from "../../Svgs";
-import { useGetCurrentUserDetailsQuery } from "../../generated/graphql";
 import Modal from "../Modal/Modal";
 import { blue } from "../../constants/colors";
 import CreateTweet from "../CreateTweet/CreateTweet";
+import { useAppContext } from "../../context/context";
 
 const menu = [
   {
@@ -34,12 +34,8 @@ const menu = [
 ];
 
 const SideMenu = () => {
-  const [{ data }, getCurrentUser] = useGetCurrentUserDetailsQuery();
   const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
+  const { userDetails } = useAppContext();
 
   return (
     <>
@@ -52,7 +48,7 @@ const SideMenu = () => {
             <div className="links">
               {menu.map(({ Icon, name, path }, index) => (
                 <NavLink
-                  to={path || `/${data?.currentUser?.username}`}
+                  to={path || `/${userDetails?.username}`}
                   activeClassName="active-link"
                   exact
                   key={index}
@@ -68,17 +64,17 @@ const SideMenu = () => {
               Tweet
             </button>
           </div>
-          {data && (
+          {userDetails?.username && (
             <div className="profile">
               <div className="left-content">
                 <img
-                  src={`${PROFILE_IMAGES_BASE_URL + data.currentUser?.image}`}
+                  src={`${PROFILE_IMAGES_BASE_URL + userDetails.image}`}
                   alt="profile"
                   className="profile-image"
                 />
                 <div className="profile-details">
-                  <p className="fullname">{data.currentUser?.fullname}</p>
-                  <p className="username">@{data.currentUser?.username}</p>
+                  <p className="fullname">{userDetails.fullname}</p>
+                  <p className="username">@{userDetails.username}</p>
                 </div>
               </div>
               <button>

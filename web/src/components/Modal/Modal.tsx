@@ -43,7 +43,7 @@ const Modal: React.FC<Props> = ({ isVisible, children, onClose }) => {
               },
             }}
             exit={{
-              translateY: 50,
+              translateY: 20,
             }}
             className="modal-content"
             onClick={(e) => e.stopPropagation()}

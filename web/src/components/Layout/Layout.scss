@@ -1,7 +1,6 @@
 @import "../../constants/colors.scss";
 
 .layout {
-  padding: 0 10px;
   display: flex;
   justify-content: space-between;
   overflow: hidden;
@@ -12,5 +11,11 @@
     border-right: 1px solid $lightgrey;
     border-left: 1px solid $lightgrey;
     min-height: 100vh;
+
+    .home-timeline {
+      @media (max-width: 600px) {
+        padding-top: 65px;
+      }
+    }
   }
 }
