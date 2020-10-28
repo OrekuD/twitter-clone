@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Layout } from "../../components";
+import { BottomTabbar, Layout } from "../../components";
 import { lightgrey } from "../../constants/colors";
 import { useGetTrendsQuery } from "../../generated/graphql";
 import { SearchIcon } from "../../Svgs";
@@ -15,6 +15,7 @@ const Explore = () => {
   return (
     <Layout>
       <div className="explore-page">
+        <BottomTabbar />
         <div className="search-input-container">
           <SearchIcon size={20} color={lightgrey} />
           <input

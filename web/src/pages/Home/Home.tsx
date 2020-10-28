@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Layout, CreateTweet, Tweets, Header } from "../../components";
+import {
+  Layout,
+  CreateTweet,
+  Tweets,
+  Header,
+  BottomTabbar,
+} from "../../components";
 import { useAppContext } from "../../context/context";
 import { Tweet, useGetUserTimelineQuery } from "../../generated/graphql";
 
@@ -15,6 +21,7 @@ const Home = () => {
     <Layout>
       <Header label="Home" />
       <CreateTweet />
+      <BottomTabbar />
       {data?.getUserTimeline.length === 0 &&
       userDetails?.following.length === 0 ? (
         <div className="welcome">

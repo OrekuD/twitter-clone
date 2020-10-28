@@ -1,0 +1,35 @@
+@import "../../constants/colors.scss";
+
+.bottom-tabbar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: $deeppurple;
+  height: 65px;
+  border-top: 1px solid $lightgrey;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 0 10px;
+  display: none;
+
+  @media (max-width: 600px) {
+    display: flex;
+  }
+
+  .active-link {
+    .tab-icon {
+      svg {
+        fill: $blue;
+      }
+    }
+  }
+
+  .tab-icon {
+    flex: 1;
+
+    svg {
+      fill: #fff;
+    }
+  }
+}
