@@ -13,7 +13,7 @@ const Explore = () => {
     getTrends();
   }, []);
   return (
-    <Layout>
+    <Layout title="Explore">
       <div className="explore-page">
         <BottomTabbar />
         <div className="search-input-container">

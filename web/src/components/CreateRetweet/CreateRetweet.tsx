@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import "./CreateRetweet.scss";
 import OriginalTweetCard from "../OriginalTweetCard/OriginalTweetCard";
+import Textarea from "react-textarea-autosize";
 
 const schema = Yup.object().shape({
   comment: Yup.string()
@@ -75,10 +76,10 @@ const CreateRetweet = () => {
               className="profile-image"
             />
             <form onSubmit={handleSubmit} className="retweet-input">
-              <textarea
+              <Textarea
+                type="text"
                 className="textarea"
                 placeholder="Add a comment"
-                draggable={false}
                 value={comment}
                 onChange={handleChange("comment")}
                 onBlur={handleBlur("comment")}
@@ -86,7 +87,7 @@ const CreateRetweet = () => {
                   color:
                     errors.comment && touched.comment ? "#b00020" : "#ffffff",
                 }}
-              ></textarea>
+              />
               <OriginalTweetCard tweet={selectedTweet} />
               <button className="ripple-btn" disabled={!!errors.comment}>
                 Retweet

@@ -3,8 +3,7 @@ import { useLoginMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Link, useHistory } from "react-router-dom";
-import { convertError } from "../../utils/convertError";
-import { useAppContext } from "../../context/context";
+import { reshapeError } from "../../utils/reshapeError";
 import { Info, Logo } from "../../Svgs";
 
 const LogInSchema = Yup.object().shape({
@@ -13,7 +12,6 @@ const LogInSchema = Yup.object().shape({
 });
 
 const Login = () => {
-  const { setIsLoggedIn } = useAppContext();
   const [, login] = useLoginMutation();
   const history = useHistory();
   const initialValues = {
@@ -40,9 +38,8 @@ const Login = () => {
       });
 
       if (res.data?.login.error) {
-        setErrors(convertError(res.data?.login.error));
+        setErrors(reshapeError(res.data?.login.error));
       } else if (res.data?.login.user) {
-        setIsLoggedIn(true);
         history.push("/home");
       }
     },

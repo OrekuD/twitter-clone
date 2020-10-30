@@ -5,6 +5,7 @@ import { useCreateTweetMutation } from "../../generated/graphql";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
+import Textarea from "react-textarea-autosize";
 
 const schema = Yup.object().shape({
   tweet: Yup.string()
@@ -13,12 +14,8 @@ const schema = Yup.object().shape({
     .required(),
 });
 
-interface Props {
-  setIsVisible?: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const CreateTweet = ({ setIsVisible }: Props) => {
-  const { userDetails } = useAppContext();
+const CreateTweet = () => {
+  const { userDetails, setShowTweetModal } = useAppContext();
   const [, createTweet] = useCreateTweetMutation();
 
   const {
@@ -37,11 +34,9 @@ const CreateTweet = ({ setIsVisible }: Props) => {
         content: values.tweet,
       });
       resetForm();
-      if (setIsVisible) {
-        setTimeout(() => {
-          setIsVisible(false);
-        }, 500);
-      }
+      setTimeout(() => {
+        setShowTweetModal(false);
+      }, 500);
     },
   });
 
@@ -55,10 +50,10 @@ const CreateTweet = ({ setIsVisible }: Props) => {
         />
       )}
       <form onSubmit={handleSubmit} className="form">
-        <textarea
+        <Textarea
           placeholder="What's happening?"
-          className="textarea"
-          draggable={false}
+          className="create-tweet-textarea"
+          type="text"
           value={tweet}
           onChange={handleChange("tweet")}
           onBlur={handleBlur("tweet")}

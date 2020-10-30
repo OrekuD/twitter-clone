@@ -96,7 +96,7 @@ const TweetPage = () => {
   };
 
   return (
-    <Layout>
+    <Layout title={`${fullname} on Twitter: "${content.slice(0, 15)}"`}>
       <StackHeader label="Tweet" />
       <div className="tweet-page">
         <div className="profile">

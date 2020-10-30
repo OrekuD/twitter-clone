@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import "./CreateComment.scss";
 import { timeSince } from "../../utils/dateFormatters";
+import Textarea from "react-textarea-autosize";
 
 const schema = Yup.object().shape({
   comment: Yup.string()
@@ -104,10 +105,11 @@ const CreateComment = () => {
               className="profile-image"
             />
             <form onSubmit={handleSubmit} className="comment-input">
-              <textarea
+              <Textarea
+                cols={2}
+                type="text"
                 className="textarea"
                 placeholder="Tweet your reply"
-                draggable={false}
                 value={comment}
                 onChange={handleChange("comment")}
                 onBlur={handleBlur("comment")}
@@ -115,7 +117,7 @@ const CreateComment = () => {
                   color:
                     errors.comment && touched.comment ? "#b00020" : "#ffffff",
                 }}
-              ></textarea>
+              />
               <button className="ripple-btn" disabled={!!errors.comment}>
                 Reply
               </button>

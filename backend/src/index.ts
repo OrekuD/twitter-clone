@@ -11,6 +11,7 @@ import connectMongo from "connect-mongo";
 import { SearchResolver } from "./Resolvers/SearchResolver";
 import { TrendsResolver } from "./Resolvers/TrendsResolver";
 import { setLogLevel, LogLevels } from "@typegoose/typegoose";
+import { ImageUploadResolver } from "./Resolvers/ImageUploadResolver";
 
 const main = async () => {
   const PORT = process.env.PORT || 4000;
@@ -50,6 +51,7 @@ const main = async () => {
       LikeResolver,
       SearchResolver,
       TrendsResolver,
+      ImageUploadResolver,
     ],
     validate: false,
   });

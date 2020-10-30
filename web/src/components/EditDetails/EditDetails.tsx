@@ -2,8 +2,11 @@ import React from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useAppContext } from "../../context/context";
-import { useAddUserDetailsMutation } from "../../generated/graphql";
-import { convertError } from "../../utils/convertError";
+import {
+  useAddProfileImageMutation,
+  useAddUserDetailsMutation,
+} from "../../generated/graphql";
+import { reshapeError } from "../../utils/reshapeError";
 import { Cancel } from "../../Svgs";
 import "./EditDetails.scss";
 import Modal from "../Modal/Modal";
@@ -31,6 +34,7 @@ interface Props {
 const EditDetails = ({ isVisible, setIsVisible }: Props) => {
   const { userDetails } = useAppContext();
   const [, editDetails] = useAddUserDetailsMutation();
+  const [, uploadImage] = useAddProfileImageMutation();
 
   const initialValues = {
     bio: userDetails?.bio,
@@ -47,10 +51,10 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
     initialValues,
     validationSchema: schema,
     onSubmit: async (values, { setErrors }) => {
-      // This is to prevent empty values from being submitted when modal is dismissed
-      if (!values.bio && !values.fullname && !values.location) {
-        return;
-      }
+      // // This is to prevent empty values from being submitted when modal is dismissed
+      // if (!values.bio && !values.fullname && !values.location) {
+      //   return;
+      // }
       const res = await editDetails({
         bio: values.bio!,
         fullname: values.fullname!,
@@ -58,7 +62,7 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
       });
 
       if (res.data?.addUserDetails.error) {
-        setErrors(convertError(res.data?.addUserDetails.error));
+        setErrors(reshapeError(res.data?.addUserDetails.error));
       }
       setTimeout(() => {
         setIsVisible(false);
@@ -88,6 +92,17 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
             </button>
           </div>
           <div className="edit-details-form">
+            <input
+              accept="image/*"
+              type="file"
+              onChange={async (e) => {
+                console.log(e.target.files!);
+                const res = await uploadImage({
+                  image: e.target.files![0],
+                });
+                console.log({ res });
+              }}
+            />
             <div className="form-group">
               <div className="form-input">
                 <label htmlFor="fullname">Fullname</label>

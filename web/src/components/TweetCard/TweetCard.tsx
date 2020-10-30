@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
-import { grey } from "../../constants/colors";
+import { grey, deeppurple } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import { Tweet, useLikeTweetMutation } from "../../generated/graphql";
 import {
@@ -20,6 +20,7 @@ import "./TweetCard.scss";
 import { abbreviateNumber } from "../../utils/abreviateNumber";
 import { userHasRetweeted } from "../../utils/userHasRetweeted";
 import { isFollowing } from "../../utils/isFollowing";
+import Popup from "reactjs-popup";
 import { usersWhoLiked } from "../../utils/usersWhoLiked";
 import OriginalTweetCard from "../OriginalTweetCard/OriginalTweetCard";
 import { timeSince } from "../../utils/dateFormatters";
@@ -136,9 +137,33 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
               <div className="dot" />
               <p className="username">{timeSince(createdAt)}</p>
             </div>
-            <div className="icon-wrapper" onClick={(e) => e.stopPropagation()}>
+            <Popup
+              trigger={
+                <div
+                  className="icon-wrapper"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MenuDots size={20} />
+                </div>
+              }
+              position="top center"
+              repositionOnResize
+              contentStyle={{
+                backgroundColor: deeppurple,
+              }}
+            >
+              {(close: () => void) => (
+                <div className="popup-menu">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  Beatae magni omnis delectus nemo, maxime molestiae dolorem
+                  numquam mollitia, voluptate ea, accusamus excepturi deleniti
+                  ratione sapiente! Laudantium, aperiam doloribus. Odit, aut.
+                </div>
+              )}
+            </Popup>
+            {/* <div className="icon-wrapper" onClick={(e) => e.stopPropagation()}>
               <MenuDots size={20} />
-            </div>
+            </div> */}
           </div>
           {parentTweetCreator && (
             <p className="replying-to">

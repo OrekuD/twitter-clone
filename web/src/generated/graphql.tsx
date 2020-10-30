@@ -12,6 +12,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -167,6 +169,7 @@ export type Mutation = {
   pinTweet: PinTweetResponse;
   unPinTweet: PinTweetResponse;
   likeTweet: LikeResponse;
+  addProfileImage: Scalars['Boolean'];
 };
 
 
@@ -225,6 +228,11 @@ export type MutationLikeTweetArgs = {
   tweetId: Scalars['String'];
 };
 
+
+export type MutationAddProfileImageArgs = {
+  image: Scalars['Upload'];
+};
+
 export type TweetResponse = {
   __typename?: 'TweetResponse';
   state: Scalars['Boolean'];
@@ -265,6 +273,7 @@ export type LikeResponse = {
   state: Scalars['Boolean'];
   message: Scalars['String'];
 };
+
 
 export type FollowDetailsFragment = (
   { __typename?: 'User' }
@@ -318,6 +327,16 @@ export type UserFullDetailsFragment = (
 export type UserPartialDetailsFragment = (
   { __typename?: 'User' }
   & Pick<User, '_id' | 'username' | 'image' | 'fullname' | 'bio' | 'location' | 'createdAt'>
+);
+
+export type AddProfileImageMutationVariables = Exact<{
+  image: Scalars['Upload'];
+}>;
+
+
+export type AddProfileImageMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addProfileImage'>
 );
 
 export type AddUserDetailsMutationVariables = Exact<{
@@ -741,6 +760,15 @@ export const UserFullDetailsFragmentDoc = gql`
 }
     ${TweetDetailsFragmentDoc}
 ${FollowDetailsFragmentDoc}`;
+export const AddProfileImageDocument = gql`
+    mutation AddProfileImage($image: Upload!) {
+  addProfileImage(image: $image)
+}
+    `;
+
+export function useAddProfileImageMutation() {
+  return Urql.useMutation<AddProfileImageMutation, AddProfileImageMutationVariables>(AddProfileImageDocument);
+};
 export const AddUserDetailsDocument = gql`
     mutation AddUserDetails($bio: String!, $location: String!, $fullname: String!) {
   addUserDetails(input: {bio: $bio, location: $location, fullname: $fullname}) {

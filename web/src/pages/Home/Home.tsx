@@ -18,7 +18,7 @@ const Home = () => {
   }, [userTimeline]);
 
   return (
-    <Layout>
+    <Layout title="Home">
       <Header label="Home" />
       <CreateTweet />
       <BottomTabbar />

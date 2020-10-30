@@ -4,38 +4,33 @@ import {
   useGetCurrentUserDetailsQuery,
   UserFullDetailsFragment,
 } from "../generated/graphql";
-import useLocalStorage from "../hooks/useLocalStorage";
 import { AppContext } from "../types";
 
 const Context = createContext<AppContext>({
-  isLoggedIn: false,
   showCommentModal: false,
   showRetweetModal: false,
+  showTweetModal: false,
   showSplashScreen: true,
   selectedTweet: null,
   setSelectedTweet: () => {},
   setShowCommentModal: () => {},
   setShowRetweetModal: () => {},
+  setShowTweetModal: () => {},
   setShowSplashScreen: () => {},
-  setIsLoggedIn: () => {},
   userDetails: null,
 });
 
 const Provider: React.FC = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isLoggedIn", false);
   const [
     userDetails,
     setUserDetails,
   ] = useState<UserFullDetailsFragment | null>(null);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [showRetweetModal, setShowRetweetModal] = useState(false);
+  const [showTweetModal, setShowTweetModal] = useState(false);
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
-
-  useEffect(() => {
-    setIsLoggedIn(isLoggedIn);
-  }, []);
 
   useEffect(() => {
     getUserDetails();
@@ -70,9 +65,7 @@ const Provider: React.FC = ({ children }) => {
   }, [data]);
 
   const contextValue: AppContext = {
-    isLoggedIn,
     userDetails,
-    setIsLoggedIn,
     showCommentModal,
     setShowCommentModal,
     selectedTweet,
@@ -81,6 +74,8 @@ const Provider: React.FC = ({ children }) => {
     showSplashScreen,
     showRetweetModal,
     setShowRetweetModal,
+    setShowTweetModal,
+    showTweetModal,
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

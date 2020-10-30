@@ -27,11 +27,9 @@
 
         .textarea {
           font-size: 16px;
+          resize: none;
           width: 100%;
-          min-height: 70px;
-          max-height: 200px;
-          resize: vertical;
-          overflow: auto;
+          max-height: 60vh;
           margin-top: 10px;
 
           &::placeholder {

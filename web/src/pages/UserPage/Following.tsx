@@ -46,7 +46,7 @@ const Following = () => {
   const tabs = ["followers", "following"];
 
   return (
-    <Layout>
+    <Layout title={`People followed by ${fullname} (@${username})`}>
       <div className="followers-page">
         <StackHeader
           label={fullname}

@@ -1,7 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAppContext } from "../../context/context";
-import { HomeIcon, ProfileIcon, SearchIcon } from "../../Svgs";
+import {
+  HomeIcon,
+  NotificationIcon,
+  ProfileIcon,
+  SearchIcon,
+} from "../../Svgs";
 import "./BottomTabbar.scss";
 
 const BottomTabbar = () => {
@@ -16,6 +21,12 @@ const BottomTabbar = () => {
       name: "Explore",
       path: "/explore",
       Icon: SearchIcon,
+    },
+
+    {
+      name: "Notifications",
+      path: "/notifications",
+      Icon: NotificationIcon,
     },
     {
       name: "Profile",

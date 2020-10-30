@@ -23,12 +23,10 @@
     flex-direction: column;
     padding-top: 10px;
 
-    .textarea {
+    .create-tweet-textarea {
       font-size: 18px;
-      height: 90px;
       resize: none;
-      overflow: auto;
-      color: #ffffff;
+      max-height: 60vh;
 
       &::placeholder {
         color: $grey;
@@ -40,6 +38,22 @@
       height: 40px;
       border-radius: 20px;
       align-self: flex-end;
+    }
+  }
+}
+
+.create-tweet-modal {
+  padding: 0 10px;
+
+  .create-tweet {
+    padding: 10px;
+
+    @media (max-width: 600px) {
+      display: flex;
+    }
+
+    .create-tweet-textarea {
+      min-height: 100px;
     }
   }
 }

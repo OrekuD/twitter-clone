@@ -12,25 +12,16 @@ const UserPage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
-  const excludedRoutes = ["explore", "search", "home", "login", "register"];
-  const username = excludedRoutes.includes(params.username)
-    ? ""
-    : params.username;
-
   const [{ data, fetching }, getUser] = useGetUserByUsernameQuery({
-    pause: username === "",
+    pause: !params.username,
     variables: {
-      username,
+      username: params.username,
     },
   });
 
   useEffect(() => {
     getUser();
   }, [getUser, params]);
-
-  if (excludedRoutes.includes(params.username)) {
-    return null;
-  }
 
   if (fetching) {
     return (
@@ -74,7 +65,9 @@ const UserPage = () => {
   ];
 
   return (
-    <Layout>
+    <Layout
+      title={`${data?.getUserByUsername.user?.fullname} (@${data?.getUserByUsername.user?.username})`}
+    >
       <EditDetails isVisible={isVisible} setIsVisible={setIsVisible} />
       <div className="user-page">
         {data?.getUserByUsername.user && (

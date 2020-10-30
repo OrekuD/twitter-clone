@@ -9,8 +9,8 @@
   border-top: 1px solid $lightgrey;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  padding: 0 10px;
+  justify-content: space-between;
+  padding: 0 50px;
   display: none;
 
   @media (max-width: 600px) {

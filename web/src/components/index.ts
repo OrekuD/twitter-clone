@@ -1,5 +1,5 @@
 export { Header, StackHeader } from "./AppBars";
-export { default as CreateTweet } from "./CreateTweet/CreateTweet";
+export { CreateTweet, CreateTweetModal } from "./CreateTweet";
 export { default as BottomTabbar } from "./BottomTabbar/BottomTabbar";
 export { default as CreateRetweet } from "./CreateRetweet/CreateRetweet";
 export { default as OriginalTweetCard } from "./OriginalTweetCard/OriginalTweetCard";

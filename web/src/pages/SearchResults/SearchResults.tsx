@@ -32,7 +32,7 @@ const SearchResults = () => {
   ];
 
   return (
-    <Layout>
+    <Layout title={`${params.hashtag} - Twitter Search`}>
       <div className="search-results-page">
         <div className="top-section">
           <button onClick={history.goBack} className="icon-wrapper">
@@ -44,6 +44,7 @@ const SearchResults = () => {
               type="text"
               className="search-input"
               placeholder="Search Twitter"
+              defaultValue={params.hashtag}
             />
           </div>
         </div>

@@ -18,6 +18,10 @@
     border-radius: 10px;
     overflow: hidden;
 
+    @media (max-width: 720px) {
+      width: 75%;
+    }
+
     @media (max-width: 600px) {
       width: 95%;
     }

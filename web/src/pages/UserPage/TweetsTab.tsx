@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Spinner, TweetCard, Tweets } from "../../components";
+import { useAppContext } from "../../context/context";
 import { Tweet, useGetTweetsByUserQuery } from "../../generated/graphql";
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export const TweetsTab = ({ userId, pinnedTweet }: Props) => {
+  const { setShowTweetModal } = useAppContext();
   const [{ fetching, data }, getLikes] = useGetTweetsByUserQuery({
     variables: {
       userId,
@@ -40,7 +42,12 @@ export const TweetsTab = ({ userId, pinnedTweet }: Props) => {
           <p className="sub-title">
             When you post a Tweet, it'll show up here.
           </p>
-          <button className="ripple-btn">Tweet now</button>
+          <button
+            className="ripple-btn"
+            onClick={() => setShowTweetModal(true)}
+          >
+            Tweet now
+          </button>
         </div>
       ) : (
         <Tweets tweets={tweets} />

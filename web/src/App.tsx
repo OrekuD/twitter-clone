@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.scss";
 import "./normalize.css";
 import {
@@ -12,27 +12,37 @@ import {
   Following,
   Followers,
   LandingPage,
+  Notifications,
 } from "./pages";
-import { Redirect, Route } from "react-router-dom";
-import { useAppContext } from "./context/context";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { SplashScreen } from "./components";
+import { useGetCurrentUserDetailsQuery } from "./generated/graphql";
+import "reactjs-popup/dist/index.css";
 
 function App() {
-  const { isLoggedIn } = useAppContext();
+  const [{ data, fetching }, getUserDetails] = useGetCurrentUserDetailsQuery();
+
+  useEffect(() => {
+    getUserDetails();
+  }, []);
+
   return (
     <>
-      {!isLoggedIn && <Redirect from="/" to="/login" />}
-      {/* {isLoggedIn && <Redirect exact strict from="/" to="/home" />} */}
-      <Route path="/" exact component={LandingPage} />
-      <Route path="/home" exact component={Home} />
-      <Route path="/explore" exact component={Explore} />
-      <Route path="/search/:hashtag" exact component={SearchResults} />
-      <Route path="/:username/status/:tweetId" exact component={Tweet} />
-      <Route path="/register" exact component={Register} />
-      <Route path="/login" exact component={Login} />
-      <Route path="/:username" exact component={UserPage} />
-      <Route path="/:username/following" exact component={Following} />
-      <Route path="/:username/followers" exact component={Followers} />
+      <Switch>
+        {!fetching && !data?.currentUser && <Redirect from="/" to="/login" />}
+        {data?.currentUser && <Redirect exact strict from="/" to="/home" />}
+        <Route path="/" exact component={LandingPage} />
+        <Route path="/home" exact component={Home} />
+        <Route path="/explore" exact component={Explore} />
+        <Route path="/search/:hashtag" exact component={SearchResults} />
+        <Route path="/:username/status/:tweetId" exact component={Tweet} />
+        <Route path="/register" exact component={Register} />
+        <Route path="/login" exact component={Login} />
+        <Route path="/notifications" exact component={Notifications} />
+        <Route path="/:username" exact component={UserPage} />
+        <Route path="/:username/following" exact component={Following} />
+        <Route path="/:username/followers" exact component={Followers} />
+      </Switch>
       <SplashScreen />
     </>
   );
