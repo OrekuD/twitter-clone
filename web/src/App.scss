@@ -1,8 +1,8 @@
 @import "./constants/colors.scss";
 
 * {
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Ubuntu, "Helvetica Neue", sans-serif;
@@ -23,8 +23,8 @@ button {
   background-color: transparent;
   cursor: pointer;
   border: none;
-  padding: 0;
-  margin: 0;
+  padding: 0px;
+  margin: 0px;
 
   &:focus {
     outline: none;
@@ -159,7 +159,7 @@ textarea {
 
     .form-input {
       background-color: $purple;
-      padding: 4px 10px;
+      padding: 5px 10px;
       border-bottom: 2px solid $grey;
 
       label {
@@ -169,7 +169,7 @@ textarea {
       }
 
       input {
-        margin-bottom: 5px;
+        margin-top: 5px;
         font-size: 18px;
         width: 100%;
       }

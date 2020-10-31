@@ -5,12 +5,15 @@ import { useAppContext } from "../../context/context";
 import {
   useAddProfileImageMutation,
   useAddUserDetailsMutation,
+  useAddHeaderImageMutation,
 } from "../../generated/graphql";
 import { reshapeError } from "../../utils/reshapeError";
-import { Cancel } from "../../Svgs";
+import { Cancel, ImageUploadIcon } from "../../Svgs";
 import "./EditDetails.scss";
 import Modal from "../Modal/Modal";
 import { blue } from "../../constants/colors";
+import Textarea from "react-textarea-autosize";
+import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 
 const schema = Yup.object().shape({
   email: Yup.string().email("Invalid email"),
@@ -34,8 +37,10 @@ interface Props {
 const EditDetails = ({ isVisible, setIsVisible }: Props) => {
   const { userDetails } = useAppContext();
   const [, editDetails] = useAddUserDetailsMutation();
-  const [, uploadImage] = useAddProfileImageMutation();
+  const [, uploadProfileImage] = useAddProfileImageMutation();
+  const [, uploadHeaderImage] = useAddHeaderImageMutation();
   const [profileImage, setProfileImage] = useState();
+  const [headerImage, setHeaderImage] = useState();
 
   const initialValues = {
     bio: userDetails?.bio,
@@ -63,8 +68,14 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
       });
 
       if (profileImage) {
-        await uploadImage({
+        await uploadProfileImage({
           image: profileImage,
+        });
+      }
+
+      if (headerImage) {
+        await uploadHeaderImage({
+          image: headerImage,
         });
       }
 
@@ -99,15 +110,43 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
             </button>
           </div>
           <div className="edit-details-form">
+            <label htmlFor="header-image-upload">
+              <div className="header-image-upload">
+                <img
+                  src={`${PROFILE_IMAGES_BASE_URL + userDetails?.headerImage}`}
+                  alt="profile-header"
+                />
+                <div className="upload-icon">
+                  <ImageUploadIcon size={24} color="#fff" />
+                </div>
+              </div>
+            </label>
             <input
               accept="image/*"
               type="file"
+              id="header-image-upload"
+              onChange={async (e) => {
+                setHeaderImage(e.target.files![0] as any);
+              }}
+            />
+            <label htmlFor="profile-image-upload">
+              <div className="profile-image-upload">
+                <img
+                  src={`${PROFILE_IMAGES_BASE_URL + userDetails?.profileImage}`}
+                  alt="profile-header"
+                  className="profile-image"
+                />
+                <div className="upload-icon">
+                  <ImageUploadIcon size={24} color="#fff" />
+                </div>
+              </div>
+            </label>
+            <input
+              accept="image/*"
+              type="file"
+              id="profile-image-upload"
               onChange={async (e) => {
                 setProfileImage(e.target.files![0] as any);
-                // const res = await uploadImage({
-                //   image: e.target.files![0],
-                // });
-                // console.log({ res });
               }}
             />
             <div className="form-group">
@@ -141,10 +180,10 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
             <div className="form-group">
               <div className="form-input">
                 <label htmlFor="bio">Bio</label>
-                <textarea
+                <Textarea
+                  type="text"
                   value={bio}
-                  name="bio"
-                  draggable={false}
+                  className="bio-textarea"
                   onChange={handleChange("bio")}
                   onBlur={handleBlur("bio")}
                 />

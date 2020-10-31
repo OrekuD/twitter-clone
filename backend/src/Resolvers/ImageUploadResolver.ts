@@ -43,6 +43,8 @@ export class ImageUploadResolver {
     );
   }
 
+  @Mutation(() => Boolean)
+  @UseMiddleware(Auth)
   async addHeaderImage(
     @Arg("image", () => GraphQLUpload)
     { createReadStream, filename }: FileUpload,

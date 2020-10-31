@@ -171,6 +171,7 @@ export type Mutation = {
   unPinTweet: PinTweetResponse;
   likeTweet: LikeResponse;
   addProfileImage: Scalars['Boolean'];
+  addHeaderImage: Scalars['Boolean'];
 };
 
 
@@ -231,6 +232,11 @@ export type MutationLikeTweetArgs = {
 
 
 export type MutationAddProfileImageArgs = {
+  image: Scalars['Upload'];
+};
+
+
+export type MutationAddHeaderImageArgs = {
   image: Scalars['Upload'];
 };
 
@@ -328,6 +334,16 @@ export type UserFullDetailsFragment = (
 export type UserPartialDetailsFragment = (
   { __typename?: 'User' }
   & Pick<User, '_id' | 'username' | 'profileImage' | 'headerImage' | 'fullname' | 'bio' | 'location' | 'createdAt'>
+);
+
+export type AddHeaderImageMutationVariables = Exact<{
+  image: Scalars['Upload'];
+}>;
+
+
+export type AddHeaderImageMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addHeaderImage'>
 );
 
 export type AddProfileImageMutationVariables = Exact<{
@@ -763,6 +779,15 @@ export const UserFullDetailsFragmentDoc = gql`
 }
     ${TweetDetailsFragmentDoc}
 ${FollowDetailsFragmentDoc}`;
+export const AddHeaderImageDocument = gql`
+    mutation AddHeaderImage($image: Upload!) {
+  addHeaderImage(image: $image)
+}
+    `;
+
+export function useAddHeaderImageMutation() {
+  return Urql.useMutation<AddHeaderImageMutation, AddHeaderImageMutationVariables>(AddHeaderImageDocument);
+};
 export const AddProfileImageDocument = gql`
     mutation AddProfileImage($image: Upload!) {
   addProfileImage(image: $image)

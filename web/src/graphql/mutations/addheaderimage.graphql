@@ -1,0 +1,3 @@
+mutation AddHeaderImage($image: Upload!) {
+  addHeaderImage(image: $image)
+}

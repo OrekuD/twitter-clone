@@ -60,6 +60,9 @@ const client = createClient({
           addProfileImage: (_, __, cache) => {
             cache.invalidate("Query", "currentUser");
           },
+          addHeaderImage: (_, __, cache) => {
+            cache.invalidate("Query", "currentUser");
+          },
           createRetweet: (_, __, cache) => {
             invalidateAllTweets(cache);
           },
