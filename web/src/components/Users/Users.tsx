@@ -17,7 +17,7 @@ const Users = ({ users, followingPage }: Props) => {
   const { userDetails } = useAppContext();
   if (users.length === 0) {
     return (
-      <div className="welcome">
+      <div className="description-text-wrapper">
         {followingPage ? (
           userDetails?.username === username ? (
             <>

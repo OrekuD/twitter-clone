@@ -81,7 +81,9 @@ const SideMenu = () => {
                 <div className="profile">
                   <div className="left-content">
                     <img
-                      src={`${PROFILE_IMAGES_BASE_URL + userDetails.image}`}
+                      src={`${
+                        PROFILE_IMAGES_BASE_URL + userDetails.profileImage
+                      }`}
                       alt="profile"
                       className="profile-image"
                     />

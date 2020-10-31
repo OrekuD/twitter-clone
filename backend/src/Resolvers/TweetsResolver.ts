@@ -293,7 +293,7 @@ export class TweetsResolver {
     const removeDuplicateTweets = (tweets: Tweet[]) => {
       const tweetIds = tweets.map((tweet) => String(tweet._id));
       const newSet = [...new Set(tweetIds)];
-      console.log({ tweetIds, newSet });
+      // console.log({ tweetIds, newSet });
       return tweets.map((tweet) => {
         if (newSet.includes(String(tweet._id))) {
           return tweet;
@@ -332,8 +332,8 @@ export class TweetsResolver {
     if (!tweet._doc.parentId) {
       return null;
     }
-    const parentTweet = await TweetModel.findOne({ _id: tweet._doc.parentId });
-    const user = await UserModel.findOne({ _id: parentTweet?.creator });
+    const parentTweet = await tweetLoader().load(tweet._doc.parentId);
+    const user = await userLoader().load(parentTweet.creator as any);
     return user?.username;
   }
 

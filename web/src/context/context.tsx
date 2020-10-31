@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Tweet,
   useGetCurrentUserDetailsQuery,
@@ -30,7 +31,8 @@ const Provider: React.FC = ({ children }) => {
   const [showTweetModal, setShowTweetModal] = useState(false);
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
-  const [{ data }, getUserDetails] = useGetCurrentUserDetailsQuery();
+  const [{ data, fetching }, getUserDetails] = useGetCurrentUserDetailsQuery();
+  const { replace } = useHistory();
 
   useEffect(() => {
     getUserDetails();
@@ -38,13 +40,18 @@ const Provider: React.FC = ({ children }) => {
 
   useEffect(() => {
     data && setShowSplashScreen(false);
-    if (data?.currentUser) {
+    if (!fetching && !data?.currentUser) {
+      replace("/login");
+    }
+    // TODO: handle the case where there's no user
+    else if (!fetching && data?.currentUser) {
       const {
         _id,
         fullname,
         location,
         bio,
-        image,
+        profileImage,
+        headerImage,
         username,
         followers,
         following,
@@ -55,7 +62,8 @@ const Provider: React.FC = ({ children }) => {
         fullname,
         location,
         bio,
-        image,
+        profileImage,
+        headerImage,
         username,
         followers,
         following,

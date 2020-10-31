@@ -20,8 +20,6 @@
     padding-right: 10px;
     display: flex;
     flex-direction: column;
-    // justify-content: space-between;
-    // background-color: yellow;
 
     @media (max-width: 1230px) {
       align-items: center;
@@ -75,7 +73,7 @@
         display: flex;
         align-items: center;
         height: 50px;
-        // width: fit-content;
+        width: fit-content;
         margin-bottom: 2px;
         border-radius: 25px;
         transition: 0.3s ease-in-out background;
@@ -153,7 +151,6 @@
         .profile-image {
           width: 40px;
           height: 40px;
-          border-radius: 50%;
         }
 
         .profile-details {

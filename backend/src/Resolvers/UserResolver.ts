@@ -117,7 +117,8 @@ export class UserResolver {
       location: "",
       followers: [],
       following: [],
-      image: "/dummy.png",
+      profileImage: "/dummy.png",
+      headerImage: "/header.jpg",
       pinnedTweetId: null,
     });
     await newUser.save();

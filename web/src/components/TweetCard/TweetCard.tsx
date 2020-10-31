@@ -35,7 +35,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
     _id,
     content,
     createdAt,
-    creator: { username, fullname, image },
+    creator: { username, fullname, profileImage },
     commentsCount,
     likes,
     retweets,
@@ -118,7 +118,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
       <div className="tweet-card">
         <img
           className="profile-image"
-          src={`${PROFILE_IMAGES_BASE_URL + image}`}
+          src={`${PROFILE_IMAGES_BASE_URL + profileImage}`}
           alt="profile"
           onClick={(e) => {
             e.stopPropagation();

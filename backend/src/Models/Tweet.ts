@@ -13,7 +13,7 @@ export class Tweet {
   @Field(() => String, { nullable: true })
   parentId: string | null;
 
-  // A tweet with a originalTweetId is a retweet
+  // A tweet with an originalTweetId is a retweet
   @prop()
   @Field(() => String, { nullable: true })
   originalTweetId: string | null;

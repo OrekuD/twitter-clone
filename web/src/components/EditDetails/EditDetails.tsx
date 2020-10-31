@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useAppContext } from "../../context/context";
@@ -35,6 +35,7 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
   const { userDetails } = useAppContext();
   const [, editDetails] = useAddUserDetailsMutation();
   const [, uploadImage] = useAddProfileImageMutation();
+  const [profileImage, setProfileImage] = useState();
 
   const initialValues = {
     bio: userDetails?.bio,
@@ -61,12 +62,18 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
         location: values.location!,
       });
 
+      if (profileImage) {
+        await uploadImage({
+          image: profileImage,
+        });
+      }
+
       if (res.data?.addUserDetails.error) {
         setErrors(reshapeError(res.data?.addUserDetails.error));
       }
-      setTimeout(() => {
+      if (!res.data?.addUserDetails.error) {
         setIsVisible(false);
-      }, 500);
+      }
     },
   });
 
@@ -96,11 +103,11 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
               accept="image/*"
               type="file"
               onChange={async (e) => {
-                console.log(e.target.files!);
-                const res = await uploadImage({
-                  image: e.target.files![0],
-                });
-                console.log({ res });
+                setProfileImage(e.target.files![0] as any);
+                // const res = await uploadImage({
+                //   image: e.target.files![0],
+                // });
+                // console.log({ res });
               }}
             />
             <div className="form-group">

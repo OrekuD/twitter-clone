@@ -45,6 +45,12 @@ const Login = () => {
     },
   });
 
+  // return (
+  //   <div style={{ backgroundColor: "white", height: "100vh" }}>
+  //     <h1>U</h1>
+  //   </div>
+  // );
+
   return (
     <div className="form-container">
       <div className="logo">

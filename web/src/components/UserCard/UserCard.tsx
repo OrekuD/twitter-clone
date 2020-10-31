@@ -18,7 +18,15 @@ interface Props {
 const UserCard = ({ user }: Props) => {
   const [, followUser] = useFollowUserMutation();
   const [, unFollowUser] = useUnFollowUserMutation();
-  const { _id, bio, fullname, image, username, followers, following } = user;
+  const {
+    _id,
+    bio,
+    fullname,
+    profileImage,
+    username,
+    followers,
+    following,
+  } = user;
   const { userDetails } = useAppContext();
   const history = useHistory();
 
@@ -62,7 +70,7 @@ const UserCard = ({ user }: Props) => {
       onClick={() => history.push(`/${username}`)}
     >
       <img
-        src={`${PROFILE_IMAGES_BASE_URL + image}`}
+        src={`${PROFILE_IMAGES_BASE_URL + profileImage}`}
         alt="profile"
         className="profile-image"
       />

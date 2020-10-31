@@ -13,14 +13,14 @@ const OriginalTweetCard = ({ tweet }: Props) => {
   const {
     content,
     createdAt,
-    creator: { fullname, username, image },
+    creator: { fullname, username, profileImage },
   } = tweet;
   return (
     <div className="original-tweet-card">
       <div className="profile-details">
         <img
-          className="profile-image-small"
-          src={`${PROFILE_IMAGES_BASE_URL + image}`}
+          className="profile-image"
+          src={`${PROFILE_IMAGES_BASE_URL + profileImage}`}
           alt="profile"
         />
         <p className="fullname">{fullname}</p>

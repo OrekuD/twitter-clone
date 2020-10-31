@@ -4,7 +4,8 @@ fragment UserFullDetails on User {
   bio
   createdAt
   location
-  image
+  profileImage
+  headerImage
   fullname
   pinnedTweet {
     ...TweetDetails

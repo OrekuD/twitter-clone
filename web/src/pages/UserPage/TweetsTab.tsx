@@ -37,7 +37,7 @@ export const TweetsTab = ({ userId, pinnedTweet }: Props) => {
     <>
       {pinnedTweet && <TweetCard tweet={pinnedTweet} pinnedTweet />}
       {tweets.length === 0 ? (
-        <div className="welcome">
+        <div className="description-text-wrapper">
           <p className="main-title">You haven't Tweeted yet</p>
           <p className="sub-title">
             When you post a Tweet, it'll show up here.

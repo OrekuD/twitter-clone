@@ -24,7 +24,7 @@ const Home = () => {
       <BottomTabbar />
       {data?.getUserTimeline.length === 0 &&
       userDetails?.following.length === 0 ? (
-        <div className="welcome">
+        <div className="description-text-wrapper">
           <p className="main-title">Welcome to Twitter!</p>
           <p className="sub-title">
             This is the best place to see what's happening in your world. Find

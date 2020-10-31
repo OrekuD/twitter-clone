@@ -1,7 +1,8 @@
 fragment UserPartialDetails on User {
   _id
   username
-  image
+  profileImage
+  headerImage
   fullname
   bio
   location

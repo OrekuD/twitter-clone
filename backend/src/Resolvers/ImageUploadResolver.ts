@@ -1,34 +1,78 @@
-import { Arg, Mutation, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
 import { GraphQLUpload, FileUpload } from "graphql-upload";
 import { createWriteStream } from "fs";
-import { Stream } from "stream";
-
-type Upload = {
-  filename: string;
-  createReadStream: () => Stream;
-};
+import { Auth } from "../Middleware/Auth";
+import { Context } from "../types";
+import { UserModel } from "../Models/User";
 
 @Resolver()
 export class ImageUploadResolver {
   @Mutation(() => Boolean)
-  async addProfileImage(@Arg("image", () => GraphQLUpload) image: FileUpload) {
-    console.log({ image });
-    return true;
-    // new Promise(async (res, rej) =>
-    //   createReadStream()
-    //     .pipe(
-    //       createWriteStream(
-    //         __dirname + `../public/profile_images/${filename + new Date()}`
-    //       )
-    //     )
-    //     .on("finish", () => {
-    //       console.log("------ 1");
-    //       res(true);
-    //     })
-    //     .on("error", () => {
-    //       console.log("------ 2");
-    //       rej(false);
-    //     })
-    // );
+  @UseMiddleware(Auth)
+  async addProfileImage(
+    @Arg("image", () => GraphQLUpload)
+    { createReadStream, filename }: FileUpload,
+    @Ctx() { request }: Context
+  ) {
+    const { userId } = request.session;
+    const user = await UserModel.findOne({ _id: userId });
+    const imageFileName =
+      user?.username +
+      new Date().toISOString().replace(/:/g, "-") +
+      filename.replace(/ /g, "");
+    // console.log({ imageFileName });
+    return new Promise(async (res, rej) =>
+      createReadStream()
+        .pipe(
+          createWriteStream(
+            __dirname + `../../../public/user_images/${imageFileName}`
+          )
+        )
+        .on("finish", async () => {
+          console.log({ imageFileName });
+          await UserModel.updateOne(
+            { _id: userId },
+
+            { profileImage: "/" + imageFileName }
+          );
+          res(true);
+        })
+        .on("error", () => {
+          rej(false);
+        })
+    );
+  }
+
+  async addHeaderImage(
+    @Arg("image", () => GraphQLUpload)
+    { createReadStream, filename }: FileUpload,
+    @Ctx() { request }: Context
+  ) {
+    const { userId } = request.session;
+    const user = await UserModel.findOne({ _id: userId });
+    const imageFileName =
+      user?.username +
+      new Date().toISOString().replace(/:/g, "-") +
+      filename.replace(/ /g, "");
+    return new Promise(async (res, rej) =>
+      createReadStream()
+        .pipe(
+          createWriteStream(
+            __dirname + `../../../public/profile_images/${imageFileName}`
+          )
+        )
+        .on("finish", async () => {
+          console.log({ imageFileName });
+          await UserModel.updateOne(
+            { _id: userId },
+
+            { headerImage: "/" + imageFileName }
+          );
+          res(true);
+        })
+        .on("error", () => {
+          rej(false);
+        })
+    );
   }
 }

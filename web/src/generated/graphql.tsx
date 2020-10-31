@@ -104,7 +104,8 @@ export type User = {
   createdAt: Scalars['DateTime'];
   bio: Scalars['String'];
   location: Scalars['String'];
-  image: Scalars['String'];
+  profileImage: Scalars['String'];
+  headerImage: Scalars['String'];
   fullname: Scalars['String'];
   pinnedTweetId?: Maybe<Scalars['String']>;
   following: Array<User>;
@@ -311,7 +312,7 @@ export type TweetDetailsFragment = (
 
 export type UserFullDetailsFragment = (
   { __typename?: 'User' }
-  & Pick<User, '_id' | 'username' | 'bio' | 'createdAt' | 'location' | 'image' | 'fullname'>
+  & Pick<User, '_id' | 'username' | 'bio' | 'createdAt' | 'location' | 'profileImage' | 'headerImage' | 'fullname'>
   & { pinnedTweet?: Maybe<(
     { __typename?: 'Tweet' }
     & TweetDetailsFragment
@@ -326,7 +327,7 @@ export type UserFullDetailsFragment = (
 
 export type UserPartialDetailsFragment = (
   { __typename?: 'User' }
-  & Pick<User, '_id' | 'username' | 'image' | 'fullname' | 'bio' | 'location' | 'createdAt'>
+  & Pick<User, '_id' | 'username' | 'profileImage' | 'headerImage' | 'fullname' | 'bio' | 'location' | 'createdAt'>
 );
 
 export type AddProfileImageMutationVariables = Exact<{
@@ -374,7 +375,7 @@ export type CreateAccountMutation = (
     { __typename?: 'UserResponse' }
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'username' | '_id' | 'createdAt' | 'bio' | 'location' | 'email' | 'image' | 'fullname'>
+      & UserPartialDetailsFragment
     )>, error?: Maybe<(
       { __typename?: 'UserError' }
       & Pick<UserError, 'message' | 'field'>
@@ -471,7 +472,7 @@ export type LoginMutation = (
     { __typename?: 'UserResponse' }
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'username' | '_id' | 'createdAt' | 'bio' | 'location' | 'email' | 'image' | 'fullname'>
+      & UserPartialDetailsFragment
     )>, error?: Maybe<(
       { __typename?: 'UserError' }
       & Pick<UserError, 'message' | 'field'>
@@ -685,7 +686,7 @@ export type SearchQuery = (
       & TweetDetailsFragment
     )>, users: Array<(
       { __typename?: 'User' }
-      & UserPartialDetailsFragment
+      & UserFullDetailsFragment
     )> }
   ) }
 );
@@ -694,7 +695,8 @@ export const UserPartialDetailsFragmentDoc = gql`
     fragment UserPartialDetails on User {
   _id
   username
-  image
+  profileImage
+  headerImage
   fullname
   bio
   location
@@ -746,7 +748,8 @@ export const UserFullDetailsFragmentDoc = gql`
   bio
   createdAt
   location
-  image
+  profileImage
+  headerImage
   fullname
   pinnedTweet {
     ...TweetDetails
@@ -794,14 +797,7 @@ export const CreateAccountDocument = gql`
     mutation CreateAccount($username: String!, $password: String!, $email: String!, $fullname: String!) {
   createAccount(input: {username: $username, password: $password, email: $email, fullname: $fullname}) {
     user {
-      username
-      _id
-      createdAt
-      bio
-      location
-      email
-      image
-      fullname
+      ...UserPartialDetails
     }
     error {
       message
@@ -809,7 +805,7 @@ export const CreateAccountDocument = gql`
     }
   }
 }
-    `;
+    ${UserPartialDetailsFragmentDoc}`;
 
 export function useCreateAccountMutation() {
   return Urql.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument);
@@ -887,14 +883,7 @@ export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   login(input: {username: $username, password: $password}) {
     user {
-      username
-      _id
-      createdAt
-      bio
-      location
-      email
-      image
-      fullname
+      ...UserPartialDetails
     }
     error {
       message
@@ -902,7 +891,7 @@ export const LoginDocument = gql`
     }
   }
 }
-    `;
+    ${UserPartialDetailsFragmentDoc}`;
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
@@ -1094,12 +1083,12 @@ export const SearchDocument = gql`
       ...TweetDetails
     }
     users {
-      ...UserPartialDetails
+      ...UserFullDetails
     }
   }
 }
     ${TweetDetailsFragmentDoc}
-${UserPartialDetailsFragmentDoc}`;
+${UserFullDetailsFragmentDoc}`;
 
 export function useSearchQuery(options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<SearchQuery>({ query: SearchDocument, ...options });

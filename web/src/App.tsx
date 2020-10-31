@@ -29,12 +29,12 @@ function App() {
   return (
     <>
       <Switch>
-        {!fetching && !data?.currentUser && <Redirect from="/" to="/login" />}
+        {/* {!fetching && !data?.currentUser && <Redirect from="/" to="/login" />} */}
         {data?.currentUser && <Redirect exact strict from="/" to="/home" />}
         <Route path="/" exact component={LandingPage} />
         <Route path="/home" exact component={Home} />
         <Route path="/explore" exact component={Explore} />
-        <Route path="/search/:hashtag" exact component={SearchResults} />
+        <Route path="/search/:searchTerm" exact component={SearchResults} />
         <Route path="/:username/status/:tweetId" exact component={Tweet} />
         <Route path="/register" exact component={Register} />
         <Route path="/login" exact component={Login} />

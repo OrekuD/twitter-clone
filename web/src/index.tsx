@@ -1,8 +1,15 @@
 import React from "react";
 import { cacheExchange } from "@urql/exchange-graphcache";
+import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
+import {
+  createClient,
+  dedupExchange,
+  // Exchange,
+  fetchExchange,
+  Provider,
+} from "urql";
 import App from "./App";
 import { Provider as ContextProvider } from "./context/context";
 import { invalidateAllTweets } from "./utils/invalidateAllTweets";
@@ -50,6 +57,9 @@ const client = createClient({
           addUserDetails: (_, __, cache) => {
             cache.invalidate("Query", "currentUser");
           },
+          addProfileImage: (_, __, cache) => {
+            cache.invalidate("Query", "currentUser");
+          },
           createRetweet: (_, __, cache) => {
             invalidateAllTweets(cache);
           },
@@ -68,18 +78,19 @@ const client = createClient({
         },
       },
     }),
-    fetchExchange,
+    // fetchExchange,
+    multipartFetchExchange,
   ],
 });
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider value={client}>
-      <ContextProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <ContextProvider>
           <App />
-        </BrowserRouter>
-      </ContextProvider>
+        </ContextProvider>
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

@@ -72,7 +72,7 @@ const UserPage = () => {
       <div className="user-page">
         {data?.getUserByUsername.user && (
           <>
-            <StackHeader label={params.username} />
+            <StackHeader label={data?.getUserByUsername.user.fullname} />
             <Profile
               user={data.getUserByUsername.user}
               setIsVisible={setIsVisible}

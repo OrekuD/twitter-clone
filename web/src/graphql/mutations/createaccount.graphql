@@ -13,14 +13,7 @@ mutation CreateAccount(
     }
   ) {
     user {
-      username
-      _id
-      createdAt
-      bio
-      location
-      email
-      image
-      fullname
+      ...UserPartialDetails
     }
     error {
       message

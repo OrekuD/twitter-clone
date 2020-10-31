@@ -59,7 +59,7 @@ const CreateComment = () => {
     _id,
     content,
     createdAt,
-    creator: { fullname, username, image },
+    creator: { fullname, username, profileImage },
   } = selectedTweet;
 
   return (
@@ -81,7 +81,7 @@ const CreateComment = () => {
         <div className="comment-content">
           <div className="tweet">
             <img
-              src={`${PROFILE_IMAGES_BASE_URL + image}`}
+              src={`${PROFILE_IMAGES_BASE_URL + profileImage}`}
               alt="profile"
               className="profile-image"
             />
@@ -100,7 +100,7 @@ const CreateComment = () => {
           </div>
           <div className="reply">
             <img
-              src={`${PROFILE_IMAGES_BASE_URL + userDetails?.image}`}
+              src={`${PROFILE_IMAGES_BASE_URL + userDetails?.profileImage}`}
               alt="profile"
               className="profile-image"
             />

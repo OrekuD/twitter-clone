@@ -75,7 +75,7 @@ const TweetPage = () => {
     parentTweetCreator,
     originalTweet,
   } = data?.getTweet.tweet as Tweet;
-  const { image, fullname, username } = creator;
+  const { profileImage, fullname, username } = creator;
 
   const commentTweet = () => {
     setSelectedTweet(data?.getTweet.tweet as Tweet);
@@ -103,7 +103,7 @@ const TweetPage = () => {
           <div className="left-content">
             <Link to={`/${username}`}>
               <img
-                src={`${PROFILE_IMAGES_BASE_URL + image}`}
+                src={`${PROFILE_IMAGES_BASE_URL + profileImage}`}
                 alt="profile"
                 className="profile-image"
               />

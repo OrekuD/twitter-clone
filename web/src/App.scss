@@ -52,7 +52,15 @@ textarea {
   place-items: center;
 }
 
-.welcome {
+.profile-image {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: white;
+  object-fit: cover;
+}
+
+.description-text-wrapper {
   padding: 40px 15px;
   text-align: center;
 

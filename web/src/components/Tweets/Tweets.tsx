@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Tweet } from "../../generated/graphql";
 import TweetCard from "../TweetCard/TweetCard";
 import Spinner from "../Spinner/Spinner";
@@ -6,9 +6,10 @@ import "./Tweets.scss";
 
 interface Props {
   tweets: Tweet[] | undefined;
+  emptyTweets?: ReactNode;
 }
 
-const Tweets = ({ tweets }: Props) => {
+const Tweets = ({ tweets, emptyTweets = null }: Props) => {
   let content;
   if (typeof tweets === "undefined") {
     content = (
@@ -17,7 +18,7 @@ const Tweets = ({ tweets }: Props) => {
       </div>
     );
   } else if (tweets.length === 0) {
-    content = null;
+    content = emptyTweets;
   } else {
     content = (
       <>

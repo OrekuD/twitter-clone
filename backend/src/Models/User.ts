@@ -31,7 +31,11 @@ export class User {
 
   @Field()
   @prop()
-  image: string;
+  profileImage: string;
+
+  @Field()
+  @prop()
+  headerImage: string;
 
   @Field()
   @prop()

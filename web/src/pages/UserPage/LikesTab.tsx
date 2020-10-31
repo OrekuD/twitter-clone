@@ -24,7 +24,7 @@ export const LikesTab = ({ userId }: { userId: string }) => {
   const tweets = data?.getLikesByUser?.map((like) => like.tweet);
   if (tweets?.length === 0) {
     return (
-      <div className="welcome">
+      <div className="description-text-wrapper">
         <p className="main-title">You don't have any likes yet</p>
         <p className="sub-title">
           Tap the heart on any Tweet to show it some love. When you do it'll

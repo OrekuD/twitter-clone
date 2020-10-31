@@ -30,7 +30,8 @@ export const Profile = ({ user, setIsVisible }: Props) => {
     followers,
     following,
     _id,
-    image,
+    profileImage,
+    headerImage,
   } = user;
 
   const follow = () => {
@@ -67,30 +68,37 @@ export const Profile = ({ user, setIsVisible }: Props) => {
 
   return (
     <div className="profile">
-      <div className="top-section">
-        <img
-          className="profile-image"
-          src={`${PROFILE_IMAGES_BASE_URL + image}`}
-          alt="profile"
-        />
-        {userDetails?.username === username ? (
-          <button
-            className="transparent-btn"
-            onClick={() => setIsVisible(true)}
-          >
-            Edit profile
-          </button>
-        ) : isFollowing(followers, userDetails?._id!) >= 0 ? (
-          <button className="ripple-btn" onClick={unFollow}>
-            Following
-          </button>
-        ) : (
-          <button className="transparent-btn" onClick={follow}>
-            Follow
-          </button>
-        )}
-      </div>
+      <img
+        className="header-image"
+        src={`${PROFILE_IMAGES_BASE_URL + headerImage}`}
+        alt="profile-header"
+      />
       <div className="profile-details">
+        <div className="top-section">
+          <div className="profile-image-container">
+            <img
+              className="profile-image"
+              src={`${PROFILE_IMAGES_BASE_URL + profileImage}`}
+              alt="profile"
+            />
+          </div>
+          {userDetails?.username === username ? (
+            <button
+              className="transparent-btn"
+              onClick={() => setIsVisible(true)}
+            >
+              Edit profile
+            </button>
+          ) : isFollowing(followers, userDetails?._id!) >= 0 ? (
+            <button className="ripple-btn" onClick={unFollow}>
+              Following
+            </button>
+          ) : (
+            <button className="transparent-btn" onClick={follow}>
+              Follow
+            </button>
+          )}
+        </div>
         <p className="fullname">{fullname}</p>
         <p className="username">@{username}</p>
         <ParsedText text={bio} isBio />

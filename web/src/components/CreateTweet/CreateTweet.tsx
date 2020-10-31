@@ -42,9 +42,9 @@ const CreateTweet = () => {
 
   return (
     <div className="create-tweet">
-      {userDetails?.image && (
+      {userDetails?.profileImage && (
         <img
-          src={`${PROFILE_IMAGES_BASE_URL + userDetails?.image}`}
+          src={`${PROFILE_IMAGES_BASE_URL + userDetails?.profileImage}`}
           alt="profile"
           className="profile-image"
         />

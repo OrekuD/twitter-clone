@@ -71,7 +71,7 @@ const CreateRetweet = () => {
         <div className="retweet-content">
           <div className="reply">
             <img
-              src={`${PROFILE_IMAGES_BASE_URL + userDetails?.image}`}
+              src={`${PROFILE_IMAGES_BASE_URL + userDetails?.profileImage}`}
               alt="profile"
               className="profile-image"
             />

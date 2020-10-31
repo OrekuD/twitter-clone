@@ -17,7 +17,7 @@ const Header = ({ label }: Props) => {
       <div className="left-content">
         <Link to={`/${userDetails?.username}`}>
           <img
-            src={`${PROFILE_IMAGES_BASE_URL + userDetails?.image}`}
+            src={`${PROFILE_IMAGES_BASE_URL + userDetails?.profileImage}`}
             alt="profile"
             className="profile-image"
           />
