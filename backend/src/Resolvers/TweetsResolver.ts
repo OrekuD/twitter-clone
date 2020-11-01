@@ -12,6 +12,7 @@ import {
   FieldResolver,
   Root,
 } from "type-graphql";
+import { GraphQLUpload, FileUpload } from "graphql-upload";
 import { Tweet, TweetModel } from "../Models/Tweet";
 import { Context } from "../types";
 import { extractHashtags } from "../Utils/extractHashtags";
@@ -19,6 +20,7 @@ import { TrendsModel } from "../Models/Trends";
 import { User, UserModel } from "../Models/User";
 import { Like, LikeModel } from "../Models/Like";
 import { likeLoader, tweetLoader, userLoader } from "../Utils/dataLoaders";
+import { createWriteStream } from "fs";
 
 @ObjectType()
 class TweetError {
@@ -92,8 +94,65 @@ export class TweetsResolver {
   @UseMiddleware(Auth)
   async createTweet(
     @Arg("content") content: string,
+    @Arg("image", () => GraphQLUpload, { nullable: true })
+    image: FileUpload,
     @Ctx() { request }: Context
   ): Promise<TweetResponse> {
+    const hashtags = extractHashtags(content);
+    if (image) {
+      const { createReadStream, filename } = image;
+      const imageFileName =
+        new Date().toISOString().replace(/:/g, "-") +
+        filename.replace(/ /g, "");
+      return new Promise(async (res, rej) =>
+        createReadStream()
+          .pipe(
+            createWriteStream(
+              __dirname + `../../../public/tweet_images/${imageFileName}`
+            )
+          )
+          .on("finish", async () => {
+            const tweet = await TweetModel.create({
+              content,
+              creator: request.session.userId,
+              createdAt: Date.now(),
+              commentsCount: 0,
+              parentId: null,
+              originalTweetId: null,
+              image: "/" + imageFileName,
+              likes: [],
+              retweets: [],
+            });
+            await tweet.save();
+            console.log({ tweet });
+            if (hashtags.length > 0) {
+              hashtags.forEach(async (hashtag) => {
+                const trend = await TrendsModel.findOne({ hashtag });
+                if (!trend) {
+                  await TrendsModel.create({
+                    hashtag,
+                    numberOfTweets: 1,
+                    tweets: [tweet.id],
+                  });
+                } else {
+                  await TrendsModel.updateOne(
+                    { _id: trend.id! },
+                    {
+                      $push: { Tweets: tweet.id },
+                      numberOfTweets: trend.numberOfTweets + 1,
+                    }
+                  );
+                }
+              });
+            }
+            res({ state: true, message: "Tweet successfull" });
+          })
+          .on("error", () => {
+            rej({ state: true, message: "Tweet unsuccessfull" });
+          })
+      );
+    }
+
     const tweet = await TweetModel.create({
       content,
       creator: request.session.userId,
@@ -101,11 +160,11 @@ export class TweetsResolver {
       commentsCount: 0,
       parentId: null,
       originalTweetId: null,
+      image: "",
       likes: [],
       retweets: [],
     });
     await tweet.save();
-    const hashtags = extractHashtags(content);
     if (hashtags.length > 0) {
       hashtags.forEach(async (hashtag) => {
         const trend = await TrendsModel.findOne({ hashtag });
@@ -126,11 +185,7 @@ export class TweetsResolver {
         }
       });
     }
-
-    return {
-      state: true,
-      message: "Tweet successfull",
-    };
+    return { state: true, message: "Tweet successfull" };
   }
 
   @Mutation(() => TweetResponse)
@@ -158,6 +213,7 @@ export class TweetsResolver {
       parentId: null,
       likes: [],
       retweets: [],
+      image: "",
     });
 
     await TweetModel.updateOne(
@@ -200,6 +256,7 @@ export class TweetsResolver {
       createdAt: Date.now(),
       commentsCount: 0,
       likes: [],
+      image: "",
       retweets: [],
     });
     await comment.save();
@@ -298,6 +355,7 @@ export class TweetsResolver {
         if (newSet.includes(String(tweet._id))) {
           return tweet;
         }
+        return null;
       });
     };
 

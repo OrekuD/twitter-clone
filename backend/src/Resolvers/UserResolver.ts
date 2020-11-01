@@ -18,6 +18,7 @@ import { Auth } from "../Middleware/Auth";
 import { mongoose } from "@typegoose/typegoose";
 import { Tweet, TweetModel } from "../Models/Tweet";
 import { userLoader } from "../Utils/dataLoaders";
+import { validateEmail } from "../Utils/validateEmail";
 
 @ObjectType()
 class UserError {
@@ -98,6 +99,16 @@ export class UserResolver {
         },
       };
     }
+
+    if (!validateEmail(input.email)) {
+      return {
+        error: {
+          message: "Email is invalid",
+          field: "email",
+        },
+      };
+    }
+
     if (input.password.length <= 4) {
       return {
         error: {
@@ -106,6 +117,7 @@ export class UserResolver {
         },
       };
     }
+
     const hashedPassword = await argon2.hash(input.password);
     const newUser = await UserModel.create({
       username: input.username,
@@ -180,7 +192,7 @@ export class UserResolver {
       return false;
     }
 
-    // First, add the current user to the requested user's followers list
+    // First, add the current user to the other user's followers list
     await UserModel.updateOne(
       { _id: userId },
       {
@@ -212,7 +224,7 @@ export class UserResolver {
       return false;
     }
 
-    // First, remove the current user from the requested user's followers list
+    // First, remove the current user from the other user's followers list
     await UserModel.updateOne(
       { _id: userId },
       {
@@ -222,7 +234,7 @@ export class UserResolver {
       }
     );
 
-    // Then, remove the requested user from the current user's following list
+    // Then, remove the other user from the current user's following list
     await UserModel.updateOne(
       { _id: request.session.userId },
       {

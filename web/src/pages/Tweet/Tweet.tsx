@@ -8,7 +8,11 @@ import {
   Tweets,
   OriginalTweetCard,
 } from "../../components";
-import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
+import {
+  APP_URL,
+  PROFILE_IMAGES_BASE_URL,
+  TWEET_IMAGES_BASE_URL,
+} from "../../constants/constants";
 import { grey } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import {
@@ -22,6 +26,7 @@ import {
   ChevronDown,
   Favourite,
   FavouriteFilled,
+  MenuDots,
   Retweet,
   Share,
 } from "../../Svgs";
@@ -74,6 +79,7 @@ const TweetPage = () => {
     retweets,
     parentTweetCreator,
     originalTweet,
+    image,
   } = data?.getTweet.tweet as Tweet;
   const { profileImage, fullname, username } = creator;
 
@@ -113,7 +119,9 @@ const TweetPage = () => {
               <p className="username">@{username}</p>
             </div>
           </div>
-          <ChevronDown size={20} color={grey} />
+          <div className="icon-wrapper">
+            <MenuDots size={22} />
+          </div>
         </div>
         {parentTweetCreator && (
           <p className="replying-to">
@@ -129,6 +137,21 @@ const TweetPage = () => {
           </p>
         )}
         <ParsedText text={content} />
+        {image && (
+          <img
+            className="tweet-image"
+            src={`${TWEET_IMAGES_BASE_URL + image}`}
+            alt="tweet"
+            onClick={(e) => {
+              // e.stopPropagation();
+              // if (params.username === username) {
+              //   window.scrollTo({ behavior: "smooth", top: 0 });
+              //   return;
+              // }
+              // push(`/${username}`);
+            }}
+          />
+        )}
         {originalTweet && (
           <div
             onClick={(e) => {

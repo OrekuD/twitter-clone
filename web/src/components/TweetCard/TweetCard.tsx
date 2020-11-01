@@ -1,6 +1,10 @@
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { APP_URL, PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
+import {
+  APP_URL,
+  PROFILE_IMAGES_BASE_URL,
+  TWEET_IMAGES_BASE_URL,
+} from "../../constants/constants";
 import { grey, deeppurple } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
 import { Tweet, useLikeTweetMutation } from "../../generated/graphql";
@@ -9,7 +13,6 @@ import {
   Favourite,
   ChatBubble,
   Share,
-  ChevronDown,
   Retweet,
   Pin,
   MenuDots,
@@ -41,6 +44,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
     retweets,
     parentTweetCreator,
     originalTweet,
+    image,
   } = tweet;
   const [, like] = useLikeTweetMutation();
   const {
@@ -179,6 +183,21 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
             </p>
           )}
           <ParsedText text={content} />
+          {image && (
+            <img
+              className="tweet-image"
+              src={`${TWEET_IMAGES_BASE_URL + image}`}
+              alt="tweet"
+              onClick={(e) => {
+                // e.stopPropagation();
+                // if (params.username === username) {
+                //   window.scrollTo({ behavior: "smooth", top: 0 });
+                //   return;
+                // }
+                // push(`/${username}`);
+              }}
+            />
+          )}
           {originalTweet && (
             <div
               onClick={(e) => {

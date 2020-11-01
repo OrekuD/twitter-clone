@@ -1,6 +1,7 @@
 fragment TweetDetails on Tweet {
   _id
   content
+  image
   createdAt
   parentTweetCreator
   originalTweet {

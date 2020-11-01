@@ -74,9 +74,10 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
       }
 
       if (headerImage) {
-        await uploadHeaderImage({
+        const res = await uploadHeaderImage({
           image: headerImage,
         });
+        console.log(res);
       }
 
       if (res.data?.addUserDetails.error) {
@@ -117,7 +118,7 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
                   alt="profile-header"
                 />
                 <div className="upload-icon">
-                  <ImageUploadIcon size={24} color="#fff" />
+                  <ImageUploadIcon size={26} color="#fff" />
                 </div>
               </div>
             </label>
@@ -137,7 +138,7 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
                   className="profile-image"
                 />
                 <div className="upload-icon">
-                  <ImageUploadIcon size={24} color="#fff" />
+                  <ImageUploadIcon size={26} color="#fff" />
                 </div>
               </div>
             </label>

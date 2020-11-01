@@ -22,9 +22,8 @@ const schema = Yup.object().shape({
 const CreateComment = () => {
   const {
     selectedTweet,
-    setShowCommentModal,
-    setSelectedTweet,
-    showCommentModal,
+    currentModal,
+    setCurrentModal,
     userDetails,
   } = useAppContext();
   const [, createComment] = useCreateCommentMutation();
@@ -47,7 +46,7 @@ const CreateComment = () => {
       });
       resetForm();
       setTimeout(() => {
-        setShowCommentModal(false);
+        setCurrentModal(null);
       }, 500);
     },
   });
@@ -64,16 +63,14 @@ const CreateComment = () => {
 
   return (
     <Modal
-      isVisible={showCommentModal}
-      onClose={() => setShowCommentModal(false)}
+      isVisible={currentModal === "COMMENT"}
+      onClose={() => setCurrentModal(null)}
     >
       <div className="create-comment">
         <div className="modal-header">
           <button
             className="icon-wrapper"
-            onClick={() => {
-              setShowCommentModal(false);
-            }}
+            onClick={() => setCurrentModal(null)}
           >
             <Cancel size={24} color={blue} />
           </button>

@@ -60,7 +60,7 @@ export class ImageUploadResolver {
       createReadStream()
         .pipe(
           createWriteStream(
-            __dirname + `../../../public/profile_images/${imageFileName}`
+            __dirname + `../../../public/user_images/${imageFileName}`
           )
         )
         .on("finish", async () => {

@@ -52,6 +52,14 @@ textarea {
   place-items: center;
 }
 
+input[type="file"] {
+  display: none;
+
+  label {
+    cursor: pointer !important;
+  }
+}
+
 .profile-image {
   width: 45px;
   height: 45px;
@@ -265,10 +273,32 @@ textarea {
   }
 }
 
+.tweet-image {
+  height: 18vw;
+  width: 100%;
+  border-radius: 1.2vw;
+  object-fit: cover;
+  margin-top: 10px;
+  cursor: pointer;
+
+  @media (max-width: 1020px) {
+    height: 30vw;
+    border-radius: 2vw;
+  }
+
+  @media (max-width: 700px) {
+    border-radius: 3vw;
+  }
+
+  @media (max-width: 500px) {
+    height: 40vw;
+  }
+}
+
 .tweet-actions {
   display: flex;
   align-items: center;
-  padding-top: 10px;
+  padding-top: 5px;
   padding-bottom: 2px;
   margin-left: -10px;
   justify-content: space-between;
@@ -383,6 +413,7 @@ textarea {
   display: grid;
   place-items: center;
   transition: 0.3s ease-in-out background;
+  cursor: pointer;
 
   svg {
     fill: $grey;

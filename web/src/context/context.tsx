@@ -5,20 +5,22 @@ import {
   useGetCurrentUserDetailsQuery,
   UserFullDetailsFragment,
 } from "../generated/graphql";
-import { AppContext } from "../types";
+import { AppContext, ModalTypes } from "../types";
 
 const Context = createContext<AppContext>({
-  showCommentModal: false,
-  showRetweetModal: false,
-  showTweetModal: false,
+  // showCommentModal: false,
+  // showRetweetModal: false,
+  // showTweetModal: false,
   showSplashScreen: true,
   selectedTweet: null,
   setSelectedTweet: () => {},
-  setShowCommentModal: () => {},
-  setShowRetweetModal: () => {},
-  setShowTweetModal: () => {},
+  // setShowCommentModal: () => {},
+  // setShowRetweetModal: () => {},
+  // setShowTweetModal: () => {},
   setShowSplashScreen: () => {},
   userDetails: null,
+  currentModal: null,
+  setCurrentModal: () => {},
 });
 
 const Provider: React.FC = ({ children }) => {
@@ -26,9 +28,10 @@ const Provider: React.FC = ({ children }) => {
     userDetails,
     setUserDetails,
   ] = useState<UserFullDetailsFragment | null>(null);
-  const [showCommentModal, setShowCommentModal] = useState(false);
-  const [showRetweetModal, setShowRetweetModal] = useState(false);
-  const [showTweetModal, setShowTweetModal] = useState(false);
+  // const [showCommentModal, setShowCommentModal] = useState(false);
+  // const [showRetweetModal, setShowRetweetModal] = useState(false);
+  // const [showTweetModal, setShowTweetModal] = useState(false);
+  const [currentModal, setCurrentModal] = useState<ModalTypes>(null);
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [{ data, fetching }, getUserDetails] = useGetCurrentUserDetailsQuery();
@@ -74,16 +77,18 @@ const Provider: React.FC = ({ children }) => {
 
   const contextValue: AppContext = {
     userDetails,
-    showCommentModal,
-    setShowCommentModal,
+    // showCommentModal,
+    // setShowCommentModal,
     selectedTweet,
     setSelectedTweet,
     setShowSplashScreen,
     showSplashScreen,
-    showRetweetModal,
-    setShowRetweetModal,
-    setShowTweetModal,
-    showTweetModal,
+    currentModal,
+    setCurrentModal,
+    // showRetweetModal,
+    // setShowRetweetModal,
+    // setShowTweetModal,
+    // showTweetModal,
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

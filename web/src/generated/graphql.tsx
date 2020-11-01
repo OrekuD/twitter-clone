@@ -86,6 +86,7 @@ export type Tweet = {
   parentId?: Maybe<Scalars['String']>;
   originalTweetId?: Maybe<Scalars['String']>;
   content: Scalars['String'];
+  image: Scalars['String'];
   createdAt: Scalars['DateTime'];
   commentsCount: Scalars['Float'];
   creator: User;
@@ -176,6 +177,7 @@ export type Mutation = {
 
 
 export type MutationCreateTweetArgs = {
+  image?: Maybe<Scalars['Upload']>;
   content: Scalars['String'];
 };
 
@@ -246,6 +248,7 @@ export type TweetResponse = {
   message: Scalars['String'];
 };
 
+
 export type CommentInput = {
   content: Scalars['String'];
   tweetId: Scalars['String'];
@@ -281,7 +284,6 @@ export type LikeResponse = {
   message: Scalars['String'];
 };
 
-
 export type FollowDetailsFragment = (
   { __typename?: 'User' }
   & { followers: Array<(
@@ -296,7 +298,7 @@ export type FollowDetailsFragment = (
 
 export type TweetDetailsFragment = (
   { __typename?: 'Tweet' }
-  & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'parentTweetCreator' | 'commentsCount'>
+  & Pick<Tweet, '_id' | 'content' | 'image' | 'createdAt' | 'parentTweetCreator' | 'commentsCount'>
   & { originalTweet?: Maybe<(
     { __typename?: 'Tweet' }
     & Pick<Tweet, '_id' | 'content' | 'createdAt' | 'parentTweetCreator'>
@@ -429,6 +431,7 @@ export type CreateRetweetMutation = (
 
 export type CreateTweetMutationVariables = Exact<{
   content: Scalars['String'];
+  image?: Maybe<Scalars['Upload']>;
 }>;
 
 
@@ -723,6 +726,7 @@ export const TweetDetailsFragmentDoc = gql`
     fragment TweetDetails on Tweet {
   _id
   content
+  image
   createdAt
   parentTweetCreator
   originalTweet {
@@ -860,8 +864,8 @@ export function useCreateRetweetMutation() {
   return Urql.useMutation<CreateRetweetMutation, CreateRetweetMutationVariables>(CreateRetweetDocument);
 };
 export const CreateTweetDocument = gql`
-    mutation CreateTweet($content: String!) {
-  createTweet(content: $content) {
+    mutation CreateTweet($content: String!, $image: Upload) {
+  createTweet(content: $content, image: $image) {
     state
     message
   }

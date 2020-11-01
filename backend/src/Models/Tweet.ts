@@ -23,6 +23,10 @@ export class Tweet {
   content: string;
 
   @prop()
+  @Field()
+  image: string;
+
+  @prop()
   @Field(() => Date)
   createdAt: Date;
 

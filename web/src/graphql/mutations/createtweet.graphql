@@ -1,5 +1,5 @@
-mutation CreateTweet($content: String!) {
-  createTweet(content: $content) {
+mutation CreateTweet($content: String!, $image: Upload) {
+  createTweet(content: $content, image: $image) {
     state
     message
   }

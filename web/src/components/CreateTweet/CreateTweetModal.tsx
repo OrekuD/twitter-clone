@@ -6,14 +6,14 @@ import { Cancel } from "../../Svgs";
 import Modal from "../Modal/Modal";
 
 const CreateTweetModal = () => {
-  const { showTweetModal, setShowTweetModal } = useAppContext();
+  const { currentModal, setCurrentModal } = useAppContext();
   return (
-    <Modal isVisible={showTweetModal} onClose={() => setShowTweetModal(false)}>
+    <Modal
+      isVisible={currentModal === "TWEET"}
+      onClose={() => setCurrentModal(null)}
+    >
       <div className="modal-header">
-        <button
-          className="icon-wrapper"
-          onClick={() => setShowTweetModal(false)}
-        >
+        <button className="icon-wrapper" onClick={() => setCurrentModal(null)}>
           <Cancel size={24} color={blue} />
         </button>
       </div>

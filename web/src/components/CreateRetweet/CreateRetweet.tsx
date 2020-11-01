@@ -21,8 +21,8 @@ const schema = Yup.object().shape({
 const CreateRetweet = () => {
   const {
     selectedTweet,
-    setShowRetweetModal,
-    showRetweetModal,
+    currentModal,
+    setCurrentModal,
     userDetails,
   } = useAppContext();
   const [, createRetweet] = useCreateRetweetMutation();
@@ -45,8 +45,8 @@ const CreateRetweet = () => {
       });
       resetForm();
       setTimeout(() => {
-        setShowRetweetModal(false);
-      }, 500);
+        setCurrentModal(null);
+      }, 200);
     },
   });
 
@@ -56,14 +56,14 @@ const CreateRetweet = () => {
 
   return (
     <Modal
-      isVisible={showRetweetModal}
-      onClose={() => setShowRetweetModal(false)}
+      isVisible={currentModal === "RETWEET"}
+      onClose={() => setCurrentModal(null)}
     >
       <div className="create-retweet">
         <div className="modal-header">
           <button
             className="icon-wrapper"
-            onClick={() => setShowRetweetModal(false)}
+            onClick={() => setCurrentModal(null)}
           >
             <Cancel size={24} color={blue} />
           </button>
