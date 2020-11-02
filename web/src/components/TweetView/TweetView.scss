@@ -1,0 +1,89 @@
+@import "../../constants/colors.scss";
+
+.tweet-page {
+  padding: 15px;
+  padding-bottom: 0;
+  border-bottom: 1px solid $lightgrey;
+
+  .profile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .left-content {
+      display: flex;
+
+      .profile-details {
+        margin: auto 10px;
+
+        p {
+          font-size: 14px;
+        }
+
+        .fullname {
+          color: #ffffff;
+          font-weight: 700;
+        }
+
+        .username {
+          color: $grey;
+        }
+      }
+    }
+  }
+
+  .replying-to {
+    margin-top: 5px;
+  }
+
+  .parsed-text {
+    font-size: 18px;
+    margin-top: 5px;
+  }
+
+  .tweet-page-details {
+    display: flex;
+    padding: 10px 0;
+    border-bottom: 1px solid $lightgrey;
+
+    p {
+      font-size: 14px;
+      color: $grey;
+    }
+
+    .dot {
+      margin: auto 5px;
+    }
+  }
+
+  .tweet-stats {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid $lightgrey;
+    padding: 15px 0;
+
+    p {
+      color: $grey;
+
+      &:first-of-type {
+        margin-right: 20px;
+      }
+
+      span {
+        color: #ffffff;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .tweet-actions {
+    padding: 5px 0;
+    margin-left: 0px;
+
+    .icon-container {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

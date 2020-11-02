@@ -26,7 +26,7 @@ const Provider: React.FC = ({ children }) => {
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [{ data, fetching }, getUserDetails] = useGetCurrentUserDetailsQuery();
-  const { replace } = useHistory();
+  const { replace, location } = useHistory();
 
   useEffect(() => {
     getUserDetails();
@@ -35,7 +35,9 @@ const Provider: React.FC = ({ children }) => {
   useEffect(() => {
     data && setShowSplashScreen(false);
     if (!fetching && !data?.currentUser) {
-      replace("/login");
+      // console.log({ location });
+      // replace with "/login" route rather??
+      replace("/");
     } else if (!fetching && data?.currentUser) {
       const {
         _id,

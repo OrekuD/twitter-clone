@@ -53,8 +53,9 @@ const Modal: React.FC<Props> = ({
             }}
             className="modal-content"
             style={{
-              maxHeight: fullScreenContent ? "100vh" : "90vh",
+              maxHeight: fullScreenContent ? "100vh" : undefined,
               width: fullScreenContent ? "100%" : undefined,
+              borderRadius: fullScreenContent ? 0 : undefined,
             }}
             onClick={(e) => e.stopPropagation()}
           >

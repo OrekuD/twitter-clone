@@ -1,4 +1,20 @@
+@import "../../constants/colors.scss";
+
 .tweet-image-modal {
   height: 100vh;
-  background-color: purple;
+
+  .image-view {
+    position: fixed;
+    width: 72%;
+    height: 100%;
+    background-color: purple;
+  }
+
+  .tweet-view {
+    width: 28%;
+    min-height: 100%;
+    margin-left: auto;
+    // background-color: blue;
+    border-left: 1px solid $lightgrey;
+  }
 }

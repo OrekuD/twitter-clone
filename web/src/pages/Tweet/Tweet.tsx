@@ -1,44 +1,20 @@
 import React, { useEffect } from "react";
-import { Link, useHistory, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import {
   Layout,
   Spinner,
   StackHeader,
-  ParsedText,
   Tweets,
-  OriginalTweetCard,
+  TweetView,
 } from "../../components";
-import {
-  APP_URL,
-  PROFILE_IMAGES_BASE_URL,
-  TWEET_IMAGES_BASE_URL,
-} from "../../constants/constants";
-import { grey } from "../../constants/colors";
-import { useAppContext } from "../../context/context";
 import {
   Tweet,
   useGetTweetCommentsQuery,
   useGetTweetQuery,
-  useLikeTweetMutation,
 } from "../../generated/graphql";
-import {
-  ChatBubble,
-  ChevronDown,
-  Favourite,
-  FavouriteFilled,
-  MenuDots,
-  Retweet,
-  Share,
-} from "../../Svgs";
-import { formatDate, formatTime } from "../../utils/dateFormatters";
-import { userHasLiked } from "../../utils/userHasLiked";
 import "./Tweet.scss";
-import { abbreviateNumber } from "../../utils/abreviateNumber";
-import { userHasRetweeted } from "../../utils/userHasRetweeted";
 
 const TweetPage = () => {
-  const { setSelectedTweet, userDetails, setCurrentModal } = useAppContext();
-  const userId = userDetails?._id!;
   const { params } = useRouteMatch<{ username: string; tweetId: string }>();
   const [{ data, fetching }, getTweet] = useGetTweetQuery({
     variables: { id: params.tweetId },
@@ -46,8 +22,6 @@ const TweetPage = () => {
   const [{ data: commentsData }, getComments] = useGetTweetCommentsQuery({
     variables: { tweetId: params.tweetId },
   });
-  const { push } = useHistory();
-  const [, likeTweet] = useLikeTweetMutation();
 
   useEffect(() => {
     getTweet();
@@ -65,41 +39,13 @@ const TweetPage = () => {
     );
   }
 
-  const {
-    _id,
-    content,
-    createdAt,
-    likes,
-    creator,
-    retweets,
-    parentTweetCreator,
-    originalTweet,
-    image,
-  } = data?.getTweet.tweet as Tweet;
-  const { profileImage, fullname, username } = creator;
-
-  const commentTweet = () => {
-    setSelectedTweet(data?.getTweet.tweet as Tweet);
-    setCurrentModal("COMMENT");
-  };
-
-  const share = async () => {
-    let newVariable = window.navigator as any;
-    if (newVariable.share) {
-      await newVariable.share({
-        title: "Twitter-clone",
-        text: "Check out this tweet",
-        url: `${APP_URL}/${username}/status/${_id}`,
-      });
-    } else {
-      alert("share not supported");
-    }
-  };
+  const { _id, content, creator } = data?.getTweet.tweet as Tweet;
+  const { fullname, username } = creator;
 
   return (
     <Layout title={`${fullname} on Twitter: "${content.slice(0, 15)}"`}>
       <StackHeader label="Tweet" />
-      <div className="tweet-page">
+      {/* <div className="tweet-page">
         <div className="profile">
           <div className="left-content">
             <Link to={`/${username}`}>
@@ -244,7 +190,8 @@ const TweetPage = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
+      <TweetView tweet={data?.getTweet.tweet as Tweet} />
       <Tweets tweets={commentsData?.getTweetComments as Tweet[]} />
     </Layout>
   );

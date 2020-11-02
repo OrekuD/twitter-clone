@@ -2,6 +2,7 @@ import React from "react";
 import { ChatBubble, Logo, People, SearchIcon } from "../../Svgs";
 import "./LandingPage.scss";
 import { blue } from "../../constants/colors";
+import { Link } from "react-router-dom";
 
 const items = [
   {
@@ -41,8 +42,12 @@ const LandingPage = () => {
             See what's happening in the world right now
           </p>
           <p className="sub-title">Join Twitter today.</p>
-          <button className="ripple-btn">Sign up</button>
-          <button className="transparent-btn">Log in</button>
+          <Link to="/signup">
+            <button className="ripple-btn">Sign up</button>
+          </Link>
+          <Link to="/login">
+            <button className="transparent-btn">Log in</button>
+          </Link>
         </div>
       </div>
     </div>
