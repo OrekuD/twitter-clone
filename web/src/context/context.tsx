@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   Tweet,
   useGetCurrentUserDetailsQuery,
@@ -26,7 +26,7 @@ const Provider: React.FC = ({ children }) => {
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [{ data, fetching }, getUserDetails] = useGetCurrentUserDetailsQuery();
-  const { replace, location } = useHistory();
+  const { replace } = useHistory();
 
   useEffect(() => {
     getUserDetails();

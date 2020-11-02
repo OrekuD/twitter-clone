@@ -5,7 +5,7 @@ export const usersWhoLiked = (
   likes: Like[]
 ) => {
   let users: UserPartialDetailsFragment[] = [];
-  if (!following) {
+  if (!following || following.length === 0) {
     return [];
   }
   following.forEach((user) => {

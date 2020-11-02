@@ -7,14 +7,65 @@
     position: fixed;
     width: 72%;
     height: 100%;
-    background-color: purple;
+    background-color: rgba(21, 32, 43, 0.9);
+    display: flex;
+    flex-direction: column;
+
+    .image-container {
+      height: 90%;
+      width: 100%;
+      position: relative;
+
+      .control-icon {
+        position: absolute;
+        top: 10px;
+        background-color: $deeppurple;
+      }
+
+      .icon-left {
+        left: 10px;
+      }
+
+      .icon-right {
+        right: 10px;
+      }
+
+      img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+        margin: 0 auto;
+      }
+    }
+
+    .bottom-row {
+      width: 55%;
+      // background-color: red;
+      align-self: center;
+
+      .tweet-actions {
+        .icon-container {
+          .icon {
+            margin: 0 auto;
+            .svg {
+              svg {
+                fill: #ffffff;
+              }
+            }
+            .count {
+              color: #ffffff;
+            }
+          }
+        }
+      }
+    }
   }
 
   .tweet-view {
     width: 28%;
     min-height: 100%;
     margin-left: auto;
-    // background-color: blue;
     border-left: 1px solid $lightgrey;
+    background-color: $deeppurple;
   }
 }

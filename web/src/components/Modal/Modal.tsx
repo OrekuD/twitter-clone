@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Modal.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAppContext } from "../../context/context";
+import { useLocation } from "react-router-dom";
 
 interface Props {
   isVisible: boolean;
@@ -15,7 +16,14 @@ const Modal: React.FC<Props> = ({
   onClose,
   fullScreenContent,
 }) => {
-  const { setSelectedTweet } = useAppContext();
+  const { setSelectedTweet, setCurrentModal } = useAppContext();
+  const { pathname } = useLocation();
+
+  // useEffect(() => {
+  //   setCurrentModal(null);
+  //   console.log({ location: pathname });
+  // }, [pathname]);
+
   return (
     <AnimatePresence exitBeforeEnter>
       {isVisible && (
@@ -56,6 +64,7 @@ const Modal: React.FC<Props> = ({
               maxHeight: fullScreenContent ? "100vh" : undefined,
               width: fullScreenContent ? "100%" : undefined,
               borderRadius: fullScreenContent ? 0 : undefined,
+              backgroundColor: fullScreenContent ? "transparent" : undefined,
             }}
             onClick={(e) => e.stopPropagation()}
           >

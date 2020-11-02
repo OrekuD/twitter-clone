@@ -1,32 +1,20 @@
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import {
-  APP_URL,
   PROFILE_IMAGES_BASE_URL,
   TWEET_IMAGES_BASE_URL,
 } from "../../constants/constants";
 import { grey, deeppurple } from "../../constants/colors";
 import { useAppContext } from "../../context/context";
-import { Tweet, useLikeTweetMutation } from "../../generated/graphql";
-import {
-  FavouriteFilled,
-  Favourite,
-  ChatBubble,
-  Share,
-  Retweet,
-  Pin,
-  MenuDots,
-} from "../../Svgs";
-import { userHasLiked } from "../../utils/userHasLiked";
+import { Tweet } from "../../generated/graphql";
+import { FavouriteFilled, Pin, MenuDots } from "../../Svgs";
 import ParsedText from "../ParsedText/ParsedText";
 import "./TweetCard.scss";
-import { abbreviateNumber } from "../../utils/abreviateNumber";
-import { userHasRetweeted } from "../../utils/userHasRetweeted";
-import { isFollowing } from "../../utils/isFollowing";
 import Popup from "reactjs-popup";
 import { usersWhoLiked } from "../../utils/usersWhoLiked";
 import OriginalTweetCard from "../OriginalTweetCard/OriginalTweetCard";
 import { timeSince } from "../../utils/dateFormatters";
+import TweetActions from "../TweetActions/TweetActions";
 
 interface Props {
   tweet: Tweet;
@@ -39,57 +27,14 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
     content,
     createdAt,
     creator: { username, fullname, profileImage },
-    commentsCount,
     likes,
-    retweets,
     parentTweetCreator,
     originalTweet,
     image,
   } = tweet;
-  const [, like] = useLikeTweetMutation();
   const { userDetails, setSelectedTweet, setCurrentModal } = useAppContext();
-  const userId = userDetails?._id!;
   const { push } = useHistory();
   const { params } = useRouteMatch<{ username: string }>();
-
-  const share = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.stopPropagation();
-    let newVariable = window.navigator as any;
-    if (newVariable.share) {
-      await newVariable.share({
-        title: "Twitter-clone",
-        text: "Check out this tweet",
-        url: `${APP_URL}/${username}/status/${_id}`,
-      });
-    } else {
-      alert("share not supported");
-    }
-  };
-
-  const commentTweet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.stopPropagation();
-    setSelectedTweet(tweet);
-    setCurrentModal("COMMENT");
-  };
-
-  const likeTweet = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
-    // Mutate likes array on client side just to show user an immediate visual feedback
-    if (userHasLiked(likes, userId) >= 0) {
-      likes.splice(userHasLiked(likes, userId), 1);
-    } else {
-      likes.unshift({
-        creatorId: userId,
-      } as any);
-    }
-
-    // Call like mutation
-    await like({
-      tweetId: _id,
-    });
-  };
 
   return (
     <div
@@ -151,7 +96,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
                 backgroundColor: deeppurple,
               }}
             >
-              {(close: () => void) => (
+              {() => (
                 <div className="popup-menu">
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                   Beatae magni omnis delectus nemo, maxime molestiae dolorem
@@ -202,85 +147,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
               <OriginalTweetCard tweet={originalTweet} />
             </div>
           )}
-          <div className="tweet-actions">
-            <div className="icon-container">
-              <button className="icon" onClick={commentTweet}>
-                <div className="svg">
-                  <ChatBubble size={20} />
-                </div>
-                {commentsCount > 0 && (
-                  <p className="count">{abbreviateNumber(commentsCount)}</p>
-                )}
-              </button>
-            </div>
-            <div className="icon-container">
-              <button
-                className="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedTweet(tweet);
-                  setCurrentModal("RETWEET");
-                }}
-              >
-                <div className="svg">
-                  <Retweet
-                    size={20}
-                    color={
-                      userHasRetweeted(retweets, userId) >= 0
-                        ? "rgb(22, 186, 97)"
-                        : undefined
-                    }
-                  />
-                </div>
-                {retweets.length > 0 && (
-                  <p
-                    className="count"
-                    style={{
-                      color:
-                        userHasRetweeted(retweets, userId) >= 0
-                          ? "rgb(22, 186, 97)"
-                          : undefined,
-                    }}
-                  >
-                    {abbreviateNumber(retweets.length)}
-                  </p>
-                )}
-              </button>
-            </div>
-            <div className="icon-container">
-              <button className="icon" onClick={likeTweet}>
-                <div className="svg">
-                  <>
-                    {userHasLiked(likes, userId) >= 0 ? (
-                      <FavouriteFilled size={18} color="#b00020" />
-                    ) : (
-                      <Favourite size={20} />
-                    )}
-                  </>
-                </div>
-                {likes.length > 0 && (
-                  <p
-                    className="count"
-                    style={{
-                      color:
-                        userHasLiked(likes, userId) >= 0
-                          ? "rgb(197, 36, 88)"
-                          : undefined,
-                    }}
-                  >
-                    {abbreviateNumber(likes.length)}
-                  </p>
-                )}
-              </button>
-            </div>
-            <div className="icon-container">
-              <button className="icon" onClick={share}>
-                <div className="svg">
-                  <Share size={20} />
-                </div>
-              </button>
-            </div>
-          </div>
+          <TweetActions tweet={tweet} showLabels />
         </div>
       </div>
     </div>

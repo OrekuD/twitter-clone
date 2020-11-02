@@ -6,6 +6,7 @@ export { default as OriginalTweetCard } from "./OriginalTweetCard/OriginalTweetC
 export { default as TweetImageModal } from "./TweetImageModal/TweetImageModal";
 export { default as TweetCard } from "./TweetCard/TweetCard";
 export { default as TweetView } from "./TweetView/TweetView";
+export { default as TweetActions } from "./TweetActions/TweetActions";
 export { default as UserCard } from "./UserCard/UserCard";
 export { default as Spinner } from "./Spinner/Spinner";
 export { default as SideMenu } from "./SideMenu/SideMenu";
