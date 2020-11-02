@@ -78,7 +78,7 @@ const CreateRetweet = () => {
             <form onSubmit={handleSubmit} className="retweet-input">
               <Textarea
                 type="text"
-                className="textarea"
+                className="create-retweet-textarea"
                 placeholder="Add a comment"
                 value={comment}
                 onChange={handleChange("comment")}

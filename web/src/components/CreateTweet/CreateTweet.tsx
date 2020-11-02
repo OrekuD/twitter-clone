@@ -17,7 +17,7 @@ const schema = Yup.object().shape({
 });
 
 const CreateTweet = () => {
-  const { userDetails, setShowTweetModal } = useAppContext();
+  const { userDetails, setCurrentModal } = useAppContext();
   const [, createTweet] = useCreateTweetMutation();
   const [image, setImage] = useState(null);
 
@@ -39,8 +39,8 @@ const CreateTweet = () => {
       });
       resetForm();
       setTimeout(() => {
-        setShowTweetModal(false);
-      }, 500);
+        setCurrentModal(null);
+      }, 200);
     },
   });
 

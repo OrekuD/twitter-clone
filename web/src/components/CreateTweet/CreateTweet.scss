@@ -19,12 +19,6 @@
 
     .create-tweet-textarea {
       font-size: 18px;
-      resize: none;
-      max-height: 60vh;
-
-      &::placeholder {
-        color: $grey;
-      }
     }
 
     .options {

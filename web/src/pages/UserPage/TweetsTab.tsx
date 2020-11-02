@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const TweetsTab = ({ userId, pinnedTweet }: Props) => {
-  const { setShowTweetModal } = useAppContext();
+  const { setCurrentModal } = useAppContext();
   const [{ fetching, data }, getLikes] = useGetTweetsByUserQuery({
     variables: {
       userId,
@@ -44,7 +44,7 @@ export const TweetsTab = ({ userId, pinnedTweet }: Props) => {
           </p>
           <button
             className="ripple-btn"
-            onClick={() => setShowTweetModal(true)}
+            onClick={() => setCurrentModal("TWEET")}
           >
             Tweet now
           </button>

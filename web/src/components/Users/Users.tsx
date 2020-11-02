@@ -52,9 +52,12 @@ const Users = ({ users, followingPage }: Props) => {
 
   return (
     <div>
-      {users.map((user, index) => (
-        <UserCard user={user} key={index} />
-      ))}
+      {users.map((user) => {
+        if (!user) {
+          return null;
+        }
+        return <UserCard user={user} key={user._id} />;
+      })}
     </div>
   );
 };

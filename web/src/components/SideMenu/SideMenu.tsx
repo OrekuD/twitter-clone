@@ -16,7 +16,7 @@ import Popup from "reactjs-popup";
 import { deeppurple, lightgrey } from "../../constants/colors";
 
 const SideMenu = () => {
-  const { userDetails, setShowTweetModal } = useAppContext();
+  const { userDetails, setCurrentModal } = useAppContext();
 
   const menu = [
     {
@@ -65,13 +65,13 @@ const SideMenu = () => {
           </div>
           <button
             className="ripple-btn"
-            onClick={() => setShowTweetModal(true)}
+            onClick={() => setCurrentModal("TWEET")}
           >
             Tweet
           </button>
           <button
             className="ripple-btn tweet-btn"
-            onClick={() => setShowTweetModal(true)}
+            onClick={() => setCurrentModal("TWEET")}
           >
             <TweetIcon color="#fff" size={24} />
           </button>

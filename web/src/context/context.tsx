@@ -8,19 +8,13 @@ import {
 import { AppContext, ModalTypes } from "../types";
 
 const Context = createContext<AppContext>({
-  // showCommentModal: false,
-  // showRetweetModal: false,
-  // showTweetModal: false,
-  showSplashScreen: true,
   selectedTweet: null,
-  setSelectedTweet: () => {},
-  // setShowCommentModal: () => {},
-  // setShowRetweetModal: () => {},
-  // setShowTweetModal: () => {},
-  setShowSplashScreen: () => {},
   userDetails: null,
   currentModal: null,
+  showSplashScreen: true,
   setCurrentModal: () => {},
+  setSelectedTweet: () => {},
+  setShowSplashScreen: () => {},
 });
 
 const Provider: React.FC = ({ children }) => {
@@ -28,9 +22,6 @@ const Provider: React.FC = ({ children }) => {
     userDetails,
     setUserDetails,
   ] = useState<UserFullDetailsFragment | null>(null);
-  // const [showCommentModal, setShowCommentModal] = useState(false);
-  // const [showRetweetModal, setShowRetweetModal] = useState(false);
-  // const [showTweetModal, setShowTweetModal] = useState(false);
   const [currentModal, setCurrentModal] = useState<ModalTypes>(null);
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
@@ -45,9 +36,7 @@ const Provider: React.FC = ({ children }) => {
     data && setShowSplashScreen(false);
     if (!fetching && !data?.currentUser) {
       replace("/login");
-    }
-    // TODO: handle the case where there's no user
-    else if (!fetching && data?.currentUser) {
+    } else if (!fetching && data?.currentUser) {
       const {
         _id,
         fullname,
@@ -77,18 +66,12 @@ const Provider: React.FC = ({ children }) => {
 
   const contextValue: AppContext = {
     userDetails,
-    // showCommentModal,
-    // setShowCommentModal,
     selectedTweet,
     setSelectedTweet,
     setShowSplashScreen,
     showSplashScreen,
     currentModal,
     setCurrentModal,
-    // showRetweetModal,
-    // setShowRetweetModal,
-    // setShowTweetModal,
-    // showTweetModal,
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

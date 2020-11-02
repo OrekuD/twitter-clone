@@ -37,12 +37,7 @@ import { abbreviateNumber } from "../../utils/abreviateNumber";
 import { userHasRetweeted } from "../../utils/userHasRetweeted";
 
 const TweetPage = () => {
-  const {
-    setSelectedTweet,
-    setShowCommentModal,
-    userDetails,
-    setShowRetweetModal,
-  } = useAppContext();
+  const { setSelectedTweet, userDetails, setCurrentModal } = useAppContext();
   const userId = userDetails?._id!;
   const { params } = useRouteMatch<{ username: string; tweetId: string }>();
   const [{ data, fetching }, getTweet] = useGetTweetQuery({
@@ -85,7 +80,7 @@ const TweetPage = () => {
 
   const commentTweet = () => {
     setSelectedTweet(data?.getTweet.tweet as Tweet);
-    setShowCommentModal(true);
+    setCurrentModal("COMMENT");
   };
 
   const share = async () => {
@@ -192,7 +187,7 @@ const TweetPage = () => {
               className="icon"
               onClick={() => {
                 setSelectedTweet(data?.getTweet.tweet as Tweet);
-                setShowRetweetModal(true);
+                setCurrentModal("RETWEET");
               }}
             >
               <div className="svg">

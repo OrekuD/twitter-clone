@@ -47,12 +47,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
     image,
   } = tweet;
   const [, like] = useLikeTweetMutation();
-  const {
-    userDetails,
-    setShowCommentModal,
-    setSelectedTweet,
-    setShowRetweetModal,
-  } = useAppContext();
+  const { userDetails, setSelectedTweet, setCurrentModal } = useAppContext();
   const userId = userDetails?._id!;
   const { push } = useHistory();
   const { params } = useRouteMatch<{ username: string }>();
@@ -74,7 +69,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
   const commentTweet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
     setSelectedTweet(tweet);
-    setShowCommentModal(true);
+    setCurrentModal("COMMENT");
   };
 
   const likeTweet = async (
@@ -189,12 +184,9 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
               src={`${TWEET_IMAGES_BASE_URL + image}`}
               alt="tweet"
               onClick={(e) => {
-                // e.stopPropagation();
-                // if (params.username === username) {
-                //   window.scrollTo({ behavior: "smooth", top: 0 });
-                //   return;
-                // }
-                // push(`/${username}`);
+                e.stopPropagation();
+                setSelectedTweet(tweet);
+                setCurrentModal("TWEET_IMAGE");
               }}
             />
           )}
@@ -227,7 +219,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedTweet(tweet);
-                  setShowRetweetModal(true);
+                  setCurrentModal("RETWEET");
                 }}
               >
                 <div className="svg">

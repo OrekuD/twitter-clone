@@ -22,9 +22,12 @@ const Tweets = ({ tweets, emptyTweets = null }: Props) => {
   } else {
     content = (
       <>
-        {tweets.map((tweet, index) => (
-          <TweetCard tweet={tweet} key={index} />
-        ))}
+        {tweets.map((tweet) => {
+          if (!tweet) {
+            return null;
+          }
+          return <TweetCard tweet={tweet} key={tweet._id} />;
+        })}
       </>
     );
   }

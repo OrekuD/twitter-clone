@@ -5,10 +5,16 @@ import { useAppContext } from "../../context/context";
 
 interface Props {
   isVisible: boolean;
+  fullScreenContent?: boolean;
   onClose: () => void;
 }
 
-const Modal: React.FC<Props> = ({ isVisible, children, onClose }) => {
+const Modal: React.FC<Props> = ({
+  isVisible,
+  children,
+  onClose,
+  fullScreenContent,
+}) => {
   const { setSelectedTweet } = useAppContext();
   return (
     <AnimatePresence exitBeforeEnter>
@@ -46,6 +52,10 @@ const Modal: React.FC<Props> = ({ isVisible, children, onClose }) => {
               translateY: 20,
             }}
             className="modal-content"
+            style={{
+              maxHeight: fullScreenContent ? "100vh" : "90vh",
+              width: fullScreenContent ? "100%" : undefined,
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {children}

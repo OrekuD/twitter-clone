@@ -3,6 +3,7 @@ export { CreateTweet, CreateTweetModal } from "./CreateTweet";
 export { default as BottomTabbar } from "./BottomTabbar/BottomTabbar";
 export { default as CreateRetweet } from "./CreateRetweet/CreateRetweet";
 export { default as OriginalTweetCard } from "./OriginalTweetCard/OriginalTweetCard";
+export { default as TweetImageModal } from "./TweetImageModal/TweetImageModal";
 export { default as TweetCard } from "./TweetCard/TweetCard";
 export { default as UserCard } from "./UserCard/UserCard";
 export { default as Spinner } from "./Spinner/Spinner";

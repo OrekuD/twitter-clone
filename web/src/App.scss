@@ -40,6 +40,14 @@ input,
 textarea {
   border: none;
   background-color: transparent;
+  resize: none;
+  max-height: 50vh;
+  font-size: 18px;
+  width: 100%;
+
+  &::placeholder {
+    color: $grey;
+  }
 
   &:focus {
     outline: none;
