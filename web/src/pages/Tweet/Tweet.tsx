@@ -15,7 +15,10 @@ import {
 import "./Tweet.scss";
 
 const TweetPage = () => {
-  const { params } = useRouteMatch<{ username: string; tweetId: string }>();
+  const { params, path } = useRouteMatch<{
+    username: string;
+    tweetId: string;
+  }>();
   const [{ data, fetching }, getTweet] = useGetTweetQuery({
     variables: { id: params.tweetId },
   });
@@ -27,6 +30,8 @@ const TweetPage = () => {
     getTweet();
     getComments();
   }, [getTweet, params]);
+
+  if (path.includes("photo")) return null;
 
   if (fetching) {
     return (

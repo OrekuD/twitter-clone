@@ -1,6 +1,6 @@
 import { Tweet, UserFullDetailsFragment } from "./generated/graphql";
 
-export type ModalTypes = "COMMENT" | "RETWEET" | "TWEET" | "TWEET_IMAGE" | null;
+export type ModalTypes = "COMMENT" | "RETWEET" | "TWEET" | null;
 
 export type AppContext = {
   showSplashScreen: boolean;

@@ -5,7 +5,6 @@ import {
   PROFILE_IMAGES_BASE_URL,
   TWEET_IMAGES_BASE_URL,
 } from "../../constants/constants";
-import { useAppContext } from "../../context/context";
 import { Tweet } from "../../generated/graphql";
 import { MenuDots } from "../../Svgs";
 import { formatDate, formatTime } from "../../utils/dateFormatters";
@@ -19,10 +18,10 @@ interface Props {
 }
 
 const TweetView = ({ tweet, noImage }: Props) => {
-  const { setCurrentModal, setSelectedTweet } = useAppContext();
   const { push } = useHistory();
 
   const {
+    _id,
     content,
     createdAt,
     likes,
@@ -73,9 +72,9 @@ const TweetView = ({ tweet, noImage }: Props) => {
           className="tweet-image"
           src={`${TWEET_IMAGES_BASE_URL + image}`}
           alt="tweet"
-          onClick={() => {
-            setSelectedTweet(tweet);
-            setCurrentModal("TWEET_IMAGE");
+          onClick={(e) => {
+            e.stopPropagation();
+            push(`/${username}/status/${_id}/photo`);
           }}
         />
       )}

@@ -13,6 +13,7 @@ import {
   Followers,
   LandingPage,
   Notifications,
+  TweetImageModal,
 } from "./pages";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { SplashScreen } from "./components";
@@ -35,7 +36,13 @@ function App() {
         <Route path="/home" exact component={Home} />
         <Route path="/explore" exact component={Explore} />
         <Route path="/search/:searchTerm" exact component={SearchResults} />
+        <Route
+          path="/:username/status/:tweetId/photo"
+          exact
+          component={TweetImageModal}
+        />
         <Route path="/:username/status/:tweetId" exact component={Tweet} />
+
         <Route path="/register" exact component={Register} />
         <Route path="/login" exact component={Login} />
         <Route path="/notifications" exact component={Notifications} />

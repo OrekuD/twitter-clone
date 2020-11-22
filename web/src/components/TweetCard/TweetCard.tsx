@@ -41,7 +41,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
       className="tweet-card-container"
       onClick={() => {
         // event.stopPropagation() doesn't seem to work with the Link component from
-        // react router, hence this implementation
+        // react router
         push(`/${username}/status/${_id}`);
       }}
     >
@@ -130,8 +130,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
               alt="tweet"
               onClick={(e) => {
                 e.stopPropagation();
-                setSelectedTweet(tweet);
-                setCurrentModal("TWEET_IMAGE");
+                push(`/${username}/status/${_id}/photo`);
               }}
             />
           )}

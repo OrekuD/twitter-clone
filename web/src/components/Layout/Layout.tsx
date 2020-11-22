@@ -6,7 +6,6 @@ import "./Layout.scss";
 import { Helmet } from "react-helmet";
 import CreateRetweet from "../CreateRetweet/CreateRetweet";
 import { CreateTweetModal } from "../CreateTweet";
-import TweetImageModal from "../TweetImageModal/TweetImageModal";
 
 const Layout: React.FC<{ title?: string }> = ({ children, title }) => {
   return (
@@ -22,7 +21,6 @@ const Layout: React.FC<{ title?: string }> = ({ children, title }) => {
       <CreateComment />
       <CreateRetweet />
       <CreateTweetModal />
-      <TweetImageModal />
     </>
   );
 };

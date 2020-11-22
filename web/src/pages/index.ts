@@ -7,4 +7,5 @@ export { default as Tweet } from "./Tweet/Tweet";
 export { default as EditDetails } from "../components/EditDetails/EditDetails";
 export { UserPage, Followers, Following } from "./UserPage";
 export { default as Explore } from "./Explore/Explore";
+export { default as TweetImageModal } from "./TweetImageModal/TweetImageModal";
 export { default as SearchResults } from "./SearchResults/SearchResults";
