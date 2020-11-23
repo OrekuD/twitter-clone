@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { TWEET_IMAGES_BASE_URL } from "../../constants/constants";
-import { useAppContext } from "../../context/context";
 import { Cancel, ChevronLeft, ChevronRight } from "../../Svgs";
 import {
   Layout,
   Spinner,
   StackHeader,
   TweetActions,
+  Tweets,
   TweetView,
 } from "../../components";
 import "./TweetImageModal.scss";
@@ -16,6 +16,7 @@ import {
   useGetTweetCommentsQuery,
   Tweet,
 } from "../../generated/graphql";
+import { useAppContext } from "../../context/context";
 
 const TweetImageModal = () => {
   const [showTweet, setShowTweet] = useState(true);
@@ -28,6 +29,7 @@ const TweetImageModal = () => {
   });
 
   const { goBack } = useHistory();
+  const { setSelectedTweet, setCurrentModal } = useAppContext();
 
   useEffect(() => {
     getTweet();
@@ -36,12 +38,9 @@ const TweetImageModal = () => {
 
   if (fetching) {
     return (
-      <Layout>
-        <StackHeader label="Tweet" />
-        <div className="loading-screen">
-          <Spinner />
-        </div>
-      </Layout>
+      <div className="loading-screen" style={{ height: "100vh" }}>
+        <Spinner />
+      </div>
     );
   }
 
@@ -80,6 +79,7 @@ const TweetImageModal = () => {
       {showTweet && (
         <div className="tweet-view">
           <TweetView tweet={data?.getTweet.tweet as Tweet} noImage />
+          <Tweets tweets={commentsData?.getTweetComments as Tweet[]} />
         </div>
       )}
     </div>

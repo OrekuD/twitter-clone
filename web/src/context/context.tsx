@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import {
   Tweet,
   useGetCurrentUserDetailsQuery,
@@ -35,8 +35,7 @@ const Provider: React.FC = ({ children }) => {
   useEffect(() => {
     data && setShowSplashScreen(false);
     if (!fetching && !data?.currentUser) {
-      // console.log({ location });
-      // replace with "/login" route rather??
+      // TODO: replace with "/login" route rather??
       replace("/");
     } else if (!fetching && data?.currentUser) {
       const {

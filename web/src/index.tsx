@@ -3,13 +3,7 @@ import { cacheExchange } from "@urql/exchange-graphcache";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import {
-  createClient,
-  dedupExchange,
-  // Exchange,
-  fetchExchange,
-  Provider,
-} from "urql";
+import { createClient, dedupExchange, Provider } from "urql";
 import App from "./App";
 import { Provider as ContextProvider } from "./context/context";
 import { invalidateAllTweets } from "./utils/invalidateAllTweets";
@@ -81,7 +75,6 @@ const client = createClient({
         },
       },
     }),
-    // fetchExchange,
     multipartFetchExchange,
   ],
 });

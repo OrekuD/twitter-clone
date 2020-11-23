@@ -31,7 +31,6 @@ const TweetPage = () => {
     getComments();
   }, [getTweet, params]);
 
-  if (path.includes("photo")) return null;
 
   if (fetching) {
     return (

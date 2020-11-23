@@ -51,9 +51,8 @@ const CreateComment = () => {
     },
   });
 
-  if (!selectedTweet) {
-    return null;
-  }
+  if (!selectedTweet) return null;
+
   const {
     _id,
     content,

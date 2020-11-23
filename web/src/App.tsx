@@ -16,7 +16,12 @@ import {
   TweetImageModal,
 } from "./pages";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { SplashScreen } from "./components";
+import {
+  CreateComment,
+  CreateRetweet,
+  CreateTweetModal,
+  SplashScreen,
+} from "./components";
 import { useGetCurrentUserDetailsQuery } from "./generated/graphql";
 import "reactjs-popup/dist/index.css";
 
@@ -31,7 +36,9 @@ function App() {
     <>
       <Switch>
         {/* {!fetching && !data?.currentUser && <Redirect from="/" to="/login" />} */}
-        {data?.currentUser && <Redirect exact strict from="/" to="/home" />}
+        {!fetching && data?.currentUser && (
+          <Redirect exact strict from="/" to="/home" />
+        )}
         <Route path="/" exact component={LandingPage} />
         <Route path="/home" exact component={Home} />
         <Route path="/explore" exact component={Explore} />
@@ -51,6 +58,9 @@ function App() {
         <Route path="/:username/followers" exact component={Followers} />
       </Switch>
       <SplashScreen />
+      <CreateComment />
+      <CreateRetweet />
+      <CreateTweetModal />
     </>
   );
 }

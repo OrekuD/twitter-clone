@@ -32,7 +32,7 @@ const TweetCard = ({ tweet, pinnedTweet }: Props) => {
     originalTweet,
     image,
   } = tweet;
-  const { userDetails, setSelectedTweet, setCurrentModal } = useAppContext();
+  const { userDetails } = useAppContext();
   const { push } = useHistory();
   const { params } = useRouteMatch<{ username: string }>();
 
