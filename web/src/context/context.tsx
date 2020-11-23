@@ -5,16 +5,18 @@ import {
   useGetCurrentUserDetailsQuery,
   UserFullDetailsFragment,
 } from "../generated/graphql";
-import { AppContext, ModalTypes } from "../types";
+import { AppContext, ImageDetails, ModalTypes } from "../types";
 
 const Context = createContext<AppContext>({
   selectedTweet: null,
   userDetails: null,
   currentModal: null,
+  selectedImageDetails: null,
   showSplashScreen: true,
   setCurrentModal: () => {},
   setSelectedTweet: () => {},
   setShowSplashScreen: () => {},
+  setSelectedImageDetails: () => {},
 });
 
 const Provider: React.FC = ({ children }) => {
@@ -23,6 +25,10 @@ const Provider: React.FC = ({ children }) => {
     setUserDetails,
   ] = useState<UserFullDetailsFragment | null>(null);
   const [currentModal, setCurrentModal] = useState<ModalTypes>(null);
+  const [
+    selectedImageDetails,
+    setSelectedImageDetails,
+  ] = useState<ImageDetails>(null);
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [{ data, fetching }, getUserDetails] = useGetCurrentUserDetailsQuery();
@@ -38,30 +44,7 @@ const Provider: React.FC = ({ children }) => {
       // TODO: replace with "/login" route rather??
       replace("/");
     } else if (!fetching && data?.currentUser) {
-      const {
-        _id,
-        fullname,
-        location,
-        bio,
-        profileImage,
-        headerImage,
-        username,
-        followers,
-        following,
-        createdAt,
-      } = data.currentUser;
-      setUserDetails({
-        _id,
-        fullname,
-        location,
-        bio,
-        profileImage,
-        headerImage,
-        username,
-        followers,
-        following,
-        createdAt,
-      });
+      setUserDetails(data.currentUser);
     }
   }, [data]);
 
@@ -73,6 +56,8 @@ const Provider: React.FC = ({ children }) => {
     showSplashScreen,
     currentModal,
     setCurrentModal,
+    selectedImageDetails,
+    setSelectedImageDetails,
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

@@ -15,6 +15,7 @@ export { default as Tweets } from "./Tweets/Tweets";
 export { default as SplashScreen } from "./SplashScreen/SplashScreen";
 export { default as Modal } from "./Modal/Modal";
 export { default as CreateComment } from "./CreateComment/CreateComment";
+export { default as ImageModal } from "./ImageModal/ImageModal";
 export { default as ParsedText } from "./ParsedText/ParsedText";
 export { default as EditDetails } from "./EditDetails/EditDetails";
 export { default as Users } from "./Users/Users";

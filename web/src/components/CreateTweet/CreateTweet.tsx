@@ -12,7 +12,7 @@ import { blue } from "../../constants/colors";
 const schema = Yup.object().shape({
   tweet: Yup.string()
     .min(1, "Tweet must exceed 1 character")
-    .max(140, "Tweet cannot exceed 140 characters")
+    .max(140, "Tweet cannot exceed 280 characters")
     .required(),
 });
 
@@ -67,7 +67,6 @@ const CreateTweet = () => {
           onBlur={handleBlur("tweet")}
           style={{
             color: errors.tweet && touched.tweet ? "#b00020" : "#ffffff",
-            // backgroundColor: "yellow",
           }}
         />
         {image && (

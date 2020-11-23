@@ -20,7 +20,11 @@ interface Props {
 export const Profile = ({ user, setIsVisible }: Props) => {
   const [, followUser] = useFollowUserMutation();
   const [, unFollowUser] = useUnFollowUserMutation();
-  const { userDetails } = useAppContext();
+  const {
+    userDetails,
+    setSelectedImageDetails,
+    setCurrentModal,
+  } = useAppContext();
   const {
     bio,
     createdAt,
@@ -72,6 +76,10 @@ export const Profile = ({ user, setIsVisible }: Props) => {
         className="header-image"
         src={`${PROFILE_IMAGES_BASE_URL + headerImage}`}
         alt="profile-header"
+        onClick={() => {
+          setSelectedImageDetails({ type: "HEADER_IMAGE", url: headerImage });
+          setCurrentModal("HEADER_IMAGE");
+        }}
       />
       <div className="profile-details">
         <div className="top-section">
@@ -80,6 +88,13 @@ export const Profile = ({ user, setIsVisible }: Props) => {
               className="profile-image"
               src={`${PROFILE_IMAGES_BASE_URL + profileImage}`}
               alt="profile"
+              onClick={() => {
+                setSelectedImageDetails({
+                  type: "PROFILE_IMAGE",
+                  url: profileImage,
+                });
+                setCurrentModal("PROFILE_IMAGE");
+              }}
             />
           </div>
           {userDetails?.username === username ? (

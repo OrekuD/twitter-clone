@@ -20,6 +20,7 @@ import {
   CreateComment,
   CreateRetweet,
   CreateTweetModal,
+  ImageModal,
   SplashScreen,
 } from "./components";
 import { useGetCurrentUserDetailsQuery } from "./generated/graphql";
@@ -61,6 +62,7 @@ function App() {
       <CreateComment />
       <CreateRetweet />
       <CreateTweetModal />
+      <ImageModal />
     </>
   );
 }

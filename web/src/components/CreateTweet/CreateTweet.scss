@@ -29,6 +29,10 @@
       align-self: center;
       padding-top: 30px;
 
+      img {
+        transition: opacity 0.3s ease-in-out;
+      }
+
       .delete-image {
         position: absolute;
         top: 10px;
