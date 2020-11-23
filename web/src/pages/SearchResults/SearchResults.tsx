@@ -22,27 +22,31 @@ const SearchResults = () => {
     search();
   }, []);
 
+  const emptyResults = (
+    <div className="description-text-wrapper">
+      <p className="main-title">No results for "{searchTerm}" </p>
+      <p className="sub-title">
+        The term you entered did not bring up any results. <br /> You may have
+        mistyped.
+      </p>
+    </div>
+  );
+
   const tabs = [
     {
       name: "Top",
       component: (
         <Tweets
           tweets={data?.search.tweets as Tweet[]}
-          emptyTweets={
-            <div className="description-text-wrapper">
-              <p className="main-title">No results for "{searchTerm}" </p>
-              <p className="sub-title">
-                The term you entered did not bring up any results. <br /> You
-                may have mistyped your term.
-              </p>
-            </div>
-          }
+          emptyTweets={emptyResults}
         />
       ),
     },
     {
       name: "People",
-      component: <Users users={data?.search.users as User[]} />,
+      component: (
+        <Users users={data?.search.users as User[]} noUsers={emptyResults} />
+      ),
     },
   ];
 
