@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { PROFILE_IMAGES_BASE_URL } from "../../constants/constants";
 import Textarea from "react-textarea-autosize";
-import { ImageIcon } from "../../Svgs";
+import { Cancel, ImageIcon } from "../../Svgs";
 import { blue } from "../../constants/colors";
 
 const schema = Yup.object().shape({
@@ -20,6 +20,7 @@ const CreateTweet = () => {
   const { userDetails, setCurrentModal } = useAppContext();
   const [, createTweet] = useCreateTweetMutation();
   const [image, setImage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     handleChange,
@@ -33,11 +34,14 @@ const CreateTweet = () => {
     validationSchema: schema,
     initialErrors: { tweet: "Tweet must exceed 1 character" },
     onSubmit: async (values, { resetForm }) => {
+      setIsSubmitting(true);
       await createTweet({
         content: values.tweet,
         image,
       });
+      setIsSubmitting(false);
       resetForm();
+      setImage(null);
       setTimeout(() => {
         setCurrentModal(null);
       }, 200);
@@ -63,30 +67,57 @@ const CreateTweet = () => {
           onBlur={handleBlur("tweet")}
           style={{
             color: errors.tweet && touched.tweet ? "#b00020" : "#ffffff",
+            // backgroundColor: "yellow",
           }}
         />
-        <div className="options">
-          <div className="icon-wrapper">
-            <label htmlFor="tweet-image">
-              <ImageIcon size={24} color={blue} />
-            </label>
-            <input
-              accept="image/*"
-              type="file"
-              id="tweet-image"
-              onChange={async (e) => {
-                setImage(e.target.files![0] as any);
+        {image && (
+          <div className="upload-image">
+            {!isSubmitting && (
+              <button
+                onClick={() => setImage(null)}
+                className="icon-wrapper delete-image"
+              >
+                <Cancel size={22} color="white" />
+              </button>
+            )}
+            <img
+              src={URL.createObjectURL(image)}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                opacity: isSubmitting ? 0.5 : 1,
               }}
+              alt="tweet-image"
             />
           </div>
-          <button
-            className="ripple-btn"
-            type="submit"
-            disabled={!!errors.tweet}
-          >
-            Tweet
-          </button>
-        </div>
+        )}
+        {isSubmitting ? (
+          <div style={{ height: 20 }} />
+        ) : (
+          <div className="options">
+            <div className="icon-wrapper upload-image-icon">
+              <label htmlFor="tweet-image">
+                <ImageIcon size={24} color={blue} />
+              </label>
+              <input
+                accept="image/*"
+                type="file"
+                id="tweet-image"
+                onChange={async (e) => {
+                  setImage(e.target.files![0] as any);
+                }}
+              />
+            </div>
+            <button
+              className="ripple-btn"
+              type="submit"
+              disabled={!!errors.tweet}
+            >
+              Tweet
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );
