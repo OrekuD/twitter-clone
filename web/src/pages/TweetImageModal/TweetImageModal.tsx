@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TWEET_IMAGES_BASE_URL } from "../../constants/constants";
 import { Cancel, ChevronLeft, ChevronRight } from "../../Svgs";
-import {
-  Layout,
-  Spinner,
-  StackHeader,
-  TweetActions,
-  Tweets,
-  TweetView,
-} from "../../components";
+import { Spinner, TweetActions, Tweets, TweetView } from "../../components";
 import "./TweetImageModal.scss";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import {
@@ -16,7 +9,7 @@ import {
   useGetTweetCommentsQuery,
   Tweet,
 } from "../../generated/graphql";
-import { useAppContext } from "../../context/context";
+import { useWindowResize } from "../../hooks/useWindowResize";
 
 const TweetImageModal = () => {
   const [showTweet, setShowTweet] = useState(true);
@@ -27,9 +20,9 @@ const TweetImageModal = () => {
   const [{ data: commentsData }, getComments] = useGetTweetCommentsQuery({
     variables: { tweetId: params.tweetId },
   });
+  const { width } = useWindowResize();
 
   const { goBack } = useHistory();
-  const { setSelectedTweet, setCurrentModal } = useAppContext();
 
   useEffect(() => {
     getTweet();
@@ -57,16 +50,19 @@ const TweetImageModal = () => {
           >
             <Cancel color="#fff" size={22} />
           </button>
-          <button
-            className="icon-wrapper control-icon icon-right"
-            onClick={() => setShowTweet(!showTweet)}
-          >
-            {showTweet ? (
-              <ChevronRight color="#fff" size={22} />
-            ) : (
-              <ChevronLeft color="#fff" size={22} />
-            )}
-          </button>
+
+          {width > 720 && (
+            <button
+              className="icon-wrapper control-icon icon-right"
+              onClick={() => setShowTweet(!showTweet)}
+            >
+              {showTweet ? (
+                <ChevronRight color="#fff" size={22} />
+              ) : (
+                <ChevronLeft color="#fff" size={22} />
+              )}
+            </button>
+          )}
           <img
             src={`${TWEET_IMAGES_BASE_URL + data?.getTweet.tweet?.image}`}
             alt="tweet"
@@ -76,7 +72,7 @@ const TweetImageModal = () => {
           <TweetActions tweet={data?.getTweet.tweet as Tweet} />
         </div>
       </div>
-      {showTweet && (
+      {showTweet && width > 720 && (
         <div className="tweet-view">
           <TweetView tweet={data?.getTweet.tweet as Tweet} noImage />
           <Tweets tweets={commentsData?.getTweetComments as Tweet[]} />

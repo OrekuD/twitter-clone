@@ -288,8 +288,9 @@ input[type="file"] {
   object-fit: cover;
   margin-top: 10px;
   cursor: pointer;
+  border: 1px solid $lightgrey;
 
-  @media (max-width: 1020px) {
+  @media (max-width: 1024px) {
     height: 30vw;
     border-radius: 2vw;
   }

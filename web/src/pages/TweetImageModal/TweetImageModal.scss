@@ -40,7 +40,6 @@
 
     .bottom-row {
       width: 55%;
-      // background-color: red;
       align-self: center;
 
       .tweet-actions {
@@ -67,5 +66,43 @@
     border-left: 1px solid $lightgrey;
     background-color: $deeppurple;
     overflow-y: scroll;
+  }
+
+  @media (max-width: 1024px) {
+    .image-view {
+      width: 65%;
+
+      .bottom-row {
+        width: 80%;
+      }
+    }
+
+    .tweet-view {
+      width: 35%;
+    }
+  }
+
+  @media (max-width: 820px) {
+    .image-view {
+      width: 60%;
+
+      .bottom-row {
+        width: 75%;
+      }
+    }
+
+    .tweet-view {
+      width: 40%;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .image-view {
+      width: 100%;
+    }
+
+    .tweet-view {
+      display: none;
+    }
   }
 }

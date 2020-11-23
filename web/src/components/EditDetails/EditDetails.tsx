@@ -57,10 +57,6 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
     initialValues,
     validationSchema: schema,
     onSubmit: async (values, { setErrors }) => {
-      // // This is to prevent empty values from being submitted when modal is dismissed
-      // if (!values.bio && !values.fullname && !values.location) {
-      //   return;
-      // }
       const res = await editDetails({
         bio: values.bio!,
         fullname: values.fullname!,
@@ -84,7 +80,9 @@ const EditDetails = ({ isVisible, setIsVisible }: Props) => {
         setErrors(reshapeError(res.data?.addUserDetails.error));
       }
       if (!res.data?.addUserDetails.error) {
-        setIsVisible(false);
+        setTimeout(() => {
+          setIsVisible(false);
+        }, 500);
       }
     },
   });

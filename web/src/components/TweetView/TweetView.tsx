@@ -76,6 +76,7 @@ const TweetView = ({ tweet, noImage }: Props) => {
             e.stopPropagation();
             push(`/${username}/status/${_id}/photo`);
           }}
+          // style={{ height: "22vw" }}
         />
       )}
       {originalTweet && (

@@ -7,12 +7,13 @@
   z-index: 10;
   height: 100vh;
   width: 100%;
-  background-color: rgba($color: #15202b, $alpha: 0.7);
+  background-color: rgba($color: #162d40, $alpha: 0.7);
   display: grid;
   place-items: center;
 
   .modal-content {
     width: clamp(340px, 60%, 650px);
+    max-height: 90vh;
     background-color: #15202b;
     border-radius: 10px;
 
