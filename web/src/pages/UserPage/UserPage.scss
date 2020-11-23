@@ -9,6 +9,22 @@
       height: 15vw;
       object-fit: cover;
       cursor: pointer;
+
+      @media (max-width: 1120px) {
+        height: 20vw;
+      }
+
+      @media (max-width: 1024px) {
+        height: 25vw;
+      }
+
+      @media (max-width: 620px) {
+        height: 35vw;
+      }
+
+      @media (max-width: 500px) {
+        height: 40vw;
+      }
     }
 
     .profile-details {
@@ -27,7 +43,31 @@
           place-items: center;
           background-color: $deeppurple;
           border-radius: 50%;
-          margin-top: -60px;
+          margin-top: -65px;
+
+          @media (max-width: 1120px) {
+            width: 110px;
+            height: 110px;
+            margin-top: -55px;
+          }
+
+          @media (max-width: 1024px) {
+            width: 130px;
+            height: 130px;
+            margin-top: -65px;
+          }
+
+          @media (max-width: 620px) {
+            width: 100px;
+            height: 100px;
+            margin-top: -50px;
+          }
+
+          @media (max-width: 500px) {
+            width: 80px;
+            height: 80px;
+            margin-top: -40px;
+          }
 
           .profile-image {
             width: 93%;
